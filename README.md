@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="[https://res.cloudinary.com/pwwxj8hf/image/upload/v1785352240/logo_cansat2026-final1_xvqgvl.png](https://res.cloudinary.com/pwwxj8hf/image/upload/v1785354328/orbitec2026-logo.webp)" width="260" alt="ORBITEC Logo"/>
+  <img src="https://res.cloudinary.com/pwwxj8hf/image/upload/v1785352240/logo_cansat2026-final1_xvqgvl.png" width="260" alt="ORBITEC Logo"/>
 </p>
 
 <h1 align="center">
