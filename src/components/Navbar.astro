@@ -1,0 +1,194 @@
+---
+const links = [
+  { label: "Misión", href: "#mision" },
+  { label: "Equipo", href: "#equipo" },
+  { label: "Contacto", href: "#contacto" },
+];
+---
+
+<header
+  id="main-header"
+  class="fixed top-0 z-50 w-full border-b border-transparent transition-all duration-300 bg-transparent"
+>
+  <nav
+    class="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-4 sm:px-6 lg:px-8 mt-2"
+  >
+    <!-- Logo -->
+    <a
+      href="/"
+      class="flex items-center gap-3 group rounded-md p-2 hover:bg-white/5 transition-colors"
+    >
+      <img
+        src="/logo_sinfondoCansat2026.webp"
+        alt="Cansat 2026 Logo"
+        class="h-16 w-auto transition-transform duration-300 group-hover:scale-105 drop-shadow-md"
+      />
+      <span
+        class="font-title text-xl font-bold tracking-wider text-white hidden sm:block"
+        >ORBITEC</span
+      >
+    </a>
+
+    <!-- Desktop Menu -->
+    <div class="hidden items-center gap-2 md:flex">
+      {
+        links.map((link) => (
+          <a
+            href={link.href}
+            class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-white/10 hover:text-white text-gray-300 h-10 px-4 py-2 uppercase tracking-widest font-title"
+          >
+            {link.label}
+          </a>
+        ))
+      }
+      <a
+        href="#unirse"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 px-4 py-2 font-title uppercase tracking-widest ml-2"
+      >
+        Ingresar
+      </a>
+      <a
+        href="#empezar"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors bg-white hover:bg-gray-200 text-[#000004] h-10 px-4 py-2 font-title uppercase tracking-widest ml-2"
+      >
+        Únete
+      </a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button
+      id="mobile-menu-btn"
+      class="md:hidden inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 w-10"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Toggle menu"
+    >
+      <svg
+        id="menu-icon"
+        stroke-width="2.5"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 32 32"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        class="transition-transform ease-in-out duration-500 size-5"
+      >
+        <path
+          class="transition-all ease-in-out duration-500 [stroke-dasharray:12_63]"
+          d="M27 10 13 10C10.8 10 9 8.2 9 6 9 3.5 10.8 2 13 2 15.2 2 17 3.8 17 6L17 26C17 28.2 18.8 30 21 30 23.2 30 25 28.2 25 26 25 23.8 23.2 22 21 22L7 22"
+        ></path>
+        <path d="M7 16 27 16"></path>
+      </svg>
+    </button>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div
+    id="mobile-menu"
+    class="fixed top-[4.5rem] right-0 bottom-0 left-0 z-40 flex-col overflow-hidden border-t border-white/10 md:hidden bg-[#000004]/95 backdrop-blur-xl hidden"
+  >
+    <div class="size-full p-4 flex flex-col gap-2">
+      <div class="grid gap-y-2 mt-4">
+        {
+          links.map((link) => (
+            <a
+              href={link.href}
+              class="mobile-link inline-flex items-center whitespace-nowrap rounded-md text-lg font-medium transition-colors hover:bg-white/10 hover:text-white text-gray-300 h-12 px-4 py-2 justify-start font-title uppercase tracking-widest"
+            >
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+      <div class="flex flex-col gap-3 mt-8">
+        <a
+          href="#unirse"
+          class="mobile-link inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-12 px-4 py-2 font-title uppercase tracking-widest w-full"
+        >
+          Ingresar
+        </a>
+        <a
+          href="#empezar"
+          class="mobile-link inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-white hover:bg-gray-200 text-[#000004] h-12 px-4 py-2 font-title uppercase tracking-widest w-full"
+        >
+          Únete
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<script>
+  // Script para manejar el menú móvil y el scroll del navbar
+  document.addEventListener("DOMContentLoaded", () => {
+    const header = document.getElementById("main-header");
+
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        header?.classList.add(
+          "bg-[#000004]/80",
+          "backdrop-blur-lg",
+          "border-white/10",
+        );
+        header?.classList.remove("bg-transparent", "border-transparent");
+      } else {
+        header?.classList.add("bg-transparent", "border-transparent");
+        header?.classList.remove(
+          "bg-[#000004]/80",
+          "backdrop-blur-lg",
+          "border-white/10",
+        );
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    handleScroll(); // Trigger on load
+
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const icon = document.getElementById("menu-icon");
+    const iconPath1 = icon?.querySelector("path:first-child");
+    let open = false;
+
+    const toggleMenu = () => {
+      open = !open;
+      btn?.setAttribute("aria-expanded", open.toString());
+
+      if (open) {
+        menu?.classList.remove("hidden");
+        menu?.classList.add("flex");
+        document.body.style.overflow = "hidden";
+
+        // Animate SVG icon to X
+        icon?.classList.add("-rotate-45");
+        iconPath1?.classList.remove("[stroke-dasharray:12_63]");
+        iconPath1?.classList.add(
+          "[stroke-dasharray:20_300]",
+          "[stroke-dashoffset:-32.42px]",
+        );
+      } else {
+        menu?.classList.add("hidden");
+        menu?.classList.remove("flex");
+        document.body.style.overflow = "";
+
+        // Animate SVG icon back to hamburger
+        icon?.classList.remove("-rotate-45");
+        iconPath1?.classList.add("[stroke-dasharray:12_63]");
+        iconPath1?.classList.remove(
+          "[stroke-dasharray:20_300]",
+          "[stroke-dashoffset:-32.42px]",
+        );
+      }
+    };
+
+    btn?.addEventListener("click", toggleMenu);
+
+    // Close menu when a link is clicked
+    const mobileLinks = document.querySelectorAll(".mobile-link");
+    mobileLinks.forEach((link) => {
+      link.addEventListener("click", () => {
+        if (open) toggleMenu();
+      });
+    });
+  });
+</script>

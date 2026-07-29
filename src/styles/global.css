@@ -1,0 +1,30 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
+
+@theme {
+  --color-rojo-light: #c80a19;
+  --color-azul-light: #015fb3;
+}
+
+@layer base {
+    body {
+        background-color: #000004;
+        color: #ffffff;
+        font-family: 'Roboto Mono', monospace;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .font-title,
+    .logo,
+    .hero,
+    button,
+    nav,
+    .nav-links {
+        font-family: 'DIN_BoLD', sans-serif;
+    }
+}
