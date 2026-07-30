@@ -10,8 +10,8 @@ const DAY = HOUR * 24;
 
 export default function ShiftingCountdown() {
   return (
-    <div className="relative px-4 sm:px-6 md:px-8 py-2 md:py-2.5 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-[2rem] sm:rounded-full flex flex-col sm:flex-row items-center gap-1 sm:gap-3 justify-center shadow-[0_0_30px_rgba(200,10,25,0.15)] w-[95%] sm:w-auto mx-auto max-w-full">
-      <span className="font-title text-rojo-light font-bold text-xl sm:text-xl md:text-2xl mr-0 sm:mr-2 mb-0.5 sm:mb-0">T-</span>
+    <div className="relative px-4 sm:px-6 md:px-8 py-2 md:py-2.5 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-full flex flex-row items-center gap-1 sm:gap-3 justify-center shadow-[0_0_30px_rgba(200,10,25,0.15)] w-auto mx-auto max-w-[95%]">
+      <span className="font-title text-rojo-light font-bold text-xl md:text-2xl mr-1 sm:mr-2">T-</span>
       <div className="flex items-center">
         <CountdownItem unit="Day" label="DÍAS" />
         <span className="text-lg sm:text-xl md:text-2xl font-bold pb-2 sm:pb-3 opacity-50 mx-0.5 sm:mx-1">:</span>
