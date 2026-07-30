@@ -1,0 +1,208 @@
+---
+
+---
+
+<section
+  id="nightraptor"
+  class="relative w-full overflow-hidden bg-[#000004]"
+>
+  <!-- Scroll spacer: the pin wrapper needs height for the scroll distance -->
+  <div id="nightraptor-pin" class="relative w-full" style="min-height: 100vh;">
+    <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center gap-10 lg:gap-16 py-16 md:py-24" style="min-height: 100vh;">
+
+      <!-- Video/Image a la izquierda -->
+      <div class="w-full lg:w-1/2 flex justify-center order-1 relative z-0">
+        <div
+          id="nightraptor-video-container"
+          class="relative w-full max-w-2xl scale-[1.3] lg:scale-[1.45] flex items-center justify-center lg:-translate-x-4"
+        >
+          <!-- Background Glow removido a petición -->
+
+          <img
+            id="nightraptor-video"
+            src="/video3d-frames/ezgif-frame-001.jpg"
+            class="relative z-10 w-full h-auto object-contain"
+            style="-webkit-mask-image: linear-gradient(to right, transparent 20%, black 40%, black 60%, transparent 80%); mask-image: linear-gradient(to right, transparent 20%, black 40%, black 60%, transparent 80%);"
+          />
+        </div>
+      </div>
+
+      <!-- Contenedor de textos a la derecha -->
+      <div class="w-full lg:w-1/2 text-left order-2 lg:translate-x-4 relative" style="min-height: 180px;">
+
+        <!-- Texto 1: Misión NightRaptor (visible al inicio) -->
+        <div id="nightraptor-text-1" class="w-full">
+          <h2
+            class="font-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 uppercase tracking-tighter leading-none"
+          >
+            Misión <br /><span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-rojo-light to-azul-light"
+              >NIGHTRAPTOR</span
+            >
+          </h2>
+
+          <div
+            class="space-y-4 text-gray-300 text-base md:text-lg font-light leading-relaxed"
+          >
+            <p>
+              <strong class="text-white font-medium">NightRaptor</strong> es el CanSat
+              desarrollado por ORBITEC.
+            </p>
+            <p>
+              Su misión principal consiste en la <strong
+                class="text-white font-medium"
+                >detección temprana de incendios forestales</strong
+              >, obteniendo información ambiental y de vuelo durante todo el
+              descenso para apoyar la protección del medio ambiente.
+            </p>
+          </div>
+        </div>
+
+        <!-- Texto 2: Diseño 3D (oculto al inicio, aparece con scroll) -->
+        <div id="nightraptor-text-2" class="w-full absolute top-0 left-0" style="opacity: 0; transform: translateY(40px);">
+          <h2
+            class="font-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 uppercase tracking-tighter leading-none"
+          >
+            Diseño <br /><span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-azul-light to-rojo-light"
+              >3D</span
+            >
+          </h2>
+
+          <div
+            class="space-y-4 text-gray-300 text-base md:text-lg font-light leading-relaxed"
+          >
+            <p>
+              El modelo <strong class="text-white font-medium">3D de NightRaptor</strong> fue diseñado
+              completamente por el equipo ORBITEC.
+            </p>
+            <p>
+              Cada componente fue modelado con precisión para optimizar la <strong
+                class="text-white font-medium"
+                >aerodinámica y la distribución de sensores</strong
+              >, garantizando un descenso estable y una recolección de datos eficiente.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initNightRaptorScroll() {
+    const imgElement = document.getElementById("nightraptor-video") as HTMLImageElement | null;
+    const text1 = document.getElementById("nightraptor-text-1");
+    const text2 = document.getElementById("nightraptor-text-2");
+    const pinWrapper = document.getElementById("nightraptor-pin");
+    const videoContainer = document.getElementById("nightraptor-video-container");
+
+    if (!imgElement || !text1 || !text2 || !pinWrapper || !videoContainer) return;
+
+    // Preload frames
+    const frameCount = 21;
+    const frames: HTMLImageElement[] = [];
+    
+    for (let i = 1; i <= frameCount; i++) {
+      const img = new Image();
+      // Format number to 3 digits e.g. 001, 002
+      const frameNum = i.toString().padStart(3, "0");
+      img.src = `/video3d-frames/ezgif-frame-${frameNum}.jpg`;
+      frames.push(img);
+    }
+
+    const setup = () => {
+      // Main timeline pinned to section — shorter scroll for faster animation
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: pinWrapper,
+          start: "top top",
+          end: "+=150%",
+          pin: true,
+          scrub: 0.8, // GSAP's built-in smooth scrubbing
+          anticipatePin: 1,
+        },
+      });
+
+      // Phase 1 (0% → 85%): Frame swap scrub
+      tl.to(
+        {},
+        {
+          duration: 0.85,
+          ease: "none",
+          onUpdate: function () {
+            const progress = this.progress();
+            // Calculate frame index from 0 to 20
+            const frameIndex = Math.min(frameCount - 1, Math.floor(progress * frameCount));
+            // Swap image src from preloaded images
+            if (frames[frameIndex] && frames[frameIndex].complete) {
+              imgElement.src = frames[frameIndex].src;
+            }
+          },
+        },
+        0
+      );
+
+      // Phase 2 (30% → 90%): Expand the mask to reveal the video, but keep a slight fade to hide the hard image edges
+      tl.to(
+        imgElement,
+        {
+          duration: 0.6,
+          ease: "power2.inOut",
+          onUpdate: function () {
+            const p = this.progress();
+            // Expand the core visible area (starts at 40%, ends at 6%)
+            const maskStart = Math.max(6, 40 - p * 34);
+            const maskEnd = Math.min(94, 60 + p * 34);
+            // Move the fully transparent edges outward too, keeping a soft 20% fade at the start
+            const fadeStart = Math.max(0, maskStart - 20);
+            const fadeEnd = Math.min(100, maskEnd + 20);
+            
+            const maskValue = `linear-gradient(to right, transparent ${fadeStart}%, black ${maskStart}%, black ${maskEnd}%, transparent ${fadeEnd}%)`;
+            imgElement.style.maskImage = maskValue;
+            imgElement.style.webkitMaskImage = maskValue;
+          },
+        },
+        0.3
+      );
+
+      // Phase 3 (45% → 75%): Fluid text swap — old text fades and slides up smoothly
+      tl.to(
+        text1,
+        {
+          opacity: 0,
+          y: -50,
+          duration: 0.25,
+          ease: "power3.inOut",
+        },
+        0.45
+      );
+
+      // New text rises in with overlap for a seamless crossfade feel
+      tl.to(
+        text2,
+        {
+          opacity: 1,
+          y: 0,
+          duration: 0.25,
+          ease: "power3.inOut",
+        },
+        0.50
+      );
+    };
+
+    // Setup animation directly (frames will load in background)
+    setup();
+  }
+
+  // Run on page load
+  document.addEventListener("DOMContentLoaded", initNightRaptorScroll);
+  // Also run on Astro page transitions
+  document.addEventListener("astro:page-load", initNightRaptorScroll);
+</script>
