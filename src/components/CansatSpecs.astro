@@ -1,0 +1,97 @@
+---
+const specs = [
+  { label: "Altura", value: 115, unit: " mm", isNumber: true, decimals: 0 },
+  { label: "Diámetro", value: 66, unit: " mm", isNumber: true, decimals: 0 },
+  { label: "Peso", value: 300, unit: " g", isNumber: true, decimals: 0 },
+  { label: "Batería", value: 3.7, unit: " V", isNumber: true, decimals: 1 },
+  { label: "Microcontrolador", value: "Arduino Nano ESP32", isNumber: false },
+  { label: "Sensores", value: "BMP280, MPU6050", isNumber: false },
+];
+---
+
+<section id="especificaciones" class="relative w-full pt-28 pb-16 lg:py-20 bg-[#000004] overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
+    
+    <!-- Lado Izquierdo: Especificaciones -->
+    <div class="w-full lg:w-1/2 flex flex-col justify-center order-2 lg:order-1">
+      <h2 class="font-title text-3xl md:text-4xl font-bold text-white mb-8 uppercase tracking-tighter text-center lg:text-left">
+        Especificaciones <br /> <span class="text-transparent bg-clip-text bg-gradient-to-r from-rojo-light to-azul-light">Técnicas</span>
+      </h2>
+      
+      <div class="flex flex-col w-full" id="specs-list">
+        {specs.map((spec) => (
+          <div class="flex justify-between items-center py-3 border-b border-white/20">
+            <span class="text-gray-200 font-mono text-sm md:text-base tracking-wider">{spec.label}</span>
+            <span 
+              class="text-yellow-500 font-bold font-mono text-sm md:text-base spec-value"
+              data-is-number={spec.isNumber ? "true" : "false"}
+              data-target={spec.value}
+              data-unit={spec.unit}
+              data-decimals={spec.decimals || 0}
+            >
+              {spec.isNumber ? `0${spec.unit}` : spec.value}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Imagen con Glow -->
+    <div class="w-full lg:w-1/2 flex justify-center relative order-1 lg:order-2">
+      <!-- Glow un poco más grande -->
+      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-80 sm:w-80 sm:h-96 bg-azul-light/50 rounded-full blur-[80px] pointer-events-none -z-10"></div>
+      
+      <!-- Imagen -->
+      <img 
+        src="/Disenocansat.webp" 
+        alt="Diseño del CanSat"
+        class="relative z-10 w-full max-w-[180px] sm:max-w-[220px] lg:max-w-[280px] h-[350px] lg:h-[450px] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700 ease-out"
+      />
+    </div>
+
+  </div>
+</section>
+
+<script>
+  import gsap from "gsap";
+  import { ScrollTrigger } from "gsap/ScrollTrigger";
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  function initSpecsCounters() {
+    const list = document.getElementById("specs-list");
+    if (!list) return;
+
+    const valueElements = list.querySelectorAll(".spec-value[data-is-number='true']");
+    
+    valueElements.forEach((el) => {
+      const target = parseFloat(el.getAttribute("data-target") || "0");
+      const unit = el.getAttribute("data-unit") || "";
+      const decimals = parseInt(el.getAttribute("data-decimals") || "0", 10);
+      
+      // Reiniciar el texto a 0 para asegurar el efecto desde el inicio
+      el.textContent = (0).toFixed(decimals) + unit;
+      
+      const obj = { val: 0 };
+      
+      gsap.to(obj, {
+        val: target,
+        duration: 1.2, // Cuenta muy rápida (1.2 segundos)
+        ease: "power2.out",
+        scrollTrigger: {
+          trigger: list,
+          start: "top 85%", // Comienza cuando los números entran al 85% de la pantalla (más abajo)
+          once: true,
+        },
+        onUpdate: () => {
+          el.textContent = obj.val.toFixed(decimals) + unit;
+        }
+      });
+    });
+  }
+
+  // Ejecutar al cargar la página
+  document.addEventListener("DOMContentLoaded", initSpecsCounters);
+  // También ejecutar en las transiciones de vista de Astro (si View Transitions está activado)
+  document.addEventListener("astro:page-load", initSpecsCounters);
+</script>
