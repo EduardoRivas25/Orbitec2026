@@ -10,15 +10,15 @@ const DAY = HOUR * 24;
 
 export default function ShiftingCountdown() {
   return (
-    <div className="relative px-6 md:px-8 py-3 md:py-4 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-full flex items-center gap-1 md:gap-3 justify-center shadow-[0_0_30px_rgba(200,10,25,0.15)]">
-      <span className="font-title text-rojo-light font-bold text-xl md:text-2xl mr-2">T-</span>
+    <div className="relative px-4 sm:px-6 md:px-8 py-2 md:py-2.5 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-[2rem] sm:rounded-full flex flex-col sm:flex-row items-center gap-1 sm:gap-3 justify-center shadow-[0_0_30px_rgba(200,10,25,0.15)] w-[95%] sm:w-auto mx-auto max-w-full">
+      <span className="font-title text-rojo-light font-bold text-xl sm:text-xl md:text-2xl mr-0 sm:mr-2 mb-0.5 sm:mb-0">T-</span>
       <div className="flex items-center">
         <CountdownItem unit="Day" label="DÍAS" />
-        <span className="text-xl md:text-2xl font-bold pb-4 opacity-50 mx-1">:</span>
+        <span className="text-lg sm:text-xl md:text-2xl font-bold pb-2 sm:pb-3 opacity-50 mx-0.5 sm:mx-1">:</span>
         <CountdownItem unit="Hour" label="HRS" />
-        <span className="text-xl md:text-2xl font-bold pb-4 opacity-50 mx-1">:</span>
+        <span className="text-lg sm:text-xl md:text-2xl font-bold pb-2 sm:pb-3 opacity-50 mx-0.5 sm:mx-1">:</span>
         <CountdownItem unit="Minute" label="MIN" />
-        <span className="text-xl md:text-2xl font-bold pb-4 text-rojo-light mx-1">:</span>
+        <span className="text-lg sm:text-xl md:text-2xl font-bold pb-2 sm:pb-3 text-rojo-light mx-0.5 sm:mx-1">:</span>
         <CountdownItem unit="Second" label="SEG" highlight={true} />
       </div>
     </div>
@@ -30,16 +30,16 @@ function CountdownItem({ unit, label, highlight = false }: { unit: string, label
   const display = String(time).padStart(2, '0');
 
   return (
-    <div className="flex flex-col items-center justify-center px-1 md:px-2 w-12 md:w-16">
-      <div className="relative overflow-hidden text-center h-8 md:h-10 w-full flex items-center justify-center">
+    <div className="flex flex-col items-center justify-center px-0.5 sm:px-1 md:px-2 w-10 sm:w-12 md:w-16">
+      <div className="relative overflow-hidden text-center h-6 sm:h-7 md:h-8 w-full flex items-center justify-center">
         <span
           ref={ref}
-          className="block font-mono font-bold text-xl md:text-2xl tracking-widest text-white absolute"
+          className="block font-mono font-bold text-lg sm:text-xl md:text-2xl tracking-tight sm:tracking-widest text-white absolute"
         >
           {display}
         </span>
       </div>
-      <span className={`text-[9px] md:text-[10px] uppercase font-sans tracking-widest mt-1 ${highlight ? 'text-rojo-light' : 'text-gray-400'}`}>
+      <span className={`text-[8px] sm:text-[9px] md:text-[10px] uppercase font-sans tracking-widest mt-0.5 ${highlight ? 'text-rojo-light' : 'text-gray-400'}`}>
         {label}
       </span>
     </div>
