@@ -1,0 +1,64 @@
+---
+const layers = [
+  {
+    title: "Energía",
+    description: "Gestión de la batería y distribución segura de voltaje para todos los componentes."
+  },
+  {
+    title: "Control",
+    description: "El cerebro del CanSat. Aloja el microcontrolador para el procesamiento principal."
+  },
+  {
+    title: "Sensores",
+    description: "Recopilación de datos ambientales y posicionales durante todo el descenso."
+  },
+  {
+    title: "Telemetría",
+    description: "Transmisión de información en tiempo real a la estación terrena."
+  }
+];
+---
+
+<section id="pcbstack" class="relative w-full pt-16 pb-10 lg:py-16 bg-[#000004] overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-0 md:gap-8 lg:gap-12">
+    
+    <!-- Lado Izquierdo: Imagen -->
+    <div class="w-full lg:w-1/2 flex justify-center relative order-1 lg:-translate-x-8 translate-y-4 lg:translate-y-8">
+      <!-- Glow -->
+      <div class="absolute top-[65%] left-[35%] -translate-x-1/2 -translate-y-1/2 w-48 h-64 sm:w-64 sm:h-80 bg-rojo-light/40 rounded-full blur-[70px] pointer-events-none -z-10"></div>
+      
+      <img 
+        src="/pcbstack.webp" 
+        alt="PCB Stack del CanSat"
+        class="relative z-10 w-full max-w-[220px] sm:max-w-[300px] lg:max-w-[400px] h-[280px] lg:h-[450px] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700 ease-out"
+      />
+    </div>
+
+    <!-- Lado Derecho: Contenido -->
+    <div class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left order-2">
+      <h2 class="font-title text-2xl md:text-3xl font-bold text-white mb-2 uppercase tracking-tighter">
+        Arquitectura <br /> 
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-azul-light to-rojo-light">PCB Stack</span>
+      </h2>
+      
+      <p class="text-gray-300 font-light text-sm md:text-base mb-5 leading-relaxed max-w-xl mx-auto lg:mx-0">
+        La electrónica está diseñada de manera modular y se divide en <strong class="text-white font-medium">4 PCBs apiladas</strong> para optimizar el espacio y facilitar el ensamblaje.
+      </p>
+      
+      <div class="flex flex-col gap-2.5 md:gap-3 text-left">
+        {layers.map((layer, index) => (
+          <div class="flex items-start gap-3 p-3 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition-colors group">
+            <div class="flex-shrink-0 flex items-center justify-center w-6 h-6 rounded-full border border-white/20 text-gray-300 font-mono font-bold text-xs mt-0.5">
+              {index + 1}
+            </div>
+            <div>
+              <h3 class="text-white font-bold text-sm md:text-base mb-0.5 font-mono tracking-wide group-hover:text-azul-light transition-colors">{layer.title}</h3>
+              <p class="text-gray-400 text-xs md:text-sm leading-snug">{layer.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+    </div>
+  </div>
+</section>
