@@ -64,7 +64,7 @@
           src="/bno085.webp" 
           alt="Sensor BNO085"
           class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 
-                 left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
+                 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
         />
 
         <!-- BME688 Image -->
@@ -73,7 +73,7 @@
           src="/bme688.webp" 
           alt="Sensor BME688"
           class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 
-                 left-[75%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
+                 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
         />
         
       </div>
@@ -99,23 +99,24 @@
 
       if (sensor === "bno085") {
         imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[275px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(1,95,179,0.5)] opacity-100 scale-100";
-        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[92%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
         glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-azul-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       } else if (sensor === "bme688") {
         imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[275px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(200,10,25,0.5)] opacity-100 scale-100";
-        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[8%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
         glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-rojo-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       } else {
         // default
-        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
-        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[75%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
         glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-transparent rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       }
     };
 
     imgBno.addEventListener("mouseenter", () => setSensorActive("bno085"));
     imgBme.addEventListener("mouseenter", () => setSensorActive("bme688"));
-    gallery.addEventListener("mouseleave", () => setSensorActive("default"));
+    imgBno.addEventListener("mouseleave", () => setSensorActive("default"));
+    imgBme.addEventListener("mouseleave", () => setSensorActive("default"));
   }
 
   document.addEventListener("DOMContentLoaded", initSensorsGallery);
