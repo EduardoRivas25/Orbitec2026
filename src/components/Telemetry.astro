@@ -11,7 +11,7 @@
   >
     <!-- Lado Izquierdo: Imágenes interactivas -->
     <div
-      class="w-full lg:w-1/2 flex justify-center items-center relative order-1 lg:order-1 h-[350px] md:h-[450px]"
+      class="w-full lg:w-1/2 flex justify-center items-center relative order-1 lg:order-1 h-[280px] md:h-[450px]"
     >
       <!-- Contenedor Interactivo -->
       <div
@@ -30,8 +30,7 @@
           id="img-gps"
           src="/gpsneo6mv2.png"
           alt="Módulo GPS NEO-6M v2"
-          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10
-                 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[210px] md:h-[260px] w-auto drop-shadow-lg opacity-100"
+          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[150px] md:h-[260px] w-auto drop-shadow-lg opacity-100 scale-100 left-[30%] md:left-[15%] -translate-x-1/2"
         />
 
         <!-- LoRa Image -->
@@ -39,8 +38,7 @@
           id="img-lora"
           src="/lorasx.png"
           alt="Módulo LoRa SX1278"
-          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10
-                 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[210px] md:h-[260px] w-auto drop-shadow-lg opacity-100"
+          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[150px] md:h-[260px] w-auto drop-shadow-lg opacity-100 scale-100 left-[70%] md:left-[85%] -translate-x-1/2"
         />
       </div>
     </div>
@@ -153,27 +151,18 @@
       activeSensor = sensor;
 
       if (sensor === "gps") {
-        imgGps.className =
-          "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[290px] md:h-[360px] w-auto drop-shadow-[0_0_20px_rgba(1,95,179,0.5)] opacity-100 scale-100";
-        imgLora.className =
-          "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[92%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[140px] md:h-[180px] w-auto drop-shadow-lg opacity-60 scale-90";
-        glow.className =
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-azul-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
+        imgGps.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 top-1/2 -translate-y-1/2 h-[220px] md:h-[360px] w-auto drop-shadow-[0_0_20px_rgba(1,95,179,0.5)] opacity-100 scale-100 left-1/2 -translate-x-1/2";
+        imgLora.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[100px] md:h-[180px] w-auto drop-shadow-lg opacity-60 scale-90 left-[85%] md:left-[92%] -translate-x-1/2";
+        glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-azul-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       } else if (sensor === "lora") {
-        imgLora.className =
-          "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[290px] md:h-[360px] w-auto drop-shadow-[0_0_20px_rgba(200,10,25,0.5)] opacity-100 scale-100";
-        imgGps.className =
-          "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[8%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[140px] md:h-[180px] w-auto drop-shadow-lg opacity-60 scale-90";
-        glow.className =
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-rojo-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
+        imgLora.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 top-1/2 -translate-y-1/2 h-[220px] md:h-[360px] w-auto drop-shadow-[0_0_20px_rgba(200,10,25,0.5)] opacity-100 scale-100 left-1/2 -translate-x-1/2";
+        imgGps.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[100px] md:h-[180px] w-auto drop-shadow-lg opacity-60 scale-90 left-[15%] md:left-[8%] -translate-x-1/2";
+        glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-rojo-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       } else {
         // default
-        imgGps.className =
-          "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[210px] md:h-[260px] w-auto drop-shadow-lg opacity-100 scale-100";
-        imgLora.className =
-          "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[210px] md:h-[260px] w-auto drop-shadow-lg opacity-100 scale-100";
-        glow.className =
-          "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-transparent rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
+        imgGps.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[150px] md:h-[260px] w-auto drop-shadow-lg opacity-100 scale-100 left-[30%] md:left-[15%] -translate-x-1/2";
+        imgLora.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[150px] md:h-[260px] w-auto drop-shadow-lg opacity-100 scale-100 left-[70%] md:left-[85%] -translate-x-1/2";
+        glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-transparent rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       }
     };
 

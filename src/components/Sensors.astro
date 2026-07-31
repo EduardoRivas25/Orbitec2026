@@ -50,7 +50,7 @@
     </div>
 
     <!-- Lado Derecho: Imágenes interactivas -->
-    <div class="w-full lg:w-1/2 flex justify-center items-center relative order-1 lg:order-2 h-[350px] md:h-[450px]">
+    <div class="w-full lg:w-1/2 flex justify-center items-center relative order-1 lg:order-2 h-[280px] md:h-[450px]">
       
       <!-- Contenedor Interactivo -->
       <div class="relative w-full h-full flex justify-center items-center" id="sensors-gallery">
@@ -63,8 +63,7 @@
           id="img-bno085"
           src="/bno085.webp" 
           alt="Sensor BNO085"
-          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 
-                 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
+          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[140px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100 left-[30%] md:left-[15%] -translate-x-1/2"
         />
 
         <!-- BME688 Image -->
@@ -72,8 +71,7 @@
           id="img-bme688"
           src="/bme688.webp" 
           alt="Sensor BME688"
-          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 
-                 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
+          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[140px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100 left-[70%] md:left-[85%] -translate-x-1/2"
         />
         
       </div>
@@ -98,17 +96,17 @@
       activeSensor = sensor;
 
       if (sensor === "bno085") {
-        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[275px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(1,95,179,0.5)] opacity-100 scale-100";
-        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[92%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 top-1/2 -translate-y-1/2 h-[200px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(1,95,179,0.5)] opacity-100 scale-100 left-1/2 -translate-x-1/2";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[90px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90 left-[85%] md:left-[92%] -translate-x-1/2";
         glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-azul-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       } else if (sensor === "bme688") {
-        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[275px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(200,10,25,0.5)] opacity-100 scale-100";
-        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[8%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 top-1/2 -translate-y-1/2 h-[200px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(200,10,25,0.5)] opacity-100 scale-100 left-1/2 -translate-x-1/2";
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[90px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90 left-[15%] md:left-[8%] -translate-x-1/2";
         glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-rojo-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       } else {
         // default
-        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
-        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[140px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100 left-[30%] md:left-[15%] -translate-x-1/2";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 top-1/2 -translate-y-1/2 h-[140px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100 left-[70%] md:left-[85%] -translate-x-1/2";
         glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-transparent rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
       }
     };
