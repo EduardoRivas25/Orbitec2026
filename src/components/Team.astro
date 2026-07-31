@@ -37,33 +37,36 @@ const team = [
     </div>
 
     <!-- Contenedor flexible centrado para que los 5 elementos se acomoden bien -->
-    <div class="flex flex-wrap justify-center gap-8 md:gap-12 lg:gap-16">
+    <div class="flex flex-wrap justify-center gap-6 sm:gap-8 md:gap-12 lg:gap-16">
       {team.map((member) => (
-        <div class="group flex flex-col items-center cursor-pointer transition-transform duration-500 ease-out hover:scale-105">
+        <div 
+          class="group flex flex-col items-center cursor-pointer transition-transform duration-500 ease-out hover:scale-105 focus:outline-none focus:scale-105"
+          tabindex="0"
+        >
           
           <!-- Contenedor de la Imagen -->
-          <div class="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-5 transition-all duration-700 ring-1 ring-white/10 group-hover:ring-2 group-hover:ring-azul-light/60 group-hover:shadow-[0_0_30px_rgba(1,95,179,0.4)]">
+          <div class="relative w-28 h-28 sm:w-32 sm:h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-3 md:mb-5 transition-all duration-700 ring-1 ring-white/10 group-hover:ring-2 group-hover:ring-azul-light/60 group-focus:ring-2 group-focus:ring-azul-light/60 group-hover:shadow-[0_0_30px_rgba(1,95,179,0.4)] group-focus:shadow-[0_0_30px_rgba(1,95,179,0.4)]">
             <!-- 
-              Iniciamos con opacity-40 y grayscale para que la imagen se vea opaca y tenue.
-              Al hacer hover se restaura la opacidad y el color.
+              Iniciamos con opacity-70 (más visible) y grayscale.
+              Al hacer hover/focus se restaura la opacidad y el color.
             -->
             <img 
               src={member.image} 
               alt={member.name}
-              class="w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0"
+              class="w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] opacity-70 grayscale group-hover:opacity-100 group-hover:grayscale-0 group-focus:opacity-100 group-focus:grayscale-0"
             />
           </div>
           
           <!-- Textos -->
           <div class="text-center flex flex-col items-center">
-            <!-- Nombre: Tenue inicialmente, blanco en hover -->
-            <h3 class="font-bold font-mono text-gray-700 transition-colors duration-500 group-hover:text-white text-lg md:text-xl">
+            <!-- Nombre: Gris claro inicialmente para que se lea, blanco en hover/focus -->
+            <h3 class="font-bold font-mono text-gray-300 transition-colors duration-500 group-hover:text-white group-focus:text-white text-base sm:text-lg md:text-xl">
               {member.name}
             </h3>
             
-            <!-- Cargo: Oculto y desplazado hacia arriba, baja y aparece en hover -->
-            <div class="overflow-hidden h-8 mt-1 flex items-start justify-center">
-              <p class="text-sm md:text-base text-transparent bg-clip-text bg-gradient-to-r from-azul-light to-rojo-light font-semibold tracking-wide transform -translate-y-full opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-y-0 group-hover:opacity-100">
+            <!-- Cargo: Oculto y desplazado hacia arriba, baja y aparece en hover/focus -->
+            <div class="overflow-hidden h-6 sm:h-8 mt-1 flex items-start justify-center">
+              <p class="text-xs sm:text-sm md:text-base text-transparent bg-clip-text bg-gradient-to-r from-azul-light to-rojo-light font-semibold tracking-wide transform -translate-y-full opacity-0 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:translate-y-0 group-hover:opacity-100 group-focus:translate-y-0 group-focus:opacity-100">
                 {member.role}
               </p>
             </div>
