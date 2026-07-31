@@ -41,17 +41,16 @@ const team = [
       {team.map((member) => (
         <div class="group flex flex-col items-center cursor-pointer transition-transform duration-500 ease-out hover:scale-105">
           
-          <!-- Contenedor de la Imagen (Silueta inicial) -->
+          <!-- Contenedor de la Imagen -->
           <div class="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden mb-5 transition-all duration-700 ring-1 ring-white/10 group-hover:ring-2 group-hover:ring-azul-light/60 group-hover:shadow-[0_0_30px_rgba(1,95,179,0.4)]">
             <!-- 
-              Para la silueta:
-              Iniciamos con brightness-0 para que la imagen sea completamente negra.
-              El 'ring-white/10' del div padre dibuja el contorno tenue.
+              Iniciamos con opacity-40 y grayscale para que la imagen se vea opaca y tenue.
+              Al hacer hover se restaura la opacidad y el color.
             -->
             <img 
               src={member.image} 
               alt={member.name}
-              class="w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] brightness-0 group-hover:brightness-100"
+              class="w-full h-full object-cover transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] opacity-40 grayscale group-hover:opacity-100 group-hover:grayscale-0"
             />
           </div>
           

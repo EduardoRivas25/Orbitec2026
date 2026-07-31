@@ -1,8 +1,16 @@
 ---
 const links = [
-  { label: "Misión", href: "#mision" },
+  { label: "Misión", href: "#nightraptor" },
   { label: "Equipo", href: "#equipo" },
+  { label: "Specs", href: "#especificaciones" },
   { label: "Contacto", href: "#contacto" },
+];
+
+const dropdownLinks = [
+  { label: "Microcontrolador", href: "#microcontrolador" },
+  { label: "Sensores", href: "#sensores" },
+  { label: "Telemetría", href: "#telemetria" },
+  { label: "Paracaídas", href: "#recuperacion" },
 ];
 ---
 
@@ -41,6 +49,24 @@ const links = [
           </a>
         ))
       }
+      
+      <!-- Dropdown Componentes -->
+      <div class="relative group inline-block">
+        <button class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-white/10 hover:text-white text-gray-300 h-10 px-4 py-2 uppercase tracking-widest font-title">
+          Componentes
+          <svg class="w-4 h-4 ml-1 transition-transform group-hover:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div class="absolute left-0 mt-0 w-48 rounded-md shadow-lg bg-[#000004]/95 backdrop-blur-xl border border-white/10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 transform origin-top translate-y-2 group-hover:translate-y-0">
+          <div class="py-2 flex flex-col gap-1">
+            {dropdownLinks.map((link) => (
+              <a href={link.href} class="block px-4 py-2 text-xs text-gray-300 hover:bg-white/10 hover:text-white font-title uppercase tracking-widest">
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
       <a
         href="#unirse"
         class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 px-4 py-2 font-title uppercase tracking-widest ml-2"
@@ -58,7 +84,7 @@ const links = [
     <!-- Mobile Menu Button -->
     <button
       id="mobile-menu-btn"
-      class="md:hidden inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 w-10"
+      class="md:hidden relative z-50 pointer-events-auto inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 w-10"
       aria-expanded="false"
       aria-controls="mobile-menu"
       aria-label="Toggle menu"
@@ -82,6 +108,8 @@ const links = [
     </button>
   </nav>
 
+</header>
+
   <!-- Mobile Menu -->
   <div
     id="mobile-menu"
@@ -99,6 +127,23 @@ const links = [
             </a>
           ))
         }
+        
+        <details class="group w-full">
+          <summary class="inline-flex w-full items-center justify-between whitespace-nowrap rounded-md text-lg font-medium transition-colors hover:bg-white/10 hover:text-white text-gray-300 h-12 px-4 py-2 font-title uppercase tracking-widest cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            Componentes
+            <svg class="w-5 h-5 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+          </summary>
+          <div class="flex flex-col w-full pl-4 pt-1 pb-2 gap-1">
+            {dropdownLinks.map((link) => (
+              <a
+                href={link.href}
+                class="mobile-link inline-flex items-center whitespace-nowrap rounded-md text-sm font-medium transition-colors hover:bg-white/10 hover:text-white text-gray-400 h-10 px-4 py-2 justify-start font-title uppercase tracking-widest"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
+        </details>
       </div>
       <div class="flex flex-col gap-3 mt-8">
         <a
@@ -116,12 +161,16 @@ const links = [
       </div>
     </div>
   </div>
-</header>
 
 <script>
   // Script para manejar el menú móvil y el scroll del navbar
-  document.addEventListener("DOMContentLoaded", () => {
+  const initNavbar = () => {
     const header = document.getElementById("main-header");
+    const btn = document.getElementById("mobile-menu-btn");
+    const menu = document.getElementById("mobile-menu");
+    const icon = document.getElementById("menu-icon");
+    const iconPath1 = icon?.querySelector("path:first-child");
+    let open = false;
 
     const handleScroll = () => {
       if (window.scrollY > 10) {
@@ -141,14 +190,10 @@ const links = [
       }
     };
 
+    // Attach scroll listener
+    window.removeEventListener("scroll", handleScroll); // clear previous if any
     window.addEventListener("scroll", handleScroll);
     handleScroll(); // Trigger on load
-
-    const btn = document.getElementById("mobile-menu-btn");
-    const menu = document.getElementById("mobile-menu");
-    const icon = document.getElementById("menu-icon");
-    const iconPath1 = icon?.querySelector("path:first-child");
-    let open = false;
 
     const toggleMenu = () => {
       open = !open;
@@ -170,6 +215,10 @@ const links = [
         menu?.classList.add("hidden");
         menu?.classList.remove("flex");
         document.body.style.overflow = "";
+        
+        // Close details tags so they are collapsed on next open
+        const details = document.querySelectorAll("details");
+        details.forEach(detail => detail.removeAttribute("open"));
 
         // Animate SVG icon back to hamburger
         icon?.classList.remove("-rotate-45");
@@ -181,14 +230,25 @@ const links = [
       }
     };
 
-    btn?.addEventListener("click", toggleMenu);
+    // We replace the button to clear old event listeners safely, 
+    // but we use the new reference properly
+    if (btn) {
+      const newBtn = btn.cloneNode(true);
+      btn.parentNode?.replaceChild(newBtn, btn);
+      newBtn.addEventListener("click", toggleMenu);
+    }
 
     // Close menu when a link is clicked
     const mobileLinks = document.querySelectorAll(".mobile-link");
     mobileLinks.forEach((link) => {
-      link.addEventListener("click", () => {
+      const newLink = link.cloneNode(true);
+      link.parentNode?.replaceChild(newLink, link);
+      newLink.addEventListener("click", () => {
         if (open) toggleMenu();
       });
     });
-  });
+  };
+
+  initNavbar();
+  document.addEventListener("astro:page-load", initNavbar);
 </script>

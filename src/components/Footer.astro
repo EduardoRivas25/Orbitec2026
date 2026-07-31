@@ -1,0 +1,148 @@
+---
+const sections = [
+  {
+    title: "Misión",
+    links: [
+      { name: "CanSat", href: "#" },
+      { name: "Telemetría", href: "#telemetria" },
+      { name: "Recuperación", href: "#recuperacion" },
+      { name: "Electrónica", href: "#" },
+    ],
+  },
+  {
+    title: "Equipo",
+    links: [
+      { name: "Sobre Nosotros", href: "#equipo" },
+      { name: "Patrocinadores", href: "#" },
+      { name: "Galería", href: "#" },
+      { name: "Contacto", href: "#" },
+    ],
+  },
+  {
+    title: "Recursos",
+    links: [
+      { name: "Documentación", href: "#" },
+      { name: "Código Abierto", href: "#" },
+      { name: "Diseños 3D", href: "#" },
+      { name: "Kit de Prensa", href: "#" },
+    ],
+  },
+];
+
+const socialLinks = [
+  {
+    label: "Instagram",
+    href: "https://www.instagram.com/tecnmcampusuruapan/",
+    icon: '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>',
+  },
+  {
+    label: "Twitter",
+    href: "https://x.com/tec_uruapan",
+    icon: '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M23 3a10.9 10.9 0 0 1-3.14 1.53 4.48 4.48 0 0 0-7.86 3v1A10.66 10.66 0 0 1 3 4s-4 9 5 13a11.64 11.64 0 0 1-7 2c9 5 20 0 20-11.5a4.5 4.5 0 0 0-.08-.83A7.72 7.72 0 0 0 23 3z"></path></svg>',
+  },
+  {
+    label: "GitHub",
+    href: "https://github.com/OrbitecUruapan",
+    icon: '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path></svg>',
+  },
+  {
+    label: "LinkedIn",
+    href: "https://www.linkedin.com/company/orbitec-uruapan/",
+    icon: '<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path><rect x="2" y="9" width="4" height="12"></rect><circle cx="4" cy="4" r="2"></circle></svg>',
+  },
+];
+
+const legalLinks = [
+  { name: "Términos y Condiciones", href: "#" },
+  { name: "Política de Privacidad", href: "#" },
+];
+---
+
+<footer
+  id="contacto"
+  class="bg-[#000004] py-16 lg:py-24 border-t border-white/5 relative z-10"
+>
+  <div class="container max-w-6xl mx-auto px-6">
+    <div
+      class="flex w-full flex-col justify-between gap-12 lg:flex-row lg:items-start lg:text-left"
+    >
+      <!-- Sección Izquierda: Logo y Descripción -->
+      <div
+        class="flex w-full lg:w-1/3 flex-col justify-between gap-6 lg:items-start text-center lg:text-left"
+      >
+        <div class="flex items-center gap-2 justify-center lg:justify-start">
+          <span
+            class="font-title text-2xl font-bold tracking-tight text-white uppercase"
+          >
+            Orbi<span
+              class="text-transparent bg-clip-text bg-gradient-to-r from-azul-light to-rojo-light"
+              >tec</span
+            >
+          </span>
+        </div>
+        <p
+          class="text-sm text-gray-400 mx-auto lg:mx-0 max-w-xs leading-relaxed"
+        >
+          Diseñando el futuro de la exploración espacial estudiantil a través de
+          CanSats de alto rendimiento.
+        </p>
+        <ul
+          class="flex items-center justify-center lg:justify-start space-x-5 text-gray-400 mt-2"
+        >
+          {
+            socialLinks.map((social) => (
+              <li class="hover:text-azul-light transition-colors duration-300">
+                <a
+                  href={social.href}
+                  aria-label={social.label}
+                  class="block p-1"
+                  set:html={social.icon}
+                />
+              </li>
+            ))
+          }
+        </ul>
+      </div>
+
+      <!-- Sección Derecha: Enlaces -->
+      <div
+        class="grid w-full lg:w-2/3 gap-8 sm:grid-cols-3 text-center sm:text-left"
+      >
+        {
+          sections.map((section) => (
+            <div>
+              <h3 class="mb-5 font-bold text-white tracking-wide">
+                {section.title}
+              </h3>
+              <ul class="space-y-4 text-sm text-gray-400">
+                {section.links.map((link) => (
+                  <li class="font-medium hover:text-white transition-colors duration-300">
+                    <a href={link.href}>{link.name}</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Footer Inferior: Copyright y Legales -->
+    <div
+      class="mt-16 flex flex-col justify-between gap-6 border-t border-white/10 pt-8 text-xs font-medium text-gray-500 md:flex-row md:items-center text-center md:text-left"
+    >
+      <p class="order-2 md:order-1">© 2026 Orbitec Aerospace.</p>
+      <ul
+        class="order-1 flex flex-row flex-wrap justify-center md:justify-end gap-4 md:gap-6 md:order-2"
+      >
+        {
+          legalLinks.map((link) => (
+            <li class="hover:text-white transition-colors duration-300">
+              <a href={link.href}>{link.name}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</footer>
