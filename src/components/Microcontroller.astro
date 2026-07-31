@@ -1,0 +1,75 @@
+---
+const specs = [
+  { label: "Microcontrolador", value: "ESP32-S3 (u-blox NORA-W106)" },
+  { label: "Frecuencia de Reloj", value: "240 MHz" },
+  { label: "Memoria Flash", value: "16 MB" },
+  { label: "SRAM", value: "512 KB" },
+  { label: "Conectividad", value: "Wi-Fi & Bluetooth 5 (LE)" },
+  { label: "Voltaje de Operación", value: "3.3V" },
+];
+---
+
+<section
+  id="microcontrolador"
+  class="relative w-full pt-16 pb-10 lg:py-16 bg-[#000004] overflow-hidden"
+>
+  <div
+    class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16"
+  >
+    <!-- Lado Izquierdo: Contenido -->
+    <div
+      class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left order-2 lg:order-1"
+    >
+      <h2
+        class="font-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-6 uppercase tracking-tighter leading-none"
+      >
+        Microcontrolador<br />
+        <span
+          class="text-transparent bg-clip-text bg-gradient-to-r from-azul-light to-rojo-light"
+          >Arduino Nano ESP32</span
+        >
+      </h2>
+
+      <p
+        class="text-gray-300 font-light text-sm md:text-base mb-8 leading-relaxed max-w-xl mx-auto lg:mx-0"
+      >
+        El corazón de NightRaptor está impulsado por el <strong
+          class="text-white font-medium">Arduino Nano ESP32</strong
+        >. Esta placa combina el ecosistema de programación de Arduino con el
+        potente procesador ESP32-S3.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+        {
+          specs.map((spec) => (
+            <div class="flex flex-col justify-center p-3 rounded-xl bg-white/[0.03] border border-white/10 hover:bg-white/[0.06] transition-colors group">
+              <span class="text-gray-400 text-xs md:text-sm mb-1">
+                {spec.label}
+              </span>
+              <span class="text-white font-bold text-sm md:text-base font-mono group-hover:text-azul-light transition-colors">
+                {spec.value}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Lado Derecho: Imagen con BG glow abajo a la derecha -->
+    <div
+      class="w-full lg:w-1/2 flex justify-center relative order-1 lg:order-2 lg:translate-x-4"
+    >
+      <!-- Pequeño BG glow abajo a la derecha -->
+      <div
+        class="absolute -bottom-10 -right-10 w-48 h-48 sm:w-56 sm:h-56 bg-rojo-light/40 rounded-full blur-[70px] pointer-events-none -z-10"
+      >
+      </div>
+
+      <img
+        src="/nano-esp32.webp"
+        alt="Arduino Nano ESP32"
+        class="relative z-10 w-full max-w-[250px] sm:max-w-[350px] lg:max-w-[420px] object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-700 ease-out translate-x-4 translate-y-4 lg:translate-x-6 lg:translate-y-8"
+      />
+    </div>
+  </div>
+</section>

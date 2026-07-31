@@ -1,0 +1,123 @@
+---
+---
+
+<section id="sensores" class="relative w-full pt-16 pb-10 lg:py-16 bg-[#000004] overflow-hidden">
+  <div class="max-w-5xl mx-auto px-6 relative z-10 flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-16">
+    
+    <!-- Lado Izquierdo: Contenido Fijo -->
+    <div class="w-full lg:w-1/2 flex flex-col justify-center text-center lg:text-left order-2 lg:order-1">
+      <h2 class="font-title text-3xl md:text-4xl lg:text-5xl font-bold text-white mb-4 uppercase tracking-tighter leading-none">
+        Sensores <br /> 
+        <span class="text-transparent bg-clip-text bg-gradient-to-r from-rojo-light to-azul-light">Ambientales e Inerciales</span>
+      </h2>
+      
+      <p class="text-gray-300 font-light text-sm md:text-base mb-6 leading-relaxed max-w-xl mx-auto lg:mx-0">
+        NightRaptor cuenta con un conjunto de sensores de alta precisión para capturar datos atmosféricos y de orientación durante su descenso.
+      </p>
+      
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-4 mt-2">
+        <!-- BNO085 Info -->
+        <div>
+          <h3 class="text-lg md:text-xl font-bold text-white mb-2 font-mono text-left">BNO085 (IMU)</h3>
+          <ul class="text-left text-gray-400 space-y-2 text-xs md:text-sm">
+            <li class="flex items-start gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-azul-light mt-1.5 flex-shrink-0"></div>
+              <span>Acelerómetro, giroscopio y magnetómetro.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-azul-light mt-1.5 flex-shrink-0"></div>
+              <span>Orientación 3D precisa (Cuaterniones).</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- BME688 Info -->
+        <div>
+          <h3 class="text-lg md:text-xl font-bold text-white mb-2 font-mono text-left">BME688 (Ambiente)</h3>
+          <ul class="text-left text-gray-400 space-y-2 text-xs md:text-sm">
+            <li class="flex items-start gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-rojo-light mt-1.5 flex-shrink-0"></div>
+              <span>Presión, temperatura y humedad.</span>
+            </li>
+            <li class="flex items-start gap-2">
+              <div class="w-1.5 h-1.5 rounded-full bg-rojo-light mt-1.5 flex-shrink-0"></div>
+              <span>Sensor de gases (IA) preventivo.</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+
+    <!-- Lado Derecho: Imágenes interactivas -->
+    <div class="w-full lg:w-1/2 flex justify-center items-center relative order-1 lg:order-2 h-[350px] md:h-[450px]">
+      
+      <!-- Contenedor Interactivo -->
+      <div class="relative w-full h-full flex justify-center items-center" id="sensors-gallery">
+        
+        <!-- Glow dinámico -->
+        <div id="sensor-glow" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-transparent rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700"></div>
+
+        <!-- BNO085 Image -->
+        <img 
+          id="img-bno085"
+          src="/bno085.webp" 
+          alt="Sensor BNO085"
+          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 
+                 left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
+        />
+
+        <!-- BME688 Image -->
+        <img 
+          id="img-bme688"
+          src="/bme688.webp" 
+          alt="Sensor BME688"
+          class="absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 
+                 left-[75%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100"
+        />
+        
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<script>
+  function initSensorsGallery() {
+    const imgBno = document.getElementById("img-bno085");
+    const imgBme = document.getElementById("img-bme688");
+    const glow = document.getElementById("sensor-glow");
+    const gallery = document.getElementById("sensors-gallery");
+    
+    if (!imgBno || !imgBme || !glow || !gallery) return;
+
+    let activeSensor = "default";
+
+    const setSensorActive = (sensor: string) => {
+      if (activeSensor === sensor) return;
+      activeSensor = sensor;
+
+      if (sensor === "bno085") {
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[275px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(1,95,179,0.5)] opacity-100 scale-100";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[85%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
+        glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-azul-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
+      } else if (sensor === "bme688") {
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-20 left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 h-[275px] md:h-[335px] w-auto drop-shadow-[0_0_20px_rgba(200,10,25,0.5)] opacity-100 scale-100";
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[15%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[125px] md:h-[160px] w-auto drop-shadow-lg opacity-60 scale-90";
+        glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-rojo-light/30 rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
+      } else {
+        // default
+        imgBno.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[25%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
+        imgBme.className = "absolute cursor-pointer object-contain transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] z-10 left-[75%] top-1/2 -translate-x-1/2 -translate-y-1/2 h-[190px] md:h-[235px] w-auto drop-shadow-lg opacity-100 scale-100";
+        glow.className = "absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 sm:w-64 sm:h-64 bg-transparent rounded-full blur-[80px] pointer-events-none -z-10 transition-colors duration-700";
+      }
+    };
+
+    imgBno.addEventListener("mouseenter", () => setSensorActive("bno085"));
+    imgBme.addEventListener("mouseenter", () => setSensorActive("bme688"));
+    gallery.addEventListener("mouseleave", () => setSensorActive("default"));
+  }
+
+  document.addEventListener("DOMContentLoaded", initSensorsGallery);
+  document.addEventListener("astro:page-load", initSensorsGallery);
+</script>

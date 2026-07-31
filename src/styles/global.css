@@ -1,6 +1,14 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 @import "tailwindcss";
 
+@font-face {
+    font-family: 'DIN_BOLD';
+    src: url('../assets/fonts/D-DIN-Bold.otf') format('opentype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
 @theme {
     --color-rojo-light: #c80a19;
     --color-azul-light: #015fb3;
@@ -25,6 +33,6 @@
     button,
     nav,
     .nav-links {
-        font-family: 'DIN_BoLD', sans-serif;
+        font-family: 'DIN_BOLD', sans-serif;
     }
 }
