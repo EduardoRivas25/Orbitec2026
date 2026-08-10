@@ -13,6 +13,28 @@
     --color-rojo-light: #c80a19;
     --color-azul-light: #015fb3;
     --animate-meteor: meteor 5s linear infinite;
+    --dashboard-bg: #000004;
+}
+
+@layer utilities {
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: rgba(255, 255, 255, 0.02);
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: rgba(1, 95, 179, 0.5);
+    }
 }
 
 @layer base {
@@ -76,12 +98,15 @@
         transform: rotate(215deg) translateX(0);
         opacity: 0;
     }
+
     5% {
         opacity: 1;
     }
+
     60% {
         opacity: 1;
     }
+
     100% {
         transform: rotate(215deg) translateX(-600px);
         opacity: 0;
@@ -92,9 +117,11 @@
     0% {
         transform: translateY(0px);
     }
+
     50% {
         transform: translateY(-20px);
     }
+
     100% {
         transform: translateY(0px);
     }

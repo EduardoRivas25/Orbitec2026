@@ -1,0 +1,12 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { DashboardApp } from "../components/dashboard/DashboardApp";
+---
+
+<Layout title="Dashboard | CANSAT">
+  <main
+    class="min-h-screen w-full bg-[#000004] text-white overflow-hidden font-mono flex"
+  >
+    <DashboardApp client:only="react" />
+  </main>
+</Layout>
