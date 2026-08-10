@@ -114,14 +114,14 @@ export const OverviewView = () => {
           FILA 2: INSTRUMENTOS PRINCIPALES (3 columnas)
           Horizonte Artificial | Brújula | Altímetro
           ═══════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         <div>
           <ArtificialHorizonWidget data={data} />
         </div>
         <div>
           <CompassWidget data={data} />
         </div>
-        <div>
+        <div className="md:col-span-2 xl:col-span-1">
           <AltimeterWidget data={data} />
         </div>
       </div>
@@ -136,14 +136,14 @@ export const OverviewView = () => {
           FILA 4: CONTENIDO PRINCIPAL (3 columnas)
           Mapa & Trayectoria | Telemetría Tiempo Real | Estado de Sistemas
           ═══════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4">
-        <div className="xl:col-span-1 min-h-[420px]">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="xl:col-span-1 min-h-[350px] sm:min-h-[420px]">
           <MiniMapWidget data={data} />
         </div>
-        <div className="xl:col-span-1 min-h-[420px]">
+        <div className="xl:col-span-1 min-h-[350px] sm:min-h-[420px]">
           <RealTimeChartsWidget data={data} />
         </div>
-        <div className="xl:col-span-1 min-h-[420px]">
+        <div className="md:col-span-2 xl:col-span-1 min-h-[350px] sm:min-h-[420px]">
           <SystemStatusWidget />
         </div>
       </div>

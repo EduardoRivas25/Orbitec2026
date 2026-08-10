@@ -197,19 +197,27 @@ export const ChartsView = () => {
           3. Orientación & Actitud IMU (Amarillo / Azul / Rojo)
           4. Partículas VOC (Púrpura / Violeta)
           ═══════════════════════════════════════════════════════ */}
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+      {/* ═══════════════════════════════════════════════════════
+          GRID PRINCIPAL DE GRÁFICAS DEDICADAS (2x2)
+          Iconos semánticos y paletas cromáticas diferenciadas por variable
+          1. Perfil de Altimetría (Azul / Indigo)
+          2. Temperatura & Humedad (Naranja / Celeste)
+          3. Orientación & Actitud IMU (Amarillo / Azul / Rojo)
+          4. Partículas VOC (Púrpura / Violeta)
+          ═══════════════════════════════════════════════════════ */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-4">
 
         {/* GRÁFICA 1: PERFIL DE ALTIMETRÍA */}
-        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 flex flex-col justify-between h-[360px]">
+        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 sm:p-5 flex flex-col justify-between h-[300px] sm:h-[340px] md:h-[360px]">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
               <Mountain className="text-[#38bdf8]" size={18} />
               <h3 className="text-white font-bold text-xs uppercase tracking-wider">
                 Perfil de Altimetría (BME688 / GPS)
               </h3>
             </div>
-            <div className="flex items-center gap-4 text-[10px]">
+            <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-[#38bdf8]" />
                 <span className="text-white/60">ALTITUD GPS (m)</span>
@@ -222,7 +230,7 @@ export const ChartsView = () => {
           </div>
 
           {/* Body Chart */}
-          <div className="h-[260px] w-full mt-2">
+          <div className="h-[210px] sm:h-[240px] md:h-[260px] w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={flightData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <defs>
@@ -243,16 +251,16 @@ export const ChartsView = () => {
         </div>
 
         {/* GRÁFICA 2: TEMPERATURA & HUMEDAD (JUNTAS) */}
-        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 flex flex-col justify-between h-[360px]">
+        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 sm:p-5 flex flex-col justify-between h-[300px] sm:h-[340px] md:h-[360px]">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
               <Thermometer className="text-[#f97316]" size={18} />
               <h3 className="text-white font-bold text-xs uppercase tracking-wider">
                 Temperatura & Humedad
               </h3>
             </div>
-            <div className="flex items-center gap-4 text-[10px]">
+            <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-[#f97316]" />
                 <span className="text-white/60">TEMP (°C)</span>
@@ -265,7 +273,7 @@ export const ChartsView = () => {
           </div>
 
           {/* Body Chart */}
-          <div className="h-[260px] w-full mt-2">
+          <div className="h-[210px] sm:h-[240px] md:h-[260px] w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={flightData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <defs>
@@ -287,16 +295,16 @@ export const ChartsView = () => {
         </div>
 
         {/* GRÁFICA 3: ORIENTACIÓN & ACTITUD (AHRS IMU) */}
-        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 flex flex-col justify-between h-[360px]">
+        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 sm:p-5 flex flex-col justify-between h-[300px] sm:h-[340px] md:h-[360px]">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
               <Compass className="text-[#eab308]" size={18} />
               <h3 className="text-white font-bold text-xs uppercase tracking-wider">
                 Orientación & Actitud (AHRS IMU)
               </h3>
             </div>
-            <div className="flex items-center gap-4 text-[10px]">
+            <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-[#38bdf8]" />
                 <span className="text-white/60">PITCH (°)</span>
@@ -313,7 +321,7 @@ export const ChartsView = () => {
           </div>
 
           {/* Body Chart */}
-          <div className="h-[260px] w-full mt-2">
+          <div className="h-[210px] sm:h-[240px] md:h-[260px] w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={flightData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
@@ -329,16 +337,16 @@ export const ChartsView = () => {
         </div>
 
         {/* GRÁFICA 4: PARTÍCULAS VOC */}
-        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 flex flex-col justify-between h-[360px]">
+        <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 sm:p-5 flex flex-col justify-between h-[300px] sm:h-[340px] md:h-[360px]">
           {/* Header */}
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/10 pb-3">
             <div className="flex items-center gap-2">
               <Atom className="text-[#a855f7]" size={18} />
               <h3 className="text-white font-bold text-xs uppercase tracking-wider">
                 Concentración de Partículas VOC
               </h3>
             </div>
-            <div className="flex items-center gap-4 text-[10px]">
+            <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-[#a855f7]" />
                 <span className="text-white/60">CONCENTRACIÓN VOC (ppm)</span>
@@ -347,7 +355,7 @@ export const ChartsView = () => {
           </div>
 
           {/* Body Chart */}
-          <div className="h-[260px] w-full mt-2">
+          <div className="h-[210px] sm:h-[240px] md:h-[260px] w-full mt-2">
             <ResponsiveContainer width="100%" height="100%">
               <AreaChart data={flightData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <defs>

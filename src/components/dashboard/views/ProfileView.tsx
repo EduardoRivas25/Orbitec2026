@@ -96,28 +96,28 @@ export const ProfileView: React.FC = () => {
       )}
 
       {/* Header Banner */}
-      <div className="bg-[#0d0d0d] border border-white/10 p-5 rounded-xl backdrop-blur-xl shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="bg-[#0d0d0d] border border-white/10 p-4 sm:p-5 rounded-xl backdrop-blur-xl shadow-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         
         <div className="flex items-center gap-3.5">
-          <div className="p-3 bg-black/60 border border-white/10 rounded-xl">
-            <User className="text-[#015fb3]" size={24} />
+          <div className="p-2.5 sm:p-3 bg-black/60 border border-white/10 rounded-xl">
+            <User className="text-[#015fb3]" size={22} />
           </div>
           <div>
             <div className="flex items-center gap-2">
-              <h1 className="text-xl font-bold font-title text-white uppercase tracking-wider">
+              <h1 className="text-lg sm:text-xl font-bold font-title text-white uppercase tracking-wider">
                 AJUSTES DE PERFIL
               </h1>
               <span className="px-2 py-0.5 bg-[#22c55e]/15 border border-[#22c55e]/30 text-[#22c55e] text-[9px] font-bold rounded-full uppercase flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#22c55e] animate-pulse" /> Activo
               </span>
             </div>
-            <p className="text-white/40 text-xs mt-0.5">Perfil de Operador y Credenciales de Acceso</p>
+            <p className="text-white/40 text-[11px] sm:text-xs mt-0.5">Perfil de Operador y Credenciales de Acceso</p>
           </div>
         </div>
 
         <button
           onClick={handleSaveProfile}
-          className="relative z-10 flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c80a19] via-[#8b0712] to-[#015fb3] border border-white/20 text-white text-xs font-bold uppercase transition-all shadow-[0_0_15px_rgba(200,10,25,0.3)] hover:shadow-[0_0_25px_rgba(200,10,25,0.5)] cursor-pointer hover:scale-[1.02] active:scale-[0.98]"
+          className="relative z-10 flex items-center justify-center gap-2 px-4 sm:px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#c80a19] via-[#8b0712] to-[#015fb3] border border-white/20 text-white text-xs font-bold uppercase transition-all shadow-[0_0_15px_rgba(200,10,25,0.3)] hover:shadow-[0_0_25px_rgba(200,10,25,0.5)] cursor-pointer hover:scale-[1.02] active:scale-[0.98] w-full sm:w-auto"
         >
           <Save size={16} />
           <span>Guardar Cambios</span>

@@ -12,8 +12,8 @@ export const Meteors = ({ number = 25, className = "" }: MeteorsProps) => {
     const styles = [...new Array(number)].map(() => {
       const duration = Math.random() * 3 + 3; // 3-6s
       return {
-        top: Math.floor(Math.random() * 50) + "%",
-        left: Math.floor(Math.random() * 100) + "%",
+        top: Math.floor(Math.random() * 120 - 20) + "%",
+        left: Math.floor(Math.random() * 140 - 20) + "%",
         animationDelay: -(Math.random() * duration) + "s",
         animationDuration: duration + "s",
       };

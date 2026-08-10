@@ -77,9 +77,9 @@ export const AIView = () => {
         </div>
 
         {/* Panel Derecho: Chat interactivo */}
-        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-xl flex flex-col backdrop-blur-md overflow-hidden">
-          <div className="bg-black/40 border-b border-white/10 p-4 flex items-center justify-between">
-            <h3 className="text-white font-semibold flex items-center gap-2">
+        <div className="lg:col-span-2 bg-white/5 border border-white/10 rounded-xl flex flex-col backdrop-blur-md overflow-hidden min-h-[350px] sm:min-h-[450px]">
+          <div className="bg-black/40 border-b border-white/10 p-3.5 sm:p-4 flex items-center justify-between">
+            <h3 className="text-white font-semibold text-xs sm:text-sm flex items-center gap-2">
               Chatbot de Telemetría
             </h3>
             <span className="flex h-2 w-2 relative">
@@ -88,31 +88,31 @@ export const AIView = () => {
             </span>
           </div>
           
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 overflow-y-auto p-3.5 sm:p-6 space-y-4">
             {chat.map((msg, i) => (
               <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div className={`max-w-[80%] rounded-2xl p-4 ${
+                <div className={`max-w-[90%] sm:max-w-[80%] rounded-2xl p-3 sm:p-4 ${
                   msg.role === 'user' 
                     ? 'bg-[#015fb3] text-white rounded-br-none' 
                     : 'bg-white/10 text-white/90 rounded-bl-none border border-white/10'
                 }`}>
-                  <p className="text-sm leading-relaxed">{msg.text}</p>
+                  <p className="text-xs sm:text-sm leading-relaxed">{msg.text}</p>
                 </div>
               </div>
             ))}
           </div>
           
-          <form onSubmit={handleSend} className="p-4 bg-black/40 border-t border-white/10 flex gap-3">
+          <form onSubmit={handleSend} className="p-3 sm:p-4 bg-black/40 border-t border-white/10 flex gap-2 sm:gap-3">
             <input 
               type="text" 
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Pregunta sobre la misión, estado de sensores, anomalías..."
-              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-purple-500 transition-colors"
+              placeholder="Pregunta sobre la misión, sensores, anomalías..."
+              className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 sm:px-4 py-2 text-xs sm:text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-purple-500 transition-colors"
             />
             <button 
               type="submit"
-              className="bg-purple-600 hover:bg-purple-500 text-white p-2 w-10 flex justify-center items-center rounded-lg transition-colors"
+              className="bg-purple-600 hover:bg-purple-500 text-white p-2 w-9 sm:w-10 flex justify-center items-center rounded-lg transition-colors cursor-pointer shrink-0"
             >
               <Send size={16} />
             </button>

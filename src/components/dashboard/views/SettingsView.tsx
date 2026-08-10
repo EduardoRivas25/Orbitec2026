@@ -82,23 +82,23 @@ export const SettingsView: React.FC = () => {
       )}
 
       {/* Header Banner */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0d0d0d] border border-white/10 p-5 rounded-xl backdrop-blur-xl shadow-2xl">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-[#0d0d0d] border border-white/10 p-4 sm:p-5 rounded-xl backdrop-blur-xl shadow-2xl">
         <div className="flex items-center gap-3">
-          <div className="p-3 bg-[#c80a19]/15 border border-[#c80a19]/30 rounded-xl shadow-[0_0_15px_rgba(200,10,25,0.2)]">
-            <Settings className="text-[#c80a19]" size={24} />
+          <div className="p-2.5 sm:p-3 bg-[#c80a19]/15 border border-[#c80a19]/30 rounded-xl shadow-[0_0_15px_rgba(200,10,25,0.2)]">
+            <Settings className="text-[#c80a19]" size={22} />
           </div>
           <div>
-            <h1 className="text-xl font-bold font-title text-white uppercase tracking-wider">
+            <h1 className="text-lg sm:text-xl font-bold font-title text-white uppercase tracking-wider">
               CONFIGURACIÓN
             </h1>
-            <p className="text-white/40 text-xs mt-0.5">Ajustes básicos del Dashboard y Estación Terrena</p>
+            <p className="text-white/40 text-[11px] sm:text-xs mt-0.5">Ajustes básicos del Dashboard y Estación Terrena</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <button
             onClick={handleReset}
-            className="flex items-center gap-2 px-3.5 py-2 rounded-lg border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white text-xs font-bold uppercase transition-all cursor-pointer"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-white/15 bg-white/5 text-white/70 hover:bg-white/10 hover:text-white text-xs font-bold uppercase transition-all cursor-pointer"
             title="Restablecer valores iniciales"
           >
             <RotateCcw size={14} />
@@ -107,10 +107,10 @@ export const SettingsView: React.FC = () => {
 
           <button
             onClick={handleSave}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#c80a19] to-[#8b0712] border border-[#c80a19]/50 text-white text-xs font-bold uppercase transition-all hover:shadow-[0_0_15px_rgba(200,10,25,0.4)] cursor-pointer"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#c80a19] to-[#8b0712] border border-[#c80a19]/50 text-white text-xs font-bold uppercase transition-all hover:shadow-[0_0_15px_rgba(200,10,25,0.4)] cursor-pointer"
           >
             <Save size={15} />
-            <span>Guardar Cambios</span>
+            <span>Guardar</span>
           </button>
         </div>
       </div>

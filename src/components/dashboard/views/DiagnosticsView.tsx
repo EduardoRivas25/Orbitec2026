@@ -24,26 +24,26 @@ export const DiagnosticsView = () => {
             <Battery size={16} /> Sistema de Energía (Batería Li-Ion)
           </h3>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-black/30 border border-white/5 p-4 rounded-lg flex flex-col items-center justify-center text-center">
-              <span className="text-white/40 text-xs uppercase mb-2">Voltaje</span>
-              <span className="text-3xl font-bold font-mono text-white">4.12<span className="text-sm text-white/50">V</span></span>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-6">
+            <div className="bg-black/30 border border-white/5 p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center">
+              <span className="text-white/40 text-[10px] sm:text-xs uppercase mb-1 sm:mb-2">Voltaje</span>
+              <span className="text-xl sm:text-3xl font-bold font-mono text-white">4.12<span className="text-xs sm:text-sm text-white/50">V</span></span>
             </div>
             
-            <div className="bg-black/30 border border-white/5 p-4 rounded-lg flex flex-col items-center justify-center text-center">
-              <span className="text-white/40 text-xs uppercase mb-2">Corriente</span>
-              <span className="text-3xl font-bold font-mono text-[#eab308]">125<span className="text-sm text-white/50">mA</span></span>
+            <div className="bg-black/30 border border-white/5 p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center">
+              <span className="text-white/40 text-[10px] sm:text-xs uppercase mb-1 sm:mb-2">Corriente</span>
+              <span className="text-xl sm:text-3xl font-bold font-mono text-[#eab308]">125<span className="text-xs sm:text-sm text-white/50">mA</span></span>
             </div>
             
-            <div className="bg-black/30 border border-white/5 p-4 rounded-lg flex flex-col items-center justify-center text-center">
-              <span className="text-white/40 text-xs uppercase mb-2">Consumo</span>
-              <span className="text-3xl font-bold font-mono text-white">0.51<span className="text-sm text-white/50">W</span></span>
+            <div className="bg-black/30 border border-white/5 p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center">
+              <span className="text-white/40 text-[10px] sm:text-xs uppercase mb-1 sm:mb-2">Consumo</span>
+              <span className="text-xl sm:text-3xl font-bold font-mono text-white">0.51<span className="text-xs sm:text-sm text-white/50">W</span></span>
             </div>
             
-            <div className="bg-black/30 border border-white/5 p-4 rounded-lg flex flex-col items-center justify-center text-center relative overflow-hidden">
+            <div className="bg-black/30 border border-white/5 p-3 sm:p-4 rounded-lg flex flex-col items-center justify-center text-center relative overflow-hidden">
               <div className="absolute inset-0 bg-[#22c55e]/10 h-[82%] top-auto"></div>
-              <span className="text-white/40 text-xs uppercase mb-2 relative z-10">Capacidad</span>
-              <span className="text-3xl font-bold font-mono text-[#22c55e] relative z-10">82<span className="text-sm text-white/50">%</span></span>
+              <span className="text-white/40 text-[10px] sm:text-xs uppercase mb-1 sm:mb-2 relative z-10">Capacidad</span>
+              <span className="text-xl sm:text-3xl font-bold font-mono text-[#22c55e] relative z-10">82<span className="text-xs sm:text-sm text-white/50">%</span></span>
             </div>
           </div>
           

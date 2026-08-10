@@ -177,23 +177,23 @@ export const ConnectionView = () => {
         </div>
 
         {/* Panel del Monitor Serie (Terminal) */}
-        <div className="lg:col-span-2 bg-[#0d0d0d] rounded-xl border border-white/10 flex flex-col overflow-hidden h-[420px] lg:h-[460px] shadow-2xl relative">
+        <div className="lg:col-span-2 bg-[#0d0d0d] rounded-xl border border-white/10 flex flex-col overflow-hidden h-[340px] sm:h-[420px] lg:h-[460px] shadow-2xl relative">
           
           {/* Header de Monitor Serie */}
-          <div className="bg-black/80 border-b border-white/10 px-4 py-3 flex items-center justify-between">
+          <div className="bg-black/80 border-b border-white/10 px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="flex items-center gap-1.5 mr-2">
+              <div className="flex items-center gap-1.5 mr-1 sm:mr-2">
                 <div className="w-2.5 h-2.5 rounded-full bg-[#ef4444]/80" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#eab308]/80" />
                 <div className="w-2.5 h-2.5 rounded-full bg-[#22c55e]/80" />
               </div>
-              <h2 className="text-xs font-bold text-white/70 uppercase tracking-wider">
-                Monitor Serie — Telemetría Bruta NMEA / CSV
+              <h2 className="text-[11px] sm:text-xs font-bold text-white/70 uppercase tracking-wider truncate">
+                Monitor Serie — Telemetría Bruta
               </h2>
             </div>
 
             {/* Acciones Terminal */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 self-end sm:self-auto">
               <button 
                 onClick={() => setIsPaused(!isPaused)}
                 className={`px-2.5 py-1 rounded transition-colors text-[9px] uppercase font-bold tracking-wider flex items-center gap-1 border cursor-pointer ${

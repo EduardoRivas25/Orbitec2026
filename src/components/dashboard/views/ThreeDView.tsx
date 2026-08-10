@@ -282,52 +282,52 @@ export const ThreeDView = () => {
         </div>
 
         {/* Botones de Función Extra */}
-        <div className="flex items-center gap-2 flex-wrap">
+        <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap text-[10px] sm:text-xs">
           <button
             onClick={() => setUseManualSim(!useManualSim)}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[10px] sm:text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
               useManualSim
                 ? 'bg-[#eab308]/20 border-[#eab308] text-[#eab308]'
                 : 'bg-white/5 border-white/15 text-white/70 hover:text-white'
             }`}
           >
-            <Sliders size={13} />
-            {useManualSim ? 'Modo Simulación Manual' : 'Seguir Telemetría Real'}
+            <Sliders size={12} />
+            <span className="truncate">{useManualSim ? 'Modo Simulación Manual' : 'Seguir Telemetría Real'}</span>
           </button>
 
           <button
             onClick={() => setWireframe(!wireframe)}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[10px] sm:text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
               wireframe
                 ? 'bg-[#38bdf8]/20 border-[#38bdf8] text-[#38bdf8]'
                 : 'bg-white/5 border-white/15 text-white/70 hover:text-white'
             }`}
           >
-            <Eye size={13} />
+            <Eye size={12} />
             Malla 3D
           </button>
 
           <button
             onClick={() => setShowAxes(!showAxes)}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[10px] sm:text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
               showAxes
                 ? 'bg-[#22c55e]/20 border-[#22c55e] text-[#22c55e]'
                 : 'bg-white/5 border-white/15 text-white/70 hover:text-white'
             }`}
           >
-            <Compass size={13} />
+            <Compass size={12} />
             Ejes XYZ
           </button>
 
           <button
             onClick={() => setAutoRotate(!autoRotate)}
-            className={`px-3 py-1.5 rounded-lg border text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
+            className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg border text-[10px] sm:text-xs font-bold uppercase transition-all flex items-center gap-1.5 cursor-pointer ${
               autoRotate
                 ? 'bg-[#c80a19]/20 border-[#c80a19] text-[#c80a19]'
                 : 'bg-white/5 border-white/15 text-white/70 hover:text-white'
             }`}
           >
-            {autoRotate ? <Pause size={13} /> : <Play size={13} />}
+            {autoRotate ? <Pause size={12} /> : <Play size={12} />}
             Auto-Giro
           </button>
         </div>
@@ -337,34 +337,34 @@ export const ThreeDView = () => {
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-1">
         
         {/* Contenedor Canvas 3D */}
-        <div className="lg:col-span-3 rounded-xl overflow-hidden border border-white/10 relative bg-[#07070a] min-h-[480px] flex flex-col justify-between shadow-2xl">
+        <div className="lg:col-span-3 rounded-xl overflow-hidden border border-white/10 relative bg-[#07070a] min-h-[350px] sm:min-h-[440px] lg:min-h-[480px] flex flex-col justify-between shadow-2xl">
           
           {/* Overlay de Telemetría Flotante Superior */}
-          <div className="absolute top-4 left-4 z-10 flex gap-3 pointer-events-none flex-wrap">
-            <div className="bg-[#0d0d0d]/90 backdrop-blur-md border border-[#ef4444]/40 rounded-xl p-3 text-xs font-mono shadow-2xl flex flex-col gap-0.5 min-w-[90px]">
-              <span className="text-[#ef4444] text-[9px] uppercase font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> Pitch (Inclinación X)
+          <div className="absolute top-2.5 left-2.5 sm:top-4 sm:left-4 z-10 flex gap-1.5 sm:gap-3 pointer-events-none flex-wrap max-w-[calc(100%-1rem)]">
+            <div className="bg-[#0d0d0d]/90 backdrop-blur-md border border-[#ef4444]/40 rounded-xl p-2 sm:p-3 text-xs font-mono shadow-2xl flex flex-col gap-0.5 min-w-[75px] sm:min-w-[90px]">
+              <span className="text-[#ef4444] text-[8px] sm:text-[9px] uppercase font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#ef4444]" /> Pitch (X)
               </span>
-              <span className="font-bold text-white text-base">{orientation.pitch.toFixed(2)}°</span>
+              <span className="font-bold text-white text-xs sm:text-base">{orientation.pitch.toFixed(2)}°</span>
             </div>
 
-            <div className="bg-[#0d0d0d]/90 backdrop-blur-md border border-[#38bdf8]/40 rounded-xl p-3 text-xs font-mono shadow-2xl flex flex-col gap-0.5 min-w-[90px]">
-              <span className="text-[#38bdf8] text-[9px] uppercase font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8]" /> Roll (Alabeo Z)
+            <div className="bg-[#0d0d0d]/90 backdrop-blur-md border border-[#38bdf8]/40 rounded-xl p-2 sm:p-3 text-xs font-mono shadow-2xl flex flex-col gap-0.5 min-w-[75px] sm:min-w-[90px]">
+              <span className="text-[#38bdf8] text-[8px] sm:text-[9px] uppercase font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#38bdf8]" /> Roll (Z)
               </span>
-              <span className="font-bold text-white text-base">{orientation.roll.toFixed(2)}°</span>
+              <span className="font-bold text-white text-xs sm:text-base">{orientation.roll.toFixed(2)}°</span>
             </div>
 
-            <div className="bg-[#0d0d0d]/90 backdrop-blur-md border border-[#eab308]/40 rounded-xl p-3 text-xs font-mono shadow-2xl flex flex-col gap-0.5 min-w-[90px]">
-              <span className="text-[#eab308] text-[9px] uppercase font-bold flex items-center gap-1">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#eab308]" /> Yaw (Brújula Y)
+            <div className="bg-[#0d0d0d]/90 backdrop-blur-md border border-[#eab308]/40 rounded-xl p-2 sm:p-3 text-xs font-mono shadow-2xl flex flex-col gap-0.5 min-w-[75px] sm:min-w-[90px]">
+              <span className="text-[#eab308] text-[8px] sm:text-[9px] uppercase font-bold flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#eab308]" /> Yaw (Y)
               </span>
-              <span className="font-bold text-white text-base">{orientation.yaw.toFixed(2)}°</span>
+              <span className="font-bold text-white text-xs sm:text-base">{orientation.yaw.toFixed(2)}°</span>
             </div>
           </div>
 
           {/* Cuaterniones Flotantes */}
-          <div className="absolute top-4 right-4 z-10 bg-[#0d0d0d]/90 backdrop-blur-md border border-white/10 rounded-xl p-3 text-[10px] font-mono text-white/70 shadow-2xl hidden sm:flex flex-col gap-1">
+          <div className="absolute top-4 right-4 z-10 bg-[#0d0d0d]/90 backdrop-blur-md border border-white/10 rounded-xl p-3 text-[10px] font-mono text-white/70 shadow-2xl hidden md:flex flex-col gap-1">
             <span className="text-[9px] font-bold text-white/40 uppercase tracking-wider border-b border-white/10 pb-1">Cuaternión IMU</span>
             <div className="grid grid-cols-4 gap-2 font-bold text-white">
               <span>w: <span className="text-[#eab308]">{quat.w}</span></span>
@@ -375,9 +375,10 @@ export const ThreeDView = () => {
           </div>
 
           {/* Indicación en el pie */}
-          <div className="absolute bottom-4 left-4 z-10 text-white/40 text-[10px] font-mono pointer-events-none bg-[#0d0d0d]/80 backdrop-blur-md border border-white/10 px-3 py-1.5 rounded-lg flex items-center gap-2">
-            <Zap size={13} className="text-[#eab308]" />
-            Click izq: Orbitar • Click der: Desplazar • Scroll: Zoom
+          <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-10 text-white/40 text-[9px] sm:text-[10px] font-mono pointer-events-none bg-[#0d0d0d]/80 backdrop-blur-md border border-white/10 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg flex items-center gap-1.5 sm:gap-2">
+            <Zap size={12} className="text-[#eab308]" />
+            <span className="hidden sm:inline">Click izq: Orbitar • Click der: Desplazar • Scroll: Zoom</span>
+            <span className="inline sm:hidden">1 dedo: Orbitar • 2 dedos: Zoom</span>
           </div>
 
           {/* Escena Canvas 3D Iluminada */}

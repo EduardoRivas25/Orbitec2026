@@ -51,7 +51,7 @@ export const TelemetryView = () => {
       </div>
 
       {/* Fila 1: 3 Columnas Principales (LoRa Link, Flight Status, Sensor Matrix) */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         
         {/* Card 1: Enlace LoRa */}
         <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 flex flex-col justify-between hover:border-white/20 transition-all font-mono">
@@ -92,12 +92,14 @@ export const TelemetryView = () => {
         <FlightStatusWidget data={data} />
 
         {/* Card 3: Matriz Diagnóstica de Sensores */}
-        <SensorStatusWidget />
+        <div className="md:col-span-2 lg:col-span-1">
+          <SensorStatusWidget />
+        </div>
 
       </div>
 
       {/* Fila 2: Consola Principal - Inspector de Tramas de Telemetría */}
-      <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 shadow-2xl font-mono">
+      <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 sm:p-5 shadow-2xl font-mono">
         
         {/* Barra de Controles de la Consola */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 border-b border-white/10 pb-3">
@@ -111,21 +113,21 @@ export const TelemetryView = () => {
             </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
             {/* Campo de búsqueda */}
-            <div className="relative">
+            <div className="relative w-full sm:w-52">
               <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/30" />
               <input 
                 type="text" 
                 placeholder="Filtrar paquete o timestamp..." 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="bg-black/60 border border-white/15 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#38bdf8] transition-all w-52"
+                className="bg-black/60 border border-white/15 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#38bdf8] transition-all w-full"
               />
             </div>
 
             {/* Alternar vista Decodificada vs String CSV Raw */}
-            <div className="bg-black/80 border border-white/10 p-1 rounded-lg flex gap-1 text-[10px]">
+            <div className="bg-black/80 border border-white/10 p-1 rounded-lg flex gap-1 text-[10px] self-start sm:self-auto">
               <button
                 onClick={() => setViewMode('decoded')}
                 className={`px-3 py-1 rounded-md transition-all font-bold cursor-pointer ${
@@ -148,8 +150,8 @@ export const TelemetryView = () => {
 
         {/* Vista Decodificada en Tabla Sobria */}
         {viewMode === 'decoded' ? (
-          <div className="overflow-x-auto rounded-lg border border-white/10 bg-black/60">
-            <table className="w-full text-left border-collapse text-xs">
+          <div className="overflow-x-auto rounded-lg border border-white/10 bg-black/60 custom-scrollbar">
+            <table className="w-full text-left border-collapse text-xs min-w-[850px]">
               <thead>
                 <tr className="bg-black/80 border-b border-white/10 text-white/40 text-[10px] uppercase tracking-wider font-bold">
                   <th className="p-3">PAQUETE #</th>
