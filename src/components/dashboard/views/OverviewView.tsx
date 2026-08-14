@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTelemetryData } from '../data/mockTelemetry';
+import { useTelemetryData, useSerialStatus } from '../data/mockTelemetry';
 import { AltimeterWidget } from '../widgets/AltimeterWidget';
 import { MiniMapWidget } from '../widgets/MiniMapWidget';
 import { ArtificialHorizonWidget } from '../widgets/ArtificialHorizonWidget';
@@ -8,16 +8,16 @@ import { SensorCardsRow } from '../widgets/SensorCardsRow';
 import { RealTimeChartsWidget } from '../widgets/RealTimeChartsWidget';
 import { SystemStatusWidget } from '../widgets/SystemStatusWidget';
 import { DashboardFooter } from '../widgets/DashboardFooter';
-import { Radio, Rocket, Wifi, Clock } from 'lucide-react';
+import { Radio, Rocket, Wifi, Clock, Usb } from 'lucide-react';
 
 export const OverviewView = () => {
   const data = useTelemetryData();
-  const [isConnected, setIsConnected] = useState(false);
+  const { isConnected, isSimulating, portName, baudRate } = useSerialStatus();
   const [missionTime, setMissionTime] = useState(0);
   const [isCountdown, setIsCountdown] = useState(true);
 
   useEffect(() => {
-    const COUNTDOWN_FROM = "2026-09-28T00:00:00";
+    const COUNTDOWN_FROM = "2026-09-25T00:00:00"; // 25 de Septiembre de 2026
     
     const updateTime = () => {
       const end = new Date(COUNTDOWN_FROM).getTime();
@@ -74,18 +74,20 @@ export const OverviewView = () => {
 
         {/* Sección Derecha: Indicadores de Status */}
         <div className="flex items-center gap-2 font-mono text-[10px] relative z-10 flex-wrap sm:flex-nowrap">
-          {/* Estado CanSat */}
-          <button
-            onClick={() => setIsConnected(!isConnected)}
-            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-[10px] font-bold tracking-wider uppercase transition-all cursor-pointer ${
+          {/* Estado CanSat / LoRa en Tiempo Real */}
+          <div
+            title={isConnected ? `Conectado a ${portName} @ ${baudRate} bps` : 'Sin conexión serie activa'}
+            className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-[10px] font-bold tracking-wider uppercase transition-all select-none ${
               isConnected
                 ? 'bg-[#22c55e]/10 border-[#22c55e]/30 text-[#22c55e]'
                 : 'bg-[#ef4444]/10 border-[#ef4444]/30 text-[#ef4444]'
             }`}
           >
             <div className="flex flex-col items-start leading-tight">
-              <span className="text-[8px] text-white/30">ESTADO CANSAT</span>
-              <span className="flex items-center gap-1.5">
+              <span className="text-[8px] text-white/30 flex items-center gap-1">
+                ESTADO CANSAT {isSimulating && <span className="text-[#eab308]">(VIRTUAL)</span>}
+              </span>
+              <span className="flex items-center gap-1.5 mt-0.5">
                 <span className="relative flex h-1.5 w-1.5">
                   {isConnected && (
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#22c55e] opacity-75" />
@@ -95,7 +97,8 @@ export const OverviewView = () => {
                 {isConnected ? 'CONECTADO' : 'DESCONECTADO'}
               </span>
             </div>
-          </button>
+          </div>
+
 
           {/* Tiempo de Misión */}
           <div className="bg-black/50 border border-white/10 px-3 py-2 rounded-lg flex flex-col items-start leading-tight">

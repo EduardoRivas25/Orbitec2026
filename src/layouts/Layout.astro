@@ -8,28 +8,31 @@ interface Props {
 	canonicalUrl?: string;
 }
 
-const defaultDescription = "ORBITEC es el equipo multidisciplinario del ITSU dedicado a la ingeniería aeroespacial y el desarrollo del micro satélite CanSat 2026 NightRaptor.";
+const defaultDescription =
+	"ORBITEC es el equipo multidisciplinario del ITSU dedicado a la ingeniería aeroespacial y el desarrollo del micro satélite CanSat 2026 NightRaptor.";
 const defaultImage = "/logo%20cansat2026-final1_sbg.webp";
 
 const {
-	title = "ORBITEC | CanSat 2026 - Proyecto Aeroespacial ITSU",
+	title = "Orbitec",
 	description = defaultDescription,
 	image = defaultImage,
-	canonicalUrl = Astro.url ? Astro.url.href : "https://orbitec-cansat2026.com",
+	canonicalUrl = Astro.url
+		? Astro.url.href
+		: "https://orbitec-cansat2026.com",
 } = Astro.props;
 
 const schemaData = {
 	"@context": "https://schema.org",
 	"@type": "EducationalOrganization",
-	"name": "ORBITEC",
-	"alternateName": "ORBITEC CanSat 2026",
-	"url": canonicalUrl,
-	"logo": defaultImage,
-	"description": description,
-	"parentOrganization": {
+	name: "ORBITEC",
+	alternateName: "ORBITEC CanSat 2026",
+	url: canonicalUrl,
+	logo: defaultImage,
+	description: description,
+	parentOrganization: {
 		"@type": "EducationalOrganization",
-		"name": "Instituto Tecnológico Superior de Uruapan (ITSU)"
-	}
+		name: "Instituto Tecnológico Superior de Uruapan (ITSU)",
+	},
 };
 ---
 
@@ -43,7 +46,10 @@ const schemaData = {
 		<!-- SEO Principal -->
 		<title>{title}</title>
 		<meta name="description" content={description} />
-		<meta name="keywords" content="ORBITEC, CanSat 2026, ITSU, NightRaptor, tecnología espacial, satélite educativo, ingeniería aeroespacial, telemetría" />
+		<meta
+			name="keywords"
+			content="ORBITEC, CanSat 2026, ITSU, NightRaptor, tecnología espacial, satélite educativo, ingeniería aeroespacial, telemetría"
+		/>
 		<meta name="author" content="ORBITEC - ITSU" />
 		<meta name="robots" content="index, follow" />
 		<meta name="theme-color" content="#000004" />
@@ -82,7 +88,10 @@ const schemaData = {
 		/>
 
 		<!-- Structured Data (JSON-LD) -->
-		<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />
+		<script
+			type="application/ld+json"
+			set:html={JSON.stringify(schemaData)}
+		/>
 	</head>
 	<body>
 		<slot />
