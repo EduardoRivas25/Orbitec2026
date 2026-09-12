@@ -95,6 +95,11 @@ const schemaData = {
 	</head>
 	<body>
 		<slot />
+		<script>
+			if ('serviceWorker' in navigator) {
+				navigator.serviceWorker.register('/sw.js').catch(() => {});
+			}
+		</script>
 	</body>
 </html>
 

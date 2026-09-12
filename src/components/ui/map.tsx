@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactMapGL, { type MapProps, Marker as MapMarker, NavigationControl, useMap } from 'react-map-gl/maplibre';
+import ReactMapGL, { type MapProps, Marker as MapMarker, NavigationControl, Source, Layer, useMap } from 'react-map-gl/maplibre';
 import 'maplibre-gl/dist/maplibre-gl.css';
 
 export type MapViewport = {
@@ -80,27 +80,19 @@ const CARTO_VOYAGER_RASTER = {
   ]
 };
 
+// Mosaicos raster públicos de CARTO: compatibles con MapLibre, sin token/API key
+// y con el mismo formato que usa el modo de precarga offline.
 const CARTO_DARK_RASTER = {
   version: 8,
   sources: {
     'carto-dark': {
       type: 'raster',
-      tiles: [
-        'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'
-      ],
+      tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
       tileSize: 256,
       attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
     }
   },
-  layers: [
-    {
-      id: 'carto-dark-layer',
-      type: 'raster',
-      source: 'carto-dark',
-      minzoom: 0,
-      maxzoom: 19
-    }
-  ]
+  layers: [{ id: 'carto-dark-layer', type: 'raster', source: 'carto-dark', minzoom: 0, maxzoom: 19 }]
 };
 
 export const MAP_STYLES = {
@@ -173,4 +165,4 @@ export const MapControls = (props: any) => (
   <NavigationControl position="bottom-right" {...props} />
 );
 
-export { MapMarker, NavigationControl, useMap };
+export { MapMarker, NavigationControl, Source, Layer, useMap };

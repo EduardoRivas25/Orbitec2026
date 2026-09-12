@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useTelemetryData, useSerialStatus } from '../data/mockTelemetry';
 import { AltimeterWidget } from '../widgets/AltimeterWidget';
 import { MiniMapWidget } from '../widgets/MiniMapWidget';
@@ -6,49 +6,18 @@ import { ArtificialHorizonWidget } from '../widgets/ArtificialHorizonWidget';
 import { CompassWidget } from '../widgets/CompassWidget';
 import { SensorCardsRow } from '../widgets/SensorCardsRow';
 import { RealTimeChartsWidget } from '../widgets/RealTimeChartsWidget';
-import { SystemStatusWidget } from '../widgets/SystemStatusWidget';
+import { MissionDataWidget } from '../widgets/MissionDataWidget';
 import { DashboardFooter } from '../widgets/DashboardFooter';
-import { Radio, Rocket, Wifi, Clock, Usb } from 'lucide-react';
+import { Clock, Radio } from 'lucide-react';
 
 export const OverviewView = () => {
   const data = useTelemetryData();
   const { isConnected, isSimulating, portName, baudRate } = useSerialStatus();
-  const [missionTime, setMissionTime] = useState(0);
-  const [isCountdown, setIsCountdown] = useState(true);
-
-  useEffect(() => {
-    const COUNTDOWN_FROM = "2026-09-25T00:00:00"; // 25 de Septiembre de 2026
-    
-    const updateTime = () => {
-      const end = new Date(COUNTDOWN_FROM).getTime();
-      const now = new Date().getTime();
-      const distance = end - now;
-      
-      if (distance > 0) {
-        setIsCountdown(true);
-        setMissionTime(Math.floor(distance / 1000));
-      } else {
-        setIsCountdown(false);
-        setMissionTime(Math.floor(Math.abs(distance) / 1000));
-      }
-    };
-
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const formatMissionTime = (totalSeconds: number) => {
-    const days = Math.floor(totalSeconds / (3600 * 24));
-    const hours = Math.floor((totalSeconds % (3600 * 24)) / 3600);
-    const minutes = Math.floor((totalSeconds % 3600) / 60);
-    const seconds = totalSeconds % 60;
-    
-    if (days > 0) {
-      return `${days}d ${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-    }
-    return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
-  };
+  const stateStyle = {
+    WAIT: 'bg-amber-400/10 border-amber-400/30 text-amber-300',
+    DESC: 'bg-sky-400/10 border-sky-400/30 text-sky-300',
+    LAND: 'bg-emerald-400/10 border-emerald-400/30 text-emerald-300',
+  } as const;
 
   return (
     <div className="space-y-4 pb-4">
@@ -74,7 +43,7 @@ export const OverviewView = () => {
 
         {/* Sección Derecha: Indicadores de Status */}
         <div className="flex items-center gap-2 font-mono text-[10px] relative z-10 flex-wrap sm:flex-nowrap">
-          {/* Estado CanSat / LoRa en Tiempo Real */}
+          {/* Estado del enlace serie */}
           <div
             title={isConnected ? `Conectado a ${portName} @ ${baudRate} bps` : 'Sin conexión serie activa'}
             className={`flex items-center gap-2 px-3 py-2 rounded-lg border text-[10px] font-bold tracking-wider uppercase transition-all select-none ${
@@ -85,7 +54,7 @@ export const OverviewView = () => {
           >
             <div className="flex flex-col items-start leading-tight">
               <span className="text-[8px] text-white/30 flex items-center gap-1">
-                ESTADO CANSAT {isSimulating && <span className="text-[#eab308]">(VIRTUAL)</span>}
+                ENLACE {isSimulating && <span className="text-[#eab308]">(VIRTUAL)</span>}
               </span>
               <span className="flex items-center gap-1.5 mt-0.5">
                 <span className="relative flex h-1.5 w-1.5">
@@ -99,6 +68,13 @@ export const OverviewView = () => {
             </div>
           </div>
 
+          {/* Estado transmitido por CanSat (TR-02) */}
+          <div className={`flex flex-col items-start rounded-lg border px-3 py-2 leading-tight ${stateStyle[data.state]}`}>
+            <span className="text-[8px] text-white/50 uppercase">Estado CanSat · TR-02</span>
+            <span className="mt-0.5 flex items-center gap-1.5 font-bold tracking-wider">
+              <Radio size={12} /> {data.state}
+            </span>
+          </div>
 
           {/* Tiempo de Misión */}
           <div className="bg-black/50 border border-white/10 px-3 py-2 rounded-lg flex flex-col items-start leading-tight">
@@ -106,7 +82,7 @@ export const OverviewView = () => {
             <div className="flex items-center gap-1.5">
               <Clock size={12} className="text-[#c80a19]" />
               <span className="font-bold text-white tracking-widest">
-                {isCountdown ? 'T-' : 'T+'} {formatMissionTime(missionTime)}
+                T+ {data.missionTime}
               </span>
             </div>
           </div>
@@ -131,13 +107,13 @@ export const OverviewView = () => {
 
       {/* ═══════════════════════════════════════════════════════
           FILA 3: MINI-CARDS DE SENSORES (7 columnas)
-          Temp | Presión | Humedad | G-Force | Vel.Vertical | GPS Sats | Batería
+          Sensores recibidos en la trama: ambiental, altitud y potencia
           ═══════════════════════════════════════════════════════ */}
       <SensorCardsRow data={data} connected={isConnected} />
 
       {/* ═══════════════════════════════════════════════════════
           FILA 4: CONTENIDO PRINCIPAL (3 columnas)
-          Mapa & Trayectoria | Telemetría Tiempo Real | Estado de Sistemas
+          Mapa & Trayectoria | Telemetría Tiempo Real | Datos importantes de misión
           ═══════════════════════════════════════════════════════ */}
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         <div className="xl:col-span-1 min-h-[350px] sm:min-h-[420px]">
@@ -147,7 +123,7 @@ export const OverviewView = () => {
           <RealTimeChartsWidget data={data} />
         </div>
         <div className="md:col-span-2 xl:col-span-1 min-h-[350px] sm:min-h-[420px]">
-          <SystemStatusWidget />
+          <MissionDataWidget data={data} connected={isConnected} />
         </div>
       </div>
 

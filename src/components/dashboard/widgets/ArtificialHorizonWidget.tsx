@@ -1,108 +1,60 @@
 import React from 'react';
 import type { TelemetryData } from '../data/mockTelemetry';
-import { Navigation } from 'lucide-react';
+import { Navigation, Rotate3D } from 'lucide-react';
+
+const readout = (label: string, value: string, accent = 'text-white') => (
+  <div className="border-b border-white/5 py-2 last:border-0">
+    <p className="text-[8px] font-mono uppercase tracking-wider text-white/35">{label}</p>
+    <p className={`mt-0.5 font-mono text-base font-bold ${accent}`}>{value}</p>
+  </div>
+);
 
 export const ArtificialHorizonWidget = ({ data }: { data: TelemetryData }) => {
   const { pitch, roll, yaw } = data.orientation;
-  const vSpeed = data.verticalSpeed;
-
-  const displayPitch = Math.max(-45, Math.min(45, pitch));
+  const displayPitch = Math.max(-35, Math.min(35, pitch));
 
   return (
-    <div className="bg-[#0d0d0d] border border-white/10 rounded-lg p-4 h-full flex flex-col">
-      {/* Header */}
-      <div className="flex items-center gap-2 mb-3">
-        <Navigation className="text-[#38bdf8]" size={14} />
-        <h3 className="text-white/50 text-[10px] font-semibold uppercase tracking-wider">
-          Horizonte Artificial & Actitud (IMU)
-        </h3>
-      </div>
+    <section className="h-full overflow-hidden rounded-xl border border-white/10 bg-[#0d0d0d] p-4 shadow-[0_10px_35px_rgba(0,0,0,0.18)]">
+      <header className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="rounded-md border border-sky-400/20 bg-sky-400/10 p-1.5"><Navigation className="text-sky-300" size={14} /></span>
+          <div>
+            <h3 className="text-[10px] font-semibold uppercase tracking-wider text-white/65">Horizonte artificial</h3>
+            <p className="text-[8px] font-mono uppercase text-white/30">Actitud calculada desde IMU</p>
+          </div>
+        </div>
+        <span className="font-mono text-[10px] text-sky-300">IMU</span>
+      </header>
 
-      {/* Content: Sphere + Data */}
-      <div className="flex items-center justify-center gap-5 flex-1">
-        {/* Attitude Indicator Sphere */}
-        <div className="relative w-44 h-44 rounded-full border-[3px] border-[#333] bg-[#0a0a0a] shadow-[inset_0_0_20px_rgba(0,0,0,0.9)] overflow-hidden flex-shrink-0">
-          {/* Sky / Earth background that rotates and translates */}
-          <div
-            className="absolute inset-[-60%] transition-transform duration-150 ease-out"
-            style={{
-              transform: `translateY(${displayPitch * 2.2}px) rotate(${-roll}deg)`,
-              transformOrigin: 'center center'
-            }}
-          >
-            {/* Sky */}
-            <div className="w-full h-1/2 bg-gradient-to-b from-[#1a5fb4] via-[#1a4f8f] to-[#1a4070] border-b-2 border-white/80 relative flex items-end justify-center">
-              <div className="w-full text-center pb-3 text-[8px] font-mono font-bold text-white/80">
-                <div className="border-b border-white/40 w-8 mx-auto mb-3">+30°</div>
-                <div className="border-b border-white/60 w-12 mx-auto mb-3">+20°</div>
-                <div className="border-b-2 border-white/80 w-16 mx-auto mb-3">+10°</div>
-              </div>
+      <div className="flex h-[190px] items-center gap-4 sm:gap-6">
+        <div className="relative h-40 w-40 shrink-0 overflow-hidden rounded-full border-2 border-white/20 bg-black shadow-[inset_0_0_22px_rgba(0,0,0,.85),0_0_0_5px_rgba(255,255,255,.025)] sm:h-44 sm:w-44">
+          <div className="absolute inset-[-55%] transition-transform duration-300 ease-out" style={{ transform: `translateY(${displayPitch * 2.5}px) rotate(${-roll}deg)` }}>
+            <div className="relative h-1/2 border-b-2 border-white/80 bg-gradient-to-b from-sky-400/90 via-[#075aa9] to-[#03366f]">
+              {[30, 20, 10].map((mark, index) => <span key={mark} className="absolute left-1/2 -translate-x-1/2 border-b border-white/70 pb-0.5 text-[8px] font-mono text-white" style={{ bottom: `${13 + index * 18}%`, width: `${26 + index * 10}px` }}>+{mark}</span>)}
             </div>
-            {/* Earth */}
-            <div className="w-full h-1/2 bg-gradient-to-b from-[#7c3f15] via-[#5c2e0f] to-[#3a1a08] relative pt-3 flex items-start justify-center">
-              <div className="w-full text-center text-[8px] font-mono font-bold text-white/80">
-                <div className="border-t-2 border-white/80 w-16 mx-auto mt-3">-10°</div>
-                <div className="border-t border-white/60 w-12 mx-auto mt-3">-20°</div>
-                <div className="border-t border-white/40 w-8 mx-auto mt-3">-30°</div>
-              </div>
+            <div className="relative h-1/2 bg-gradient-to-b from-[#875017] via-[#5f300d] to-[#241205]">
+              {[10, 20, 30].map((mark, index) => <span key={mark} className="absolute left-1/2 -translate-x-1/2 border-t border-white/70 pt-0.5 text-[8px] font-mono text-white" style={{ top: `${13 + index * 18}%`, width: `${46 - index * 10}px` }}>−{mark}</span>)}
             </div>
           </div>
-
-          {/* Roll scale arc */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 100 100">
-            {/* Roll reference triangle (top) */}
-            <polygon points="50,5 47,12 53,12" fill="#eab308" />
-            {/* Roll tick marks */}
-            <line x1="50" y1="12" x2="50" y2="17" stroke="#fff" strokeWidth="1.5" />
-            <line x1="24" y1="19" x2="28" y2="23" stroke="#fff" strokeWidth="1" opacity="0.6" />
-            <line x1="76" y1="19" x2="72" y2="23" stroke="#fff" strokeWidth="1" opacity="0.6" />
+          <svg className="pointer-events-none absolute inset-0 h-full w-full" viewBox="0 0 100 100">
+            <path d="M 28 15 Q 50 2 72 15" fill="none" stroke="rgba(255,255,255,.38)" strokeWidth="1" />
+            <path d="M 50 7 L 46 14 L 54 14 Z" fill="#eab308" />
+            <path d="M 18 50 H 42 M 58 50 H 82" stroke="#facc15" strokeWidth="2" />
+            <circle cx="50" cy="50" r="3.3" fill="#facc15" stroke="#111" strokeWidth="1.5" />
           </svg>
-
-          {/* Fixed aircraft reference (wings + center dot) */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-12 h-[3px] bg-[#eab308] absolute left-3 rounded-l shadow-[0_0_6px_rgba(234,179,8,0.5)]" />
-            <div className="w-12 h-[3px] bg-[#eab308] absolute right-3 rounded-r shadow-[0_0_6px_rgba(234,179,8,0.5)]" />
-            <div className="w-3 h-3 bg-[#eab308] border-2 border-black rounded-full shadow-[0_0_8px_rgba(234,179,8,0.6)]" />
-          </div>
+          <span className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded bg-black/55 px-2 py-0.5 font-mono text-[9px] text-white/85">ROLL {roll.toFixed(1)}°</span>
         </div>
-
-        {/* Data readouts on the right */}
-        <div className="flex flex-col gap-2 font-mono min-w-[130px]">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-[9px] text-white/40 uppercase">Pitch (Cabeceo)</span>
-            <span className="text-sm font-bold text-white">
-              {pitch.toFixed(1)}°
-            </span>
-          </div>
-
-          <div className="w-full h-px bg-white/5" />
-
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-[9px] text-white/40 uppercase">Roll (Alabeo)</span>
-            <span className="text-sm font-bold text-white">
-              {roll.toFixed(1)}°
-            </span>
-          </div>
-
-          <div className="w-full h-px bg-white/5" />
-
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-[9px] text-white/40 uppercase">Yaw (Guiñada)</span>
-            <span className="text-sm font-bold text-[#eab308]">
-              {yaw.toFixed(1)}°
-            </span>
-          </div>
-
-          <div className="w-full h-px bg-white/5" />
-
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-[9px] text-white/40 uppercase">Vel. Vertical</span>
-            <span className="text-sm font-bold text-white">
-              {vSpeed.toFixed(1)} m/s
-            </span>
+        <div className="min-w-0 flex-1">
+          {readout('Cabeceo · pitch', `${pitch.toFixed(1)}°`, 'text-sky-200')}
+          {readout('Alabeo · roll', `${roll.toFixed(1)}°`, 'text-white')}
+          {readout('Guiñada · yaw', `${yaw.toFixed(1)}°`, 'text-amber-300')}
+          <div className="mt-3 flex items-center gap-2 rounded-lg border border-white/5 bg-black/30 px-2.5 py-2">
+            <Rotate3D size={13} className="text-emerald-300" />
+            <span className="text-[9px] font-mono text-white/45">ACC Z</span>
+            <span className="ml-auto font-mono text-xs font-bold text-emerald-200">{data.acceleration.z.toFixed(2)} m/s²</span>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };

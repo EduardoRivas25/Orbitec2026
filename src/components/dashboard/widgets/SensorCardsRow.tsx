@@ -1,15 +1,12 @@
 import React from 'react';
 import type { TelemetryData } from '../data/mockTelemetry';
-import {
-  Thermometer, Wind, Droplets, Gauge, ArrowUpDown,
-  Satellite, BatteryMedium
-} from 'lucide-react';
+import { Thermometer, Wind, Droplets, BatteryCharging, Mountain } from 'lucide-react';
 
 interface SensorCard {
   id: string;
   label: string;
   icon: React.ElementType;
-  getValue: (data: TelemetryData, connected: boolean) => string;
+  getValue: (data: TelemetryData, hasFrame: boolean) => string;
   getUnit: () => string;
   color: string;
 }
@@ -19,7 +16,7 @@ const sensorCards: SensorCard[] = [
     id: 'temp',
     label: 'TEMPERATURA',
     icon: Thermometer,
-    getValue: (d, c) => c ? d.environment.temp.toFixed(1) : '--.--',
+    getValue: (d, hasFrame) => hasFrame ? d.environment.temp.toFixed(1) : '--.--',
     getUnit: () => '°C',
     color: '#eab308',
   },
@@ -27,7 +24,7 @@ const sensorCards: SensorCard[] = [
     id: 'pressure',
     label: 'PRESIÓN',
     icon: Wind,
-    getValue: (d, c) => c ? d.environment.pressure.toFixed(0) : '----',
+    getValue: (d, hasFrame) => hasFrame ? d.environment.pressure.toFixed(1) : '----',
     getUnit: () => 'hPa',
     color: '#38bdf8',
   },
@@ -35,39 +32,31 @@ const sensorCards: SensorCard[] = [
     id: 'humidity',
     label: 'HUMEDAD',
     icon: Droplets,
-    getValue: (d, c) => c ? d.environment.humidity.toFixed(0) : '--.-',
+    getValue: (d, hasFrame) => hasFrame ? d.environment.humidity.toFixed(1) : '--.-',
     getUnit: () => '%',
     color: '#06b6d4',
   },
   {
-    id: 'gforce',
-    label: 'G-FORCE',
-    icon: Gauge,
-    getValue: (d, c) => c ? (d.acceleration.total / 9.81).toFixed(2) : '0.00',
-    getUnit: () => 'G',
+    id: 'altitude',
+    label: 'ALTITUD BARO',
+    icon: Mountain,
+    getValue: (d, hasFrame) => hasFrame ? d.altitude.bme.toFixed(1) : '----.-',
+    getUnit: () => 'm',
+    color: '#38bdf8',
+  },
+  {
+    id: 'voc',
+    label: 'GAS / VOC',
+    icon: Wind,
+    getValue: (d, hasFrame) => hasFrame ? d.environment.voc.toFixed(0) : '---',
+    getUnit: () => 'VOC',
     color: '#f97316',
   },
   {
-    id: 'vspeed',
-    label: 'VEL. VERTICAL',
-    icon: ArrowUpDown,
-    getValue: (d, c) => c ? d.verticalSpeed.toFixed(1) : '0.0',
-    getUnit: () => 'm/s',
-    color: '#22c55e',
-  },
-  {
-    id: 'sats',
-    label: 'SATÉLITES GPS',
-    icon: Satellite,
-    getValue: (d, c) => c ? d.gps.sats.toString() : '--',
-    getUnit: () => '',
-    color: '#22c55e',
-  },
-  {
-    id: 'battery',
-    label: 'BATERÍA',
-    icon: BatteryMedium,
-    getValue: () => '--.-',
+    id: 'voltage',
+    label: 'VOLTAJE',
+    icon: BatteryCharging,
+    getValue: (d, hasFrame) => hasFrame ? d.voltage.toFixed(2) : '--.--',
     getUnit: () => 'V',
     color: '#a855f7',
   },
@@ -75,17 +64,18 @@ const sensorCards: SensorCard[] = [
 
 export const SensorCardsRow = ({ data, connected = false }: { data: TelemetryData; connected?: boolean }) => {
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-2">
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
       {sensorCards.map((card) => {
         const Icon = card.icon;
-        const value = card.getValue(data, connected);
+        const hasFrame = Boolean(data.raw);
+        const value = card.getValue(data, hasFrame);
         const unit = card.getUnit();
         const isPlaceholder = value.includes('--');
 
         return (
           <div
             key={card.id}
-            className="bg-[#0d0d0d] border border-white/10 rounded-lg px-3 py-2.5 flex flex-col items-center justify-center gap-1 hover:border-white/20 transition-colors group"
+            className="bg-[#0d0d0d] border border-white/10 rounded-lg px-3 py-2.5 flex flex-col items-center justify-center gap-1 hover:border-white/20 transition-colors group min-w-0"
           >
             {/* Icon + Label */}
             <div className="flex items-center gap-1.5">
@@ -102,7 +92,7 @@ export const SensorCardsRow = ({ data, connected = false }: { data: TelemetryDat
             {/* Value */}
             <div className="flex items-baseline gap-0.5 font-mono">
               <span
-                className={`text-base font-bold leading-none ${isPlaceholder ? 'text-white/20' : ''}`}
+                className={`text-sm font-bold leading-none whitespace-nowrap ${isPlaceholder ? 'text-white/20' : ''}`}
                 style={!isPlaceholder ? { color: card.color } : undefined}
               >
                 {value}

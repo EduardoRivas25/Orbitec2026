@@ -78,12 +78,35 @@ class SerialService {
   private logs: SerialLogItem[] = [];
   private currentTelemetry: TelemetryData = { ...INITIAL_TELEMETRY_DATA };
   private telemetryHistory: TelemetryData[] = [{ ...INITIAL_TELEMETRY_DATA }];
+  private telemetryArchive: TelemetryData[] = [];
 
   private statusListeners: Set<StatusListener> = new Set();
   private logListeners: Set<LogListener> = new Set();
   private telemetryListeners: Set<TelemetryListener> = new Set();
 
+  private readonly csvStorageKey = 'orbitec-cansat-telemetry-csv';
+  private csvFileHandle: any = null;
+
   constructor() {
+    if (typeof localStorage !== 'undefined') {
+      try {
+        const savedCsv = localStorage.getItem(this.csvStorageKey);
+        const savedRows = savedCsv?.split(/\r?\n/).slice(1) || [];
+        for (const row of savedRows) {
+          const separator = row.indexOf(',');
+          if (separator < 0) continue;
+          const receivedAt = row.slice(0, separator);
+          const parsed = this.parseTelemetryLine(row.slice(separator + 1));
+          if (!parsed) continue;
+          parsed.receivedAt = receivedAt;
+          this.telemetryArchive.push(parsed);
+          this.telemetryHistory.push(parsed);
+          this.currentTelemetry = parsed;
+        }
+        if (this.telemetryHistory.length > 7200) this.telemetryHistory = this.telemetryHistory.slice(-7200);
+      } catch {}
+    }
+
     if (typeof window !== 'undefined' && 'serial' in navigator) {
       (navigator as any).serial.addEventListener('connect', () => {
         this.addLog('[SISTEMA] Dispositivo serie USB detectado en el equipo.', 'system');
@@ -116,6 +139,54 @@ class SerialService {
 
   public getTelemetryHistory(): TelemetryData[] {
     return [...this.telemetryHistory];
+  }
+
+  public getTelemetryCSV(): string {
+    const header = 'RECEIVED_AT,TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,ALTITUDE_PRESSURE,PRESSURE,VOC,TEMPERATURE_SECONDARY,HUMIDITY,ACCEL_X_SECONDARY,ACCEL_Y_SECONDARY,ACCEL_Z_SECONDARY,GYRO_X,GYRO_Y,GYRO_Z,MAG_X,MAG_Y,MAG_Z';
+    const rows = this.telemetryArchive.map(item => `${item.receivedAt},${item.raw}`);
+    return [header, ...rows].join('\n');
+  }
+
+  public downloadTelemetryCSV() {
+    if (typeof document === 'undefined') return;
+    const blob = new Blob([this.getTelemetryCSV()], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = url;
+    anchor.download = `cansat_telemetry_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  }
+
+  public async selectTelemetryCSVFile(): Promise<boolean> {
+    if (typeof window === 'undefined' || !('showSaveFilePicker' in window)) {
+      this.addLog('[ERROR] El registro automático a archivo requiere Chrome o Edge. La copia local de respaldo sigue activa.', 'error');
+      return false;
+    }
+    try {
+      this.csvFileHandle = await (window as any).showSaveFilePicker({
+        suggestedName: `cansat_telemetry_${new Date().toISOString().replace(/[:.]/g, '-')}.csv`,
+        types: [{ description: 'Telemetría CanSat CSV', accept: { 'text/csv': ['.csv'] } }]
+      });
+      await this.persistTelemetryFile();
+      this.addLog('[SISTEMA] Registro CSV automático armado: el archivo se actualizará con cada trama válida.', 'system');
+      return true;
+    } catch (error: any) {
+      if (error?.name !== 'AbortError') this.addLog(`[ERROR] No se pudo preparar el archivo CSV: ${error?.message || error}`, 'error');
+      return false;
+    }
+  }
+
+  private async persistTelemetryFile() {
+    if (!this.csvFileHandle) return;
+    try {
+      const writable = await this.csvFileHandle.createWritable();
+      await writable.write(this.getTelemetryCSV());
+      await writable.close();
+    } catch (error: any) {
+      this.addLog(`[ERROR] Falló la escritura automática del CSV: ${error?.message || error}`, 'error');
+      this.csvFileHandle = null;
+    }
   }
 
   public subscribeStatus(listener: StatusListener): () => void {
@@ -334,15 +405,26 @@ class SerialService {
   private handleIncomingLine(rawLine: string) {
     this.status.packetsReceived++;
 
-    // Verificar si es una trama de telemetría de CanSat (CSV, JSON, etc.)
+    // Verificar y separar la trama ASCII CSV reglamentaria del CanSat.
     const parsedTelemetry = this.parseTelemetryLine(rawLine);
     if (parsedTelemetry) {
+      if (parsedTelemetry.packetCount === 1 && this.currentTelemetry.packetCount > 1) {
+        this.telemetryArchive = [];
+        this.telemetryHistory = [];
+      }
       this.currentTelemetry = parsedTelemetry;
       this.telemetryHistory.push(parsedTelemetry);
-      if (this.telemetryHistory.length > 100) {
-        this.telemetryHistory = this.telemetryHistory.slice(this.telemetryHistory.length - 100);
+      this.telemetryArchive.push(parsedTelemetry);
+      if (this.telemetryHistory.length > 7200) {
+        this.telemetryHistory = this.telemetryHistory.slice(this.telemetryHistory.length - 7200);
       }
       this.addLog(rawLine, 'telemetry');
+      // Persistencia automática local para no perder la captura al cambiar de pestaña
+      // o recargar accidentalmente la interfaz durante la misión.
+      if (typeof localStorage !== 'undefined') {
+        try { localStorage.setItem(this.csvStorageKey, this.getTelemetryCSV()); } catch {}
+      }
+      void this.persistTelemetryFile();
       this.notifyTelemetry();
     } else {
       // Mensaje de texto estándar del Arduino / receptor LoRa
@@ -350,94 +432,62 @@ class SerialService {
     }
   }
 
-  // Analizador inteligente de formatos de telemetría CanSat
+  // Trama oficial (TR-01/TR-02) + carga útil secundaria anexada al final:
+  // TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,
+  // ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,ALTITUDE_PRESSURE,
+  // PRESSURE,VOC,TEMPERATURE_SECONDARY,HUMIDITY,ACCEL_X_SECONDARY,
+  // ACCEL_Y_SECONDARY,ACCEL_Z_SECONDARY,GYRO_X,GYRO_Y,GYRO_Z,MAG_X,MAG_Y,MAG_Z\n
   private parseTelemetryLine(line: string): TelemetryData | null {
     try {
-      // 1. Formato JSON: {"alt": 1650, "temp": 22.4, "press": 834, "pitch": 2.1 ...}
-      if (line.startsWith('{') && line.endsWith('}')) {
-        const json = JSON.parse(line);
-        return {
-          time: json.time || Date.now(),
-          altitude: {
-            bme: Number(json.alt || json.altBme || json.altitude || this.currentTelemetry.altitude.bme),
-            gps: Number(json.altGps || json.alt || this.currentTelemetry.altitude.gps),
-            diff: Number(json.altDiff || 0)
-          },
-          verticalSpeed: Number(json.vSpeed || json.verticalSpeed || this.currentTelemetry.verticalSpeed),
-          acceleration: {
-            x: Number(json.ax || json.accX || 0),
-            y: Number(json.ay || json.accY || 0),
-            z: Number(json.az || json.accZ || 9.81),
-            total: Number(json.accTotal || 9.81)
-          },
-          orientation: {
-            pitch: Number(json.pitch || 0),
-            roll: Number(json.roll || 0),
-            yaw: Number(json.yaw || 0)
-          },
-          gps: {
-            lat: Number(json.lat || this.currentTelemetry.gps.lat),
-            lng: Number(json.lng || this.currentTelemetry.gps.lng),
-            sats: Number(json.sats || this.currentTelemetry.gps.sats)
-          },
-          environment: {
-            temp: Number(json.temp || json.temperature || this.currentTelemetry.environment.temp),
-            pressure: Number(json.press || json.pressure || this.currentTelemetry.environment.pressure),
-            humidity: Number(json.hum || json.humidity || this.currentTelemetry.environment.humidity),
-            voc: Number(json.voc || this.currentTelemetry.environment.voc)
-          },
-          lora: {
-            rssi: Number(json.rssi || this.currentTelemetry.lora.rssi),
-            snr: Number(json.snr || this.currentTelemetry.lora.snr),
-            packets: this.status.packetsReceived,
-            dropped: Number(json.dropped || 0)
-          }
-        };
-      }
+      if (!line.includes(',')) return null;
+      const clean = line.replace(/^\$(CANSAT|ORBITEC),?/, '').trim();
+      const parts = clean.split(',').map(value => value.trim());
+      if (parts.length < 26 || !/^\d{4}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
 
-      // 2. Formato CSV con prefijo $CANSAT o $ORBITEC o estándar separado por comas
-      // Ejemplo: $CANSAT,timestamp,altitude,temp,pressure,pitch,roll,yaw,lat,lng,sats,rssi
-      if (line.includes(',')) {
-        const parts = line.replace(/^\$(CANSAT|ORBITEC),?/, '').split(',').map(p => p.trim());
-        if (parts.length >= 3) {
-          const numbers = parts.map(p => parseFloat(p));
-          // Verificar que al menos los primeros valores sean numéricos
-          if (!isNaN(numbers[0]) || !isNaN(numbers[1])) {
-            const timeVal = !isNaN(numbers[0]) ? numbers[0] : Date.now();
-            const altVal = !isNaN(numbers[1]) ? numbers[1] : (!isNaN(numbers[2]) ? numbers[2] : this.currentTelemetry.altitude.bme);
-            const tempVal = !isNaN(numbers[2]) ? numbers[2] : (!isNaN(numbers[3]) ? numbers[3] : this.currentTelemetry.environment.temp);
-            const pressVal = !isNaN(numbers[3]) ? numbers[3] : (!isNaN(numbers[4]) ? numbers[4] : this.currentTelemetry.environment.pressure);
-            const pitchVal = numbers.length > 4 && !isNaN(numbers[4]) ? numbers[4] : this.currentTelemetry.orientation.pitch;
-            const rollVal = numbers.length > 5 && !isNaN(numbers[5]) ? numbers[5] : this.currentTelemetry.orientation.roll;
-            const yawVal = numbers.length > 6 && !isNaN(numbers[6]) ? numbers[6] : this.currentTelemetry.orientation.yaw;
-            const latVal = numbers.length > 7 && !isNaN(numbers[7]) ? numbers[7] : this.currentTelemetry.gps.lat;
-            const lngVal = numbers.length > 8 && !isNaN(numbers[8]) ? numbers[8] : this.currentTelemetry.gps.lng;
-            const satsVal = numbers.length > 9 && !isNaN(numbers[9]) ? Math.round(numbers[9]) : this.currentTelemetry.gps.sats;
-            const rssiVal = numbers.length > 10 && !isNaN(numbers[10]) ? numbers[10] : this.currentTelemetry.lora.rssi;
+      const n = (index: number, fallback = 0) => {
+        const value = Number(parts[index]);
+        return Number.isFinite(value) ? value : fallback;
+      };
+      const state = parts[9] as TelemetryData['state'];
+      if (!['WAIT', 'DESC', 'LAND'].includes(state)) return null;
 
-            return {
-              time: timeVal,
-              altitude: { bme: altVal, gps: altVal + 2, diff: 2 },
-              verticalSpeed: this.currentTelemetry.verticalSpeed,
-              acceleration: this.currentTelemetry.acceleration,
-              orientation: { pitch: pitchVal, roll: rollVal, yaw: yawVal },
-              gps: { lat: latVal, lng: lngVal, sats: satsVal },
-              environment: { 
-                temp: tempVal, 
-                pressure: pressVal, 
-                humidity: this.currentTelemetry.environment.humidity, 
-                voc: this.currentTelemetry.environment.voc 
-              },
-              lora: { 
-                rssi: rssiVal, 
-                snr: this.currentTelemetry.lora.snr, 
-                packets: this.status.packetsReceived, 
-                dropped: 0 
-              }
-            };
-          }
-        }
-      }
+      const missionSeconds = parts[1].split(':').reduce((total, value) => total * 60 + Number(value), 0);
+      const requiredAltitude = n(3, this.currentTelemetry.altitude.bme);
+      const barometricAltitude = n(12, requiredAltitude);
+      const temperature = n(15, n(4, this.currentTelemetry.environment.temp));
+      const ax = n(17, n(6));
+      const ay = n(18, n(7));
+      const az = n(19, n(8));
+      const mx = n(23), my = n(24), mz = n(25);
+      const accelTotal = Math.sqrt(ax * ax + ay * ay + az * az);
+      const roll = Math.atan2(ay, az || Number.EPSILON) * 180 / Math.PI;
+      const pitch = Math.atan2(-ax, Math.sqrt(ay * ay + az * az) || Number.EPSILON) * 180 / Math.PI;
+      const yaw = (Math.atan2(my, mx || Number.EPSILON) * 180 / Math.PI + 360) % 360;
+      const previous = this.currentTelemetry;
+      const deltaTime = missionSeconds - previous.time;
+      const verticalSpeed = previous.packetCount > 0 && deltaTime > 0
+        ? (barometricAltitude - previous.altitude.bme) / deltaTime
+        : 0;
+
+      return {
+        time: missionSeconds,
+        missionTime: parts[1],
+        teamId: parts[0],
+        packetCount: Math.trunc(n(2)),
+        state,
+        voltage: n(5),
+        raw: clean,
+        receivedAt: new Date().toISOString(),
+        altitude: { bme: barometricAltitude, gps: requiredAltitude, diff: requiredAltitude - barometricAltitude },
+        verticalSpeed,
+        acceleration: { x: ax, y: ay, z: az, total: accelTotal },
+        orientation: { pitch, roll, yaw },
+        gps: { lat: n(10, previous.gps.lat), lng: n(11, previous.gps.lng), sats: previous.gps.sats },
+        environment: { temp: temperature, pressure: n(13, previous.environment.pressure), humidity: n(16, previous.environment.humidity), voc: n(14, previous.environment.voc) },
+        gyroscope: { x: n(20), y: n(21), z: n(22) },
+        magnetometer: { x: mx, y: my, z: mz },
+        lora: { ...previous.lora, packets: Math.trunc(n(2)), dropped: Math.max(0, Math.trunc(n(2)) - previous.packetCount - 1) + previous.lora.dropped }
+      };
     } catch {
       return null;
     }
@@ -523,20 +573,33 @@ class SerialService {
     this.notifyStatus();
 
     this.addLog(`[SISTEMA] Iniciando simulación de enlace LoRa a ${baudRate} bps...`, 'system');
-    this.addLog(`[SISTEMA] Transmitiendo tramas CanSat sintéticas periódicas...`, 'system');
+    this.addLog(`[SISTEMA] Transmitiendo a 1 Hz la trama oficial TR-02 y sus 16 campos adicionales...`, 'system');
 
     let simIndex = 0;
     this.simulationInterval = window.setInterval(() => {
       simIndex++;
-      const alt = (1600 + Math.sin(simIndex / 10) * 150 + (Math.random() * 5)).toFixed(2);
-      const temp = (21.5 + Math.sin(simIndex / 15) * 2 + (Math.random() * 0.4)).toFixed(2);
-      const press = (835.0 - (parseFloat(alt) - 1600) * 0.1).toFixed(1);
-      const pitch = (Math.sin(simIndex / 8) * 8).toFixed(1);
-      const roll = (Math.cos(simIndex / 6) * 5).toFixed(1);
-      const yaw = ((180 + simIndex * 2) % 360).toFixed(1);
-      const rssi = (-75 - Math.floor(Math.random() * 10)).toString();
-
-      const packet = `$CANSAT,${Date.now()},${alt},${temp},${press},${pitch},${roll},${yaw},19.4208,-102.0628,12,${rssi}`;
+      const elapsed = simIndex;
+      const hh = Math.floor(elapsed / 3600).toString().padStart(2, '0');
+      const mm = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
+      const ss = (elapsed % 60).toString().padStart(2, '0');
+      const altitude = Math.max(0, 50 - Math.max(0, elapsed - 5) * 5.5);
+      const state = elapsed <= 5 ? 'WAIT' : altitude > 0 ? 'DESC' : 'LAND';
+      const temp = 24 - altitude * 0.006;
+      const pressure = 1013.25 * Math.pow(1 - altitude / 44330, 5.255);
+      const ax = Math.sin(elapsed / 4) * 0.08;
+      const ay = Math.cos(elapsed / 5) * 0.06;
+      const az = state === 'LAND' ? 1 : 0.98;
+      const lat = 19.4208 + elapsed * 0.000020;
+      const lng = -102.0628 + elapsed * 0.000010;
+      const packet = [
+        '2026', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '7.42',
+        ax.toFixed(2), ay.toFixed(2), az.toFixed(2), state,
+        lat.toFixed(6), lng.toFixed(6), altitude.toFixed(1), pressure.toFixed(2),
+        (105 + Math.sin(elapsed / 6) * 8).toFixed(1), temp.toFixed(1),
+        (54 + Math.sin(elapsed / 8) * 3).toFixed(1), ax.toFixed(2), ay.toFixed(2), az.toFixed(2),
+        (Math.sin(elapsed / 3) * 2).toFixed(2), (Math.cos(elapsed / 4) * 2).toFixed(2), '0.35',
+        '22.10', '5.40', '-41.20'
+      ].join(',');
       this.handleIncomingLine(packet);
     }, 1000);
   }

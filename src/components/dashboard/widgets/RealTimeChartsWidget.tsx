@@ -1,30 +1,11 @@
 import React from 'react';
 import type { TelemetryData } from '../data/mockTelemetry';
+import { useTelemetryHistory } from '../data/mockTelemetry';
 import { Activity } from 'lucide-react';
 import {
   LineChart, Line, AreaChart, Area, XAxis, YAxis,
   ResponsiveContainer, CartesianGrid, Tooltip
 } from 'recharts';
-
-// Static placeholder data for charts (will be replaced by real data feed)
-const generatePlaceholderData = () => {
-  const points = [];
-  for (let i = 60; i >= 0; i -= 5) {
-    points.push({
-      time: i === 0 ? 'AHORA' : `-${i}s`,
-      rawTime: -i,
-      altitude: 1600 + Math.random() * 30,
-      pressure: 835 - Math.random() * 3,
-      temperature: 21 + Math.random() * 1.5,
-      yaw: 180 + (Math.random() - 0.5) * 5,
-      pitch: (Math.random() - 0.5) * 4,
-      roll: (Math.random() - 0.5) * 3,
-    });
-  }
-  return points;
-};
-
-const chartData = generatePlaceholderData();
 
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
@@ -53,9 +34,10 @@ interface MiniChartProps {
   currentValue: string;
   domain?: [any, any];
   names?: string[];
+  chartData: Array<Record<string, string | number>>;
 }
 
-const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names }: MiniChartProps) => {
+const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names, chartData }: MiniChartProps) => {
   const keys = Array.isArray(dataKey) ? dataKey : [dataKey];
   const chartColors = Array.isArray(colors) ? colors : [colors];
   const chartNames = names || keys;
@@ -134,6 +116,17 @@ const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names }
 };
 
 export const RealTimeChartsWidget = ({ data }: { data: TelemetryData }) => {
+  const history = useTelemetryHistory();
+  const receivedHistory = history.filter(point => point.raw);
+  const chartData = (receivedHistory.length ? receivedHistory : [data]).map(point => ({
+    time: point.missionTime,
+    altitude: point.altitude.bme,
+    pressure: point.environment.pressure,
+    temperature: point.environment.temp,
+    yaw: point.orientation.yaw,
+    pitch: point.orientation.pitch,
+    roll: point.orientation.roll,
+  }));
   return (
     <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 backdrop-blur-md h-full flex flex-col">
       {/* Header */}
@@ -153,6 +146,7 @@ export const RealTimeChartsWidget = ({ data }: { data: TelemetryData }) => {
           unit="m"
           currentValue={data.altitude.bme.toFixed(0)}
           names={['Altitud']}
+          chartData={chartData}
         />
         <MiniChart
           title="PRESIÓN (hPa)"
@@ -161,6 +155,7 @@ export const RealTimeChartsWidget = ({ data }: { data: TelemetryData }) => {
           unit="hPa"
           currentValue={data.environment.pressure.toFixed(0)}
           names={['Presión']}
+          chartData={chartData}
         />
         <MiniChart
           title="TEMPERATURA (°C)"
@@ -169,6 +164,7 @@ export const RealTimeChartsWidget = ({ data }: { data: TelemetryData }) => {
           unit="°C"
           currentValue={data.environment.temp.toFixed(1)}
           names={['Temp']}
+          chartData={chartData}
         />
         <MiniChart
           title="YAW / PITCH / ROLL (°)"
@@ -178,6 +174,7 @@ export const RealTimeChartsWidget = ({ data }: { data: TelemetryData }) => {
           currentValue={data.orientation.yaw.toFixed(1)}
           domain={[-180, 360]}
           names={['Yaw', 'Pitch', 'Roll']}
+          chartData={chartData}
         />
       </div>
     </div>

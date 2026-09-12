@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTelemetryData } from '../data/mockTelemetry';
+import { useTelemetryData, useTelemetryHistory } from '../data/mockTelemetry';
 import {
   Thermometer, Droplets, Gauge, Atom, Mountain,
   Compass
@@ -9,57 +9,60 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart
 } from 'recharts';
 
-// Simulación de datos detallados de trayectoria de vuelo (0s a 90s)
-const generateDetailedFlightData = () => {
-  const points = [];
-  for (let i = 0; i <= 90; i += 3) {
-    let altGps, altBme, pitch, roll, yaw, temp, humidity, pressure, voc;
-
-    if (i <= 45) {
-      const progress = i / 45;
-      altGps = Math.round(1600 + 300 * Math.sin(progress * (Math.PI / 2)) + Math.random() * 10);
-      altBme = altGps - Math.round(Math.random() * 8);
-      pitch = parseFloat((2.5 + Math.sin(i / 5) * 3).toFixed(1));
-      roll = parseFloat((-1.0 + Math.cos(i / 4) * 2.5).toFixed(1));
-      yaw = parseFloat((130 + (i * 0.2) + Math.sin(i / 3) * 2).toFixed(1));
-      temp = parseFloat((22.5 - progress * 2.8 + (Math.random() - 0.5) * 0.2).toFixed(1));
-      humidity = parseFloat((58.0 - progress * 10.0 + (Math.random() - 0.5) * 0.5).toFixed(1));
-      pressure = Math.round(835 - progress * 15);
-      voc = Math.round(95 + progress * 40 + Math.random() * 5);
-    } else {
-      const progress = (i - 45) / 45;
-      altGps = Math.round(1900 - 550 * progress + Math.random() * 12);
-      altBme = altGps - Math.round(Math.random() * 6);
-      pitch = parseFloat((1.8 + Math.sin(i / 6) * 4).toFixed(1));
-      roll = parseFloat((-0.8 + Math.cos(i / 5) * 3).toFixed(1));
-      yaw = parseFloat((138 + (i * 0.15) + Math.sin(i / 4) * 3).toFixed(1));
-      temp = parseFloat((19.7 + progress * 2.1 + (Math.random() - 0.5) * 0.2).toFixed(1));
-      humidity = parseFloat((48.0 + progress * 8.5 + (Math.random() - 0.5) * 0.5).toFixed(1));
-      pressure = Math.round(820 + progress * 11);
-      voc = Math.round(135 - progress * 30 + Math.random() * 6);
-    }
-
-    points.push({
-      time: i,
-      label: `T+${i}s`,
-      altGps,
-      altBme,
-      pitch,
-      roll,
-      yaw,
-      temp,
-      humidity,
-      pressure,
-      voc
-    });
-  }
-  return points;
-};
-
-const flightData = generateDetailedFlightData();
+const VectorTimeChart = ({ title, data, keys, unit }: {
+  title: string;
+  data: Array<Record<string, string | number>>;
+  keys: Array<{ key: string; label: string; color: string }>;
+  unit: string;
+}) => (
+  <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 sm:p-5 h-[320px] flex flex-col">
+    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
+      <h3 className="text-white font-bold text-xs uppercase tracking-wider">{title}</h3>
+      <div className="flex flex-wrap gap-3 text-[9px]">
+        {keys.map(item => <span key={item.key} style={{ color: item.color }}>{item.label} ({unit})</span>)}
+      </div>
+    </div>
+    <div className="flex-1 min-h-0 mt-3">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 6, right: 10, left: -12, bottom: 0 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
+          <XAxis dataKey="label" stroke="rgba(255,255,255,0.35)" fontSize={9} tickLine={false} />
+          <YAxis stroke="rgba(255,255,255,0.35)" fontSize={9} tickLine={false} domain={['auto', 'auto']} />
+          <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
+          {keys.map(item => <Line key={item.key} type="monotone" dataKey={item.key} name={item.label} stroke={item.color} strokeWidth={1.8} dot={false} isAnimationActive={false} />)}
+        </LineChart>
+      </ResponsiveContainer>
+    </div>
+  </div>
+);
 
 export const ChartsView = () => {
   const data = useTelemetryData();
+  const history = useTelemetryHistory();
+  const receivedHistory = history.filter(point => point.raw);
+  const flightData = (receivedHistory.length ? receivedHistory : [data]).map(point => ({
+    time: point.time,
+    label: point.missionTime,
+    altGps: point.altitude.gps,
+    altBme: point.altitude.bme,
+    pitch: point.orientation.pitch,
+    roll: point.orientation.roll,
+    yaw: point.orientation.yaw,
+    temp: point.environment.temp,
+    humidity: point.environment.humidity,
+    pressure: point.environment.pressure,
+    voc: point.environment.voc,
+    voltage: point.voltage,
+    accelX: point.acceleration.x,
+    accelY: point.acceleration.y,
+    accelZ: point.acceleration.z,
+    gyroX: point.gyroscope.x,
+    gyroY: point.gyroscope.y,
+    gyroZ: point.gyroscope.z,
+    magX: point.magnetometer.x,
+    magY: point.magnetometer.y,
+    magZ: point.magnetometer.z,
+  }));
 
   const currentTemp = data.environment.temp || 21.0;
   const currentHumidity = data.environment.humidity || 54.0;
@@ -241,7 +244,7 @@ export const ChartsView = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="label" stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={[1500, 2000]} />
+                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
                 <Area type="monotone" dataKey="altGps" stroke="#38bdf8" strokeWidth={2} fill="url(#altGpsGrad)" isAnimationActive={false} />
                 <Line type="monotone" dataKey="altBme" stroke="#6366f1" strokeWidth={1.5} strokeDasharray="3 3" dot={false} isAnimationActive={false} />
@@ -374,6 +377,24 @@ export const ChartsView = () => {
           </div>
         </div>
 
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <VectorTimeChart title="Acelerómetro por tiempo" data={flightData} unit="g" keys={[
+          { key: 'accelX', label: 'X', color: '#38bdf8' }, { key: 'accelY', label: 'Y', color: '#f97316' }, { key: 'accelZ', label: 'Z', color: '#22c55e' }
+        ]} />
+        <VectorTimeChart title="Giroscopio por tiempo" data={flightData} unit="°/s" keys={[
+          { key: 'gyroX', label: 'X', color: '#38bdf8' }, { key: 'gyroY', label: 'Y', color: '#f97316' }, { key: 'gyroZ', label: 'Z', color: '#22c55e' }
+        ]} />
+        <VectorTimeChart title="Magnetómetro por tiempo" data={flightData} unit="µT" keys={[
+          { key: 'magX', label: 'X', color: '#38bdf8' }, { key: 'magY', label: 'Y', color: '#f97316' }, { key: 'magZ', label: 'Z', color: '#a855f7' }
+        ]} />
+        <VectorTimeChart title="Presión por tiempo" data={flightData} unit="hPa" keys={[
+          { key: 'pressure', label: 'Presión', color: '#22c55e' }
+        ]} />
+        <VectorTimeChart title="Voltaje por tiempo" data={flightData} unit="V" keys={[
+          { key: 'voltage', label: 'Batería', color: '#eab308' }
+        ]} />
       </div>
 
     </div>

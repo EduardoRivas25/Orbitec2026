@@ -1,74 +1,67 @@
 import React from 'react';
 import type { TelemetryData } from '../data/mockTelemetry';
-import { Rocket, ArrowUp, ArrowDown, MapPin, CheckCircle2 } from 'lucide-react';
+import { ArrowDown, CheckCircle2, Clock3, Radio } from 'lucide-react';
+
+const REGULATION_STATES = [
+  { id: 'WAIT', icon: Clock3, description: 'En espera' },
+  { id: 'DESC', icon: ArrowDown, description: 'Descenso' },
+  { id: 'LAND', icon: CheckCircle2, description: 'Aterrizaje' },
+] as const;
 
 export const FlightStatusWidget = ({ data }: { data: TelemetryData }) => {
-  const getPhase = () => {
-    if (data.time < 10) return { label: 'PRE-VUELO', step: 0 };
-    if (data.time < 300) return { label: 'ASCENSO', step: 1 };
-    if (data.time >= 300 && data.time < 310) return { label: 'APOGEO', step: 2 };
-    if (data.time >= 310 && data.time < 700) return { label: 'DESCENSO', step: 3 };
-    return { label: 'ATERRIZAJE', step: 4 };
-  };
-
-  const phase = getPhase();
-  const phases = [
-    { icon: MapPin, label: 'Lanzamiento' },
-    { icon: ArrowUp, label: 'Ascenso' },
-    { icon: Rocket, label: 'Apogeo' },
-    { icon: ArrowDown, label: 'Descenso' },
-    { icon: CheckCircle2, label: 'Aterrizaje' },
-  ];
+  const activeIndex = Math.max(0, REGULATION_STATES.findIndex(item => item.id === data.state));
+  const activeState = REGULATION_STATES[activeIndex];
+  const verticalColor = data.verticalSpeed < 0 ? 'text-[#38bdf8]' : data.verticalSpeed > 0 ? 'text-[#22c55e]' : 'text-white';
 
   return (
     <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-5 h-full flex flex-col justify-between font-mono">
-      <div className="flex justify-between items-start mb-4">
+      <div className="flex justify-between items-start gap-3 mb-6">
         <div>
           <h3 className="text-white/50 text-[10px] font-bold uppercase tracking-wider mb-1 flex items-center gap-1.5">
-            <Rocket size={13} className="text-[#eab308]" /> Estado de Misión
+            <Radio size={13} className="text-[#eab308]" /> Estado de misión · TR-02
           </h3>
           <div className="text-xl font-bold text-[#eab308] flex items-center gap-2">
-            {phase.label}
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#eab308] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#eab308]"></span>
+            {activeState.id}
+            <span className="relative flex h-2.5 w-2.5" aria-label="Estado recibido">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#eab308] opacity-75" />
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-[#eab308]" />
             </span>
           </div>
+          <p className="text-[10px] text-white/35 mt-1 uppercase">{activeState.description}</p>
         </div>
-        <div className="text-right">
-          <div className="text-white/50 text-[10px] font-bold uppercase tracking-wider mb-1">Velocidad Vertical</div>
-          <div className={`text-lg font-bold flex items-center gap-1.5 justify-end ${data.verticalSpeed > 0 ? 'text-[#22c55e]' : data.verticalSpeed < 0 ? 'text-[#eab308]' : 'text-white'}`}>
-            {data.verticalSpeed > 0 ? <ArrowUp size={16} /> : data.verticalSpeed < 0 ? <ArrowDown size={16} /> : null}
+        <div className="text-right shrink-0">
+          <div className="text-white/50 text-[10px] font-bold uppercase tracking-wider mb-1">Velocidad vertical</div>
+          <div className={`text-lg font-bold flex items-center gap-1.5 justify-end ${verticalColor}`}>
+            {data.verticalSpeed < 0 && <ArrowDown size={16} />}
             {Math.abs(data.verticalSpeed).toFixed(1)} m/s
           </div>
         </div>
       </div>
 
-      <div className="relative mt-auto pt-2">
-        <div className="absolute top-1/2 left-0 w-full h-0.5 bg-white/10 -translate-y-1/2 rounded-full"></div>
+      <div className="relative pt-2">
+        <div className="absolute top-[25px] left-[16.66%] right-[16.66%] h-0.5 bg-white/10 rounded-full" />
         <div
-          className="absolute top-1/2 left-0 h-0.5 bg-[#c80a19] -translate-y-1/2 rounded-full transition-all duration-500"
-          style={{ width: `${(phase.step / 4) * 100}%` }}
-        ></div>
-
-        <div className="flex justify-between relative z-10">
-          {phases.map((p, i) => {
-            const Icon = p.icon;
-            const isActive = phase.step >= i;
-            const isCurrent = phase.step === i;
+          className="absolute top-[25px] left-[16.66%] h-0.5 bg-[#eab308] rounded-full transition-all duration-500"
+          style={{ width: `${activeIndex * 33.34}%` }}
+        />
+        <div className="grid grid-cols-3 relative z-10">
+          {REGULATION_STATES.map((item, index) => {
+            const Icon = item.icon;
+            const isCurrent = index === activeIndex;
+            const isComplete = index < activeIndex;
             return (
-              <div key={i} className="flex flex-col items-center gap-1.5">
-                <div className={`w-7 h-7 rounded-full flex items-center justify-center transition-colors border-2 ${
-                  isCurrent 
-                    ? 'bg-[#c80a19] border-[#c80a19] text-white shadow-[0_0_10px_rgba(200,10,25,0.8)]' 
-                    : isActive 
-                      ? 'bg-[#c80a19]/20 border-[#c80a19] text-[#c80a19]' 
+              <div key={item.id} className="flex flex-col items-center gap-1.5">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors border-2 ${
+                  isCurrent
+                    ? 'bg-[#eab308] border-[#eab308] text-black shadow-[0_0_12px_rgba(234,179,8,0.6)]'
+                    : isComplete
+                      ? 'bg-[#eab308]/15 border-[#eab308] text-[#eab308]'
                       : 'bg-black/80 border-white/20 text-white/30'
                 }`}>
-                  <Icon size={12} />
+                  <Icon size={14} />
                 </div>
-                <span className={`text-[9px] uppercase tracking-wider font-semibold ${isActive ? 'text-white/80' : 'text-white/30'}`}>
-                  {p.label}
+                <span className={`text-[10px] tracking-wider font-bold ${isCurrent || isComplete ? 'text-white' : 'text-white/30'}`}>
+                  {item.id}
                 </span>
               </div>
             );

@@ -3,7 +3,7 @@ import {
   Settings, Play, Square, Trash2, Radio, Wifi, AlertCircle, 
   Send, Download, Copy, Check, Search, Cpu, Terminal, 
   ArrowDownCircle, ArrowUpCircle, RefreshCw, Zap, ShieldCheck,
-  Usb, HelpCircle, CheckCircle2, XCircle, Info, Layers
+  Usb, HelpCircle, CheckCircle2, XCircle, Info, Layers, Save
 } from 'lucide-react';
 import { serialService } from '../data/serialService';
 import type { SerialLogItem, SerialStatus, KnownPortInfo } from '../data/serialService';
@@ -112,6 +112,9 @@ export const ConnectionView = () => {
     a.click();
     URL.revokeObjectURL(a);
   };
+
+  const handleExportTelemetry = () => serialService.downloadTelemetryCSV();
+  const handleArmTelemetryFile = () => void serialService.selectTelemetryCSVFile();
 
   // Copiar logs al portapapeles
   const handleCopyLogs = () => {
@@ -521,6 +524,22 @@ export const ConnectionView = () => {
                 <Download size={9} /> EXPORTAR
               </button>
 
+              <button
+                onClick={handleArmTelemetryFile}
+                className="px-2 py-1 bg-[#38bdf8]/10 text-[#38bdf8] border border-[#38bdf8]/30 rounded hover:bg-[#38bdf8]/20 transition-colors uppercase font-bold tracking-wider flex items-center gap-1 cursor-pointer"
+                title="Elegir una vez el archivo que se actualizará con cada paquete"
+              >
+                <Save size={9} /> ARMAR CSV AUTO
+              </button>
+
+              <button
+                onClick={handleExportTelemetry}
+                className="px-2 py-1 bg-[#22c55e]/10 text-[#22c55e] border border-[#22c55e]/30 rounded hover:bg-[#22c55e]/20 transition-colors uppercase font-bold tracking-wider flex items-center gap-1 cursor-pointer"
+                title="Descargar toda la telemetría registrada en CSV"
+              >
+                <Download size={9} /> EXPORTAR TODAS CSV
+              </button>
+
               {/* Botón Limpiar */}
               <button 
                 onClick={() => serialService.clearLogs()}
@@ -543,7 +562,7 @@ export const ConnectionView = () => {
                     : 'Consola lista. Conecta tu Arduino por USB para comenzar la captura.'}
                 </span>
                 <span className="text-[10px] text-white/20 font-sans">
-                  Formatos soportados: Serial.println(texto), CSV ($CANSAT,time,alt,temp...), JSON
+                  Formato: TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,ACCEL_X,ACCEL_Y,ACCEL_Z,STATE + carga útil
                 </span>
               </div>
             ) : (

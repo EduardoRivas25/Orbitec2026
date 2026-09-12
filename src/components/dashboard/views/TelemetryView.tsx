@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useTelemetryData } from '../data/mockTelemetry';
+import { useTelemetryData, useTelemetryHistory } from '../data/mockTelemetry';
 import { FlightStatusWidget } from '../widgets/FlightStatusWidget';
 import { SensorStatusWidget } from '../widgets/SensorStatusWidget';
 import { 
@@ -8,18 +8,18 @@ import {
 
 export const TelemetryView = () => {
   const data = useTelemetryData();
+  const history = useTelemetryHistory();
   const [viewMode, setViewMode] = useState<'decoded' | 'raw'>('decoded');
   const [searchTerm, setSearchTerm] = useState('');
 
-  // Generación de tramas de telemetría más ricas y detalladas
-  const rawFrames = [
-    { id: 108, time: '12:01:30', alt: data.altitude.bme, vSpeed: data.verticalSpeed, temp: data.environment.temp, press: data.environment.pressure, pitch: data.orientation.pitch, roll: data.orientation.roll, yaw: data.orientation.yaw, lat: data.gps.lat, lng: data.gps.lng, sats: data.gps.sats, rssi: data.lora.rssi, status: 'NOMINAL' },
-    { id: 107, time: '12:01:20', alt: data.altitude.bme - 0.2, vSpeed: data.verticalSpeed, temp: data.environment.temp - 0.1, press: data.environment.pressure + 0.2, pitch: data.orientation.pitch - 0.1, roll: data.orientation.roll + 0.2, yaw: data.orientation.yaw - 0.5, lat: data.gps.lat, lng: data.gps.lng, sats: data.gps.sats, rssi: data.lora.rssi - 1, status: 'NOMINAL' },
-    { id: 106, time: '12:01:10', alt: data.altitude.bme - 0.6, vSpeed: data.verticalSpeed, temp: data.environment.temp - 0.2, press: data.environment.pressure + 0.6, pitch: data.orientation.pitch - 0.3, roll: data.orientation.roll - 0.1, yaw: data.orientation.yaw - 1.0, lat: data.gps.lat, lng: data.gps.lng, sats: data.gps.sats, rssi: data.lora.rssi, status: 'NOMINAL' },
-    { id: 105, time: '12:01:00', alt: data.altitude.bme - 1.1, vSpeed: data.verticalSpeed, temp: data.environment.temp - 0.3, press: data.environment.pressure + 1.1, pitch: data.orientation.pitch + 0.2, roll: data.orientation.roll - 0.4, yaw: data.orientation.yaw - 1.2, lat: data.gps.lat, lng: data.gps.lng, sats: data.gps.sats, rssi: data.lora.rssi + 2, status: 'NOMINAL' },
-    { id: 104, time: '12:00:50', alt: data.altitude.bme - 1.8, vSpeed: data.verticalSpeed, temp: data.environment.temp - 0.4, press: data.environment.pressure + 1.8, pitch: data.orientation.pitch, roll: data.orientation.roll, yaw: data.orientation.yaw, lat: data.gps.lat, lng: data.gps.lng, sats: data.gps.sats - 1, rssi: data.lora.rssi, status: 'NOMINAL' },
-    { id: 103, time: '12:00:40', alt: data.altitude.bme - 2.5, vSpeed: data.verticalSpeed, temp: data.environment.temp - 0.5, press: data.environment.pressure + 2.5, pitch: data.orientation.pitch - 0.5, roll: data.orientation.roll + 0.5, yaw: data.orientation.yaw - 0.8, lat: data.gps.lat, lng: data.gps.lng, sats: data.gps.sats - 1, rssi: data.lora.rssi - 2, status: 'NOMINAL' },
-  ];
+  const rawFrames = history.filter(frame => frame.raw).slice().reverse().map(frame => ({
+    id: frame.packetCount, time: frame.missionTime, teamId: frame.teamId,
+    alt: frame.altitude.bme, vSpeed: frame.verticalSpeed, temp: frame.environment.temp,
+    press: frame.environment.pressure, pitch: frame.orientation.pitch,
+    roll: frame.orientation.roll, yaw: frame.orientation.yaw, lat: frame.gps.lat,
+    lng: frame.gps.lng, sats: frame.gps.sats, rssi: frame.lora.rssi,
+    voltage: frame.voltage, status: frame.state, raw: frame.raw
+  }));
 
   const filteredFrames = rawFrames.filter(frame => 
     frame.id.toString().includes(searchTerm) || 
@@ -155,7 +155,8 @@ export const TelemetryView = () => {
               <thead>
                 <tr className="bg-black/80 border-b border-white/10 text-white/40 text-[10px] uppercase tracking-wider font-bold">
                   <th className="p-3">PAQUETE #</th>
-                  <th className="p-3">TIMESTAMP</th>
+                  <th className="p-3">MISSION TIME</th>
+                  <th className="p-3">TEAM ID</th>
                   <th className="p-3">ALTITUD (BME)</th>
                   <th className="p-3">VELOCIDAD V.</th>
                   <th className="p-3">TEMP</th>
@@ -163,7 +164,8 @@ export const TelemetryView = () => {
                   <th className="p-3">PITCH / ROLL / YAW</th>
                   <th className="p-3">COORDENADAS GPS</th>
                   <th className="p-3">RSSI</th>
-                  <th className="p-3 text-right">CHECKSUM</th>
+                  <th className="p-3">VOLTAJE</th>
+                  <th className="p-3 text-right">ESTADO</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -171,6 +173,7 @@ export const TelemetryView = () => {
                   <tr key={frame.id} className="hover:bg-white/5 transition-colors">
                     <td className="p-3 font-bold text-white">#{frame.id}</td>
                     <td className="p-3 text-white/60">{frame.time}</td>
+                    <td className="p-3 text-white/60">{frame.teamId}</td>
                     <td className="p-3 font-bold text-[#38bdf8]">{frame.alt.toFixed(1)} m</td>
                     <td className="p-3 font-bold text-[#22c55e]">{frame.vSpeed.toFixed(1)} m/s</td>
                     <td className="p-3 text-[#eab308] font-bold">{frame.temp.toFixed(1)} °C</td>
@@ -178,6 +181,7 @@ export const TelemetryView = () => {
                     <td className="p-3 text-white/60">{frame.pitch.toFixed(1)}° / {frame.roll.toFixed(1)}° / {frame.yaw.toFixed(1)}°</td>
                     <td className="p-3 text-white/80">{frame.lat.toFixed(4)}, {frame.lng.toFixed(4)} <span className="text-white/30 text-[9px]">({frame.sats} SAT)</span></td>
                     <td className="p-3 text-white/50">{frame.rssi} dBm</td>
+                    <td className="p-3 text-white/70">{frame.voltage.toFixed(2)} V</td>
                     <td className="p-3 text-right">
                       <span className="bg-[#22c55e]/15 text-[#22c55e] border border-[#22c55e]/30 px-2 py-0.5 rounded text-[9px] font-bold tracking-wider uppercase">
                         {frame.status}
@@ -194,7 +198,7 @@ export const TelemetryView = () => {
               <div key={frame.id} className="hover:bg-white/5 p-2 rounded transition-colors flex items-center justify-between border-b border-white/5">
                 <div>
                   <span className="text-white/30 mr-2">#{frame.id} [{frame.time}]</span>
-                  <span className="text-[#22c55e] font-medium">$CANSAT,{Date.now()},{frame.alt.toFixed(2)},{frame.vSpeed.toFixed(2)},{frame.temp.toFixed(2)},{frame.press.toFixed(2)},{frame.pitch.toFixed(1)},{frame.roll.toFixed(1)},{frame.yaw.toFixed(1)},{frame.lat.toFixed(5)},{frame.lng.toFixed(5)},{frame.sats},*CRC32_OK</span>
+                  <span className="text-[#22c55e] font-medium">{frame.raw}</span>
                 </div>
                 <span className="text-[9px] text-white/30 uppercase tracking-widest border border-white/10 px-2 py-0.5 rounded bg-white/5">CSV RAW</span>
               </div>

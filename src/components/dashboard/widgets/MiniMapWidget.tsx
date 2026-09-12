@@ -1,10 +1,13 @@
 import React, { useRef } from 'react';
-import type { TelemetryData } from '../data/mockTelemetry';
+import { useTelemetryHistory, type TelemetryData } from '../data/mockTelemetry';
 import { Map as MapIcon, Crosshair, Navigation, MapPin } from 'lucide-react';
-import { Map, MapMarker, MapControls } from '../../ui/map';
+import { Map, MapMarker, MapControls, Source, Layer } from '../../ui/map';
 
 export const MiniMapWidget = ({ data }: { data: TelemetryData }) => {
   const mapRef = useRef<any>(null);
+  const history = useTelemetryHistory();
+  const routeCoordinates = history.filter(point => point.raw).map(point => [point.gps.lng, point.gps.lat]);
+  const routeGeoJson = { type: 'Feature' as const, properties: {}, geometry: { type: 'LineString' as const, coordinates: routeCoordinates } };
 
   const recenter = () => {
     if (mapRef.current) {
@@ -52,6 +55,11 @@ export const MiniMapWidget = ({ data }: { data: TelemetryData }) => {
           style={{ width: '100%', height: 'calc(100% - 48px)' }}
         >
           <MapControls />
+          {routeCoordinates.length >= 2 && (
+            <Source id="mini-cansat-route" type="geojson" data={routeGeoJson}>
+              <Layer id="mini-cansat-route-line" type="line" paint={{ 'line-color': '#38bdf8', 'line-width': 3, 'line-opacity': 0.9 }} />
+            </Source>
+          )}
           <MapMarker longitude={data.gps.lng} latitude={data.gps.lat} color="#c80a19" />
         </Map>
       </div>
