@@ -163,7 +163,7 @@ export const ConnectionView = () => {
               Conexión Serial USB / LoRa
               {status.isSimulating && (
                 <span className="text-[10px] font-mono px-2 py-0.5 bg-[#eab308]/20 border border-[#eab308]/40 text-[#eab308] rounded-md uppercase font-bold tracking-wider">
-                  Modo Virtual
+                  Modo prueba
                 </span>
               )}
             </h1>
@@ -383,7 +383,7 @@ export const ConnectionView = () => {
               }`}
             >
               <Zap size={12} className={status.isSimulating ? 'text-[#eab308]' : ''} />
-              {status.isSimulating ? 'Detener Modo Virtual' : 'Probar con Datos Sintéticos (Demo)'}
+              {status.isSimulating ? 'Detener prueba' : 'Iniciar prueba de telemetría'}
             </button>
 
             {!status.isConnected && !status.isSimulating && (

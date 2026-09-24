@@ -430,13 +430,14 @@ class SerialService {
       }
       this.addLog(rawLine, 'telemetry');
       const fireRisk = evaluateForestFireRisk(this.telemetryHistory);
-      if (fireRisk.active && !this.fireAlertActive) {
+      const shouldRaiseFireAlert = !this.status.isSimulating && fireRisk.active;
+      if (shouldRaiseFireAlert && !this.fireAlertActive) {
         const detail = fireRisk.reason === 'rapid-rise'
           ? `incremento brusco de +${fireRisk.increase.toFixed(0)} unidades`
           : `lectura de ${fireRisk.voc.toFixed(0)} unidades`;
         this.addLog(`[ALERTA] Posible incendio forestal: ${detail} de gas/VOC. Verificar con los demás sensores.`, 'error');
       }
-      this.fireAlertActive = fireRisk.active;
+      this.fireAlertActive = shouldRaiseFireAlert;
       // Persistencia automática local para no perder la captura al cambiar de pestaña
       // o recargar accidentalmente la interfaz durante la misión.
       if (typeof localStorage !== 'undefined') {
@@ -597,7 +598,7 @@ class SerialService {
     }
   }
 
-  // Modo Simulación de Prueba (para cuando no hay Arduino físico conectado)
+  // Modo de prueba estable (para cuando no hay Arduino físico conectado)
   public startSimulation(baudRate: number = 9600) {
     if (this.status.isConnected) {
       this.disconnect();
@@ -605,14 +606,14 @@ class SerialService {
 
     this.status.isSimulating = true;
     this.status.isConnected = true;
-    this.status.portName = 'Simulador LoRa SX1278 (Virtual)';
+    this.status.portName = 'Enlace de prueba LoRa SX1278';
     this.status.baudRate = baudRate;
     this.status.startTime = Date.now();
     this.status.error = null;
     this.notifyStatus();
 
-    this.addLog(`[SISTEMA] Iniciando simulación de enlace LoRa a ${baudRate} bps...`, 'system');
-    this.addLog(`[SISTEMA] Transmitiendo a 1 Hz el formato real de 21 campos de la estación...`, 'system');
+    this.addLog(`[SISTEMA] Iniciando prueba de enlace LoRa a ${baudRate} bps...`, 'system');
+    this.addLog(`[SISTEMA] Transmitiendo a 1 Hz el formato real de 21 campos con valores estables...`, 'system');
 
     let simIndex = 0;
     this.simulationInterval = window.setInterval(() => {
@@ -621,26 +622,27 @@ class SerialService {
       const hh = Math.floor(elapsed / 3600).toString().padStart(2, '0');
       const mm = Math.floor((elapsed % 3600) / 60).toString().padStart(2, '0');
       const ss = (elapsed % 60).toString().padStart(2, '0');
-      const altitude = Math.max(0, 50 - Math.max(0, elapsed - 5) * 5.5);
-      const state = elapsed <= 5 ? 'WAIT' : altitude > 0 ? 'DESC' : 'LAND';
-      const temp = 24 - altitude * 0.006;
-      const pressure = 1013.25 * Math.pow(1 - altitude / 44330, 5.255);
-      const ax = Math.sin(elapsed / 4) * 0.08;
-      const ay = Math.cos(elapsed / 5) * 0.06;
-      const az = state === 'LAND' ? 1 : 0.98;
-      const lat = 19.4208 + elapsed * 0.000020;
-      const lng = -102.0628 + elapsed * 0.000010;
-      // Episodio de prueba para validar la alerta forestal desde el dashboard.
-      const simulatedGas = elapsed >= 25 && elapsed < 35
-        ? 23000 + Math.sin(elapsed) * 800
-        : 15400 + Math.sin(elapsed / 6) * 180;
+      // Variaciones discretas alrededor de una estación inmóvil y con sensores sanos.
+      const noisePattern = [0, 1, -1, 2, 0, -2, 1, 0, -1, 1];
+      const phase = (simIndex - 1) % noisePattern.length;
+      const jitter = noisePattern[phase];
+      const altitude = 0.1 * jitter;
+      const state = 'WAIT';
+      const temp = 25.4 + 0.1 * jitter;
+      const pressure = 836.40 - 0.01 * jitter;
+      const ax = 0.01 * jitter;
+      const ay = jitter === 0 ? 0 : -0.01 * jitter;
+      const az = phase === 3 ? 1.01 : 1.00;
+      const lat = 19.477270 + 0.000001 * jitter;
+      const lng = -102.074700 - 0.000001 * jitter;
+      const simulatedGas = 15400 + 5 * phase;
       const packet = [
-        '0001', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '8.12',
+        '0001', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '4.00',
         ax.toFixed(2), ay.toFixed(2), az.toFixed(2), state,
         lat.toFixed(6), lng.toFixed(6), pressure.toFixed(2),
-        (55 + Math.sin(elapsed / 8) * 1.5).toFixed(1), simulatedGas.toFixed(0),
-        (Math.sin(elapsed / 3) * 2).toFixed(2), (Math.cos(elapsed / 4) * 2).toFixed(2), '0.35',
-        '26.50', '-7.70', '35.10'
+        (55 + 0.1 * jitter).toFixed(1), simulatedGas.toFixed(0),
+        (0.01 * jitter).toFixed(2), (-0.01 * jitter).toFixed(2), phase === 4 ? '0.01' : '0.00',
+        (26.4 + 0.1 * jitter).toFixed(2), (-7.8 + 0.1 * jitter).toFixed(2), (35.2 - 0.1 * jitter).toFixed(2)
       ].join(',');
       this.handleIncomingLine(packet);
     }, 1000);
@@ -654,7 +656,7 @@ class SerialService {
     this.status.isSimulating = false;
     this.status.isConnected = false;
     this.status.startTime = null;
-    this.addLog('[SISTEMA] Simulación detenida.', 'system');
+    this.addLog('[SISTEMA] Prueba de telemetría detenida.', 'system');
     this.notifyStatus();
   }
 }

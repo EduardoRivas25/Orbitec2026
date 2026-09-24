@@ -16,6 +16,7 @@ export const OverviewView = () => {
   const history = useTelemetryHistory();
   const { isConnected, isSimulating, portName, baudRate } = useSerialStatus();
   const fireRisk = evaluateForestFireRisk(history);
+  const showFireAlert = fireRisk.active && !isSimulating;
   const stateStyle = {
     WAIT: 'bg-amber-400/10 border-amber-400/30 text-amber-300',
     DESC: 'bg-sky-400/10 border-sky-400/30 text-sky-300',
@@ -57,7 +58,7 @@ export const OverviewView = () => {
           >
             <div className="flex flex-col items-start leading-tight">
               <span className="text-[8px] text-white/30 flex items-center gap-1">
-                ENLACE {isSimulating && <span className="text-[#eab308]">(VIRTUAL)</span>}
+                ENLACE {isSimulating && <span className="text-[#eab308]">(PRUEBA)</span>}
               </span>
               <span className="flex items-center gap-1.5 mt-0.5">
                 <span className="relative flex h-1.5 w-1.5">
@@ -92,7 +93,7 @@ export const OverviewView = () => {
         </div>
       </div>
 
-      {fireRisk.active && (
+      {showFireAlert && (
         <div
           role="alert"
           aria-live="assertive"
@@ -148,7 +149,7 @@ export const OverviewView = () => {
           FILA 3: MINI-CARDS DE SENSORES (7 columnas)
           Sensores recibidos en la trama: ambiental, altitud y potencia
           ═══════════════════════════════════════════════════════ */}
-      <SensorCardsRow data={data} connected={isConnected} gasAlert={fireRisk.active} />
+      <SensorCardsRow data={data} connected={isConnected} gasAlert={showFireAlert} />
 
       {/* ═══════════════════════════════════════════════════════
           FILA 4: CONTENIDO PRINCIPAL (3 columnas)
