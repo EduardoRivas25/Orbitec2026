@@ -6,8 +6,9 @@ import {
 } from 'lucide-react';
 import {
   ResponsiveContainer, AreaChart, Area, LineChart, Line,
-  XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart
+  XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, ReferenceLine
 } from 'recharts';
+import { FIRE_VOC_WARNING_PPM } from '../data/fireRisk';
 
 const VectorTimeChart = ({ title, data, keys, unit }: {
   title: string;
@@ -39,7 +40,9 @@ const VectorTimeChart = ({ title, data, keys, unit }: {
 export const ChartsView = () => {
   const data = useTelemetryData();
   const history = useTelemetryHistory();
-  const receivedHistory = history.filter(point => point.raw);
+  // Cada trama recibida agrega un punto. Limitamos solo la ventana visual para
+  // que Recharts permanezca fluido durante misiones largas.
+  const receivedHistory = history.filter(point => point.raw).slice(-300);
   const flightData = (receivedHistory.length ? receivedHistory : [data]).map(point => ({
     time: point.time,
     label: point.missionTime,
@@ -64,10 +67,10 @@ export const ChartsView = () => {
     magZ: point.magnetometer.z,
   }));
 
-  const currentTemp = data.environment.temp || 21.0;
-  const currentHumidity = data.environment.humidity || 54.0;
-  const currentPressure = data.environment.pressure || 831;
-  const currentVoc = data.environment.voc || 118;
+  const currentTemp = data.environment.temp;
+  const currentHumidity = data.environment.humidity;
+  const currentPressure = data.environment.pressure;
+  const currentVoc = data.environment.voc;
 
   return (
     <div className="space-y-4 pb-12 font-mono">
@@ -369,8 +372,9 @@ export const ChartsView = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="label" stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={[80, 160]} />
+                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
+                <ReferenceLine y={FIRE_VOC_WARNING_PPM} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'ALERTA', fill: '#ef4444', fontSize: 9 }} />
                 <Area type="monotone" dataKey="voc" stroke="#a855f7" strokeWidth={2} fill="url(#vocMainGrad)" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>

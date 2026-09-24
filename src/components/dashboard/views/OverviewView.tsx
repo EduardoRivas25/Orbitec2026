@@ -1,5 +1,6 @@
 import React from 'react';
-import { useTelemetryData, useSerialStatus } from '../data/mockTelemetry';
+import { useTelemetryData, useTelemetryHistory, useSerialStatus } from '../data/mockTelemetry';
+import { evaluateForestFireRisk } from '../data/fireRisk';
 import { AltimeterWidget } from '../widgets/AltimeterWidget';
 import { MiniMapWidget } from '../widgets/MiniMapWidget';
 import { ArtificialHorizonWidget } from '../widgets/ArtificialHorizonWidget';
@@ -8,11 +9,13 @@ import { SensorCardsRow } from '../widgets/SensorCardsRow';
 import { RealTimeChartsWidget } from '../widgets/RealTimeChartsWidget';
 import { MissionDataWidget } from '../widgets/MissionDataWidget';
 import { DashboardFooter } from '../widgets/DashboardFooter';
-import { Clock, Radio } from 'lucide-react';
+import { Clock, Flame, Radio, TriangleAlert } from 'lucide-react';
 
 export const OverviewView = () => {
   const data = useTelemetryData();
+  const history = useTelemetryHistory();
   const { isConnected, isSimulating, portName, baudRate } = useSerialStatus();
+  const fireRisk = evaluateForestFireRisk(history);
   const stateStyle = {
     WAIT: 'bg-amber-400/10 border-amber-400/30 text-amber-300',
     DESC: 'bg-sky-400/10 border-sky-400/30 text-sky-300',
@@ -89,6 +92,42 @@ export const OverviewView = () => {
         </div>
       </div>
 
+      {fireRisk.active && (
+        <div
+          role="alert"
+          aria-live="assertive"
+          className={`relative overflow-hidden rounded-xl border px-4 py-3 shadow-2xl ${
+            fireRisk.critical
+              ? 'border-red-400/70 bg-red-950/80'
+              : 'border-orange-400/60 bg-orange-950/70'
+          }`}
+        >
+          <div className="absolute inset-y-0 left-0 w-1.5 bg-red-500 animate-pulse" />
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-3">
+              <div className="rounded-lg border border-red-400/40 bg-red-500/15 p-2 text-red-300">
+                <Flame size={22} />
+              </div>
+              <div>
+                <div className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-red-200">
+                  <TriangleAlert size={16} /> Alerta de incendio forestal
+                </div>
+                <p className="mt-1 text-[11px] text-red-100/70">
+                  {fireRisk.reason === 'rapid-rise'
+                    ? `El gas/VOC aumentó ${fireRisk.increase.toFixed(0)} ppm respecto al promedio reciente.`
+                    : `La concentración de gas/VOC alcanzó ${fireRisk.voc.toFixed(0)} ppm.`}
+                  {' '}Confirma el evento con temperatura, humedad y ubicación GPS.
+                </p>
+              </div>
+            </div>
+            <div className="rounded-lg border border-red-300/25 bg-black/25 px-4 py-2 text-center font-mono">
+              <div className="text-[9px] uppercase text-red-100/50">Gas / VOC actual</div>
+              <div className="text-xl font-bold text-red-200">{fireRisk.voc.toFixed(0)} ppm</div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* ═══════════════════════════════════════════════════════
           FILA 2: INSTRUMENTOS PRINCIPALES (3 columnas)
           Horizonte Artificial | Brújula | Altímetro
@@ -109,7 +148,7 @@ export const OverviewView = () => {
           FILA 3: MINI-CARDS DE SENSORES (7 columnas)
           Sensores recibidos en la trama: ambiental, altitud y potencia
           ═══════════════════════════════════════════════════════ */}
-      <SensorCardsRow data={data} connected={isConnected} />
+      <SensorCardsRow data={data} connected={isConnected} gasAlert={fireRisk.active} />
 
       {/* ═══════════════════════════════════════════════════════
           FILA 4: CONTENIDO PRINCIPAL (3 columnas)

@@ -62,7 +62,7 @@ const sensorCards: SensorCard[] = [
   },
 ];
 
-export const SensorCardsRow = ({ data, connected = false }: { data: TelemetryData; connected?: boolean }) => {
+export const SensorCardsRow = ({ data, connected = false, gasAlert = false }: { data: TelemetryData; connected?: boolean; gasAlert?: boolean }) => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
       {sensorCards.map((card) => {
@@ -75,7 +75,7 @@ export const SensorCardsRow = ({ data, connected = false }: { data: TelemetryDat
         return (
           <div
             key={card.id}
-            className="bg-[#0d0d0d] border border-white/10 rounded-lg px-3 py-2.5 flex flex-col items-center justify-center gap-1 hover:border-white/20 transition-colors group min-w-0"
+            className={`bg-[#0d0d0d] border rounded-lg px-3 py-2.5 flex flex-col items-center justify-center gap-1 transition-colors group min-w-0 ${card.id === 'voc' && gasAlert ? 'border-red-400/70 bg-red-950/30 animate-pulse' : 'border-white/10 hover:border-white/20'}`}
           >
             {/* Icon + Label */}
             <div className="flex items-center gap-1.5">

@@ -119,13 +119,9 @@ export const Map = React.forwardRef<any, ComponentMapProps>(
       defaultLng = longitude;
       defaultLat = latitude;
     } else if (center && Array.isArray(center) && center.length === 2) {
-      if (Math.abs(center[0]) > Math.abs(center[1])) {
-        defaultLng = center[0];
-        defaultLat = center[1];
-      } else {
-        defaultLat = center[0];
-        defaultLng = center[1];
-      }
+      // MapLibre usa siempre el orden [longitud, latitud].
+      defaultLng = center[0];
+      defaultLat = center[1];
     }
 
     const [viewState, setViewState] = useState({

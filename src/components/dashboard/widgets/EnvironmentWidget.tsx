@@ -1,36 +1,19 @@
 import React from 'react';
-import type { TelemetryData } from '../data/mockTelemetry';
+import { useTelemetryHistory, type TelemetryData } from '../data/mockTelemetry';
 import { Thermometer, Wind, Droplets, FlaskConical, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
+import { evaluateForestFireRisk } from '../data/fireRisk';
 
 export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
-  // Datos extendidos para gráficas amplias y legibles
-  const tempData = [
-    { t: '12:00:00', value: 21.0 },
-    { t: '12:00:10', value: 21.1 },
-    { t: '12:00:20', value: 21.3 },
-    { t: '12:00:30', value: 21.4 },
-    { t: '12:00:40', value: 21.5 },
-    { t: '12:00:50', value: 21.5 }
-  ];
-
-  const pressData = [
-    { t: '12:00:00', value: 837.0 },
-    { t: '12:00:10', value: 836.5 },
-    { t: '12:00:20', value: 836.0 },
-    { t: '12:00:30', value: 835.5 },
-    { t: '12:00:40', value: 835.2 },
-    { t: '12:00:50', value: 835.0 }
-  ];
-
-  const vocData = [
-    { t: '12:00:00', value: 105 },
-    { t: '12:00:10', value: 107 },
-    { t: '12:00:20', value: 109 },
-    { t: '12:00:30', value: 112 },
-    { t: '12:00:40', value: 111 },
-    { t: '12:00:50', value: 110 }
-  ];
+  const history = useTelemetryHistory();
+  const received = history.filter(frame => frame.raw).slice(-120);
+  const frames = received.length ? received : [data];
+  const tempData = frames.map(frame => ({ t: frame.missionTime, value: frame.environment.temp }));
+  const pressData = frames.map(frame => ({ t: frame.missionTime, value: frame.environment.pressure }));
+  const vocData = frames.map(frame => ({ t: frame.missionTime, value: frame.environment.voc }));
+  const fireRisk = evaluateForestFireRisk(history);
+  const previousTemperature = frames.at(-2)?.environment.temp ?? data.environment.temp;
+  const temperatureRising = data.environment.temp >= previousTemperature;
 
   const CustomTooltip = ({ active, payload, label, unit, color }: any) => {
     if (active && payload && payload.length) {
@@ -83,7 +66,7 @@ export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
               </div>
             </div>
             <span className="flex items-center gap-1 text-[10px] font-mono text-[#22c55e] bg-[#22c55e]/10 border border-[#22c55e]/30 px-2 py-0.5 rounded">
-              <TrendingUp size={12} /> ESTABLE
+              {temperatureRising ? <TrendingUp size={12} /> : <TrendingDown size={12} />} TRAMA ACTUAL
             </span>
           </div>
 
@@ -152,8 +135,8 @@ export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
                 {data.environment.voc.toFixed(0)} <span className="text-sm font-normal text-white/50">ppm</span>
               </div>
             </div>
-            <span className="text-[10px] font-mono text-[#22c55e] bg-[#22c55e]/10 border border-[#22c55e]/30 px-2 py-0.5 rounded">
-              IAQ BUENO
+            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${fireRisk.active ? 'text-red-300 bg-red-500/15 border-red-400/40' : 'text-[#22c55e] bg-[#22c55e]/10 border-[#22c55e]/30'}`}>
+              {fireRisk.active ? 'ALERTA INCENDIO' : 'NIVEL NORMAL'}
             </span>
           </div>
 

@@ -117,7 +117,8 @@ const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names, 
 
 export const RealTimeChartsWidget = ({ data }: { data: TelemetryData }) => {
   const history = useTelemetryHistory();
-  const receivedHistory = history.filter(point => point.raw);
+  // Ventana móvil: una muestra por trama y un máximo acotado para mantener 60 fps.
+  const receivedHistory = history.filter(point => point.raw).slice(-120);
   const chartData = (receivedHistory.length ? receivedHistory : [data]).map(point => ({
     time: point.missionTime,
     altitude: point.altitude.bme,

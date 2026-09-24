@@ -73,8 +73,13 @@ export const CanSatAssembly = ({ orientation, wireframe, showInternalPcb, showAx
     return new THREE.Vector2(.23 * Math.sin(t) * (1 + .16 * Math.cos(t)), -.32 * Math.cos(t));
   }), []);
 
-  useFrame(() => {
-    body.current?.rotation.set(THREE.MathUtils.degToRad(orientation.pitch), THREE.MathUtils.degToRad(orientation.yaw), THREE.MathUtils.degToRad(orientation.roll), 'YXZ');
+  useFrame((_, delta) => {
+    if (!body.current) return;
+    const smoothing = 8;
+    body.current.rotation.order = 'YXZ';
+    body.current.rotation.x = THREE.MathUtils.damp(body.current.rotation.x, THREE.MathUtils.degToRad(orientation.pitch), smoothing, delta);
+    body.current.rotation.y = THREE.MathUtils.damp(body.current.rotation.y, THREE.MathUtils.degToRad(orientation.yaw), smoothing, delta);
+    body.current.rotation.z = THREE.MathUtils.damp(body.current.rotation.z, THREE.MathUtils.degToRad(orientation.roll), smoothing, delta);
   });
 
   const metal = <meshStandardMaterial color="#343e49" metalness={.45} roughness={.55} wireframe={wireframe} />;

@@ -1,5 +1,6 @@
 import type { TelemetryData } from './telemetryTypes';
 import { INITIAL_TELEMETRY_DATA } from './telemetryTypes';
+import { evaluateForestFireRisk } from './fireRisk';
 
 export interface SerialLogItem {
   id: string;
@@ -79,6 +80,7 @@ class SerialService {
   private currentTelemetry: TelemetryData = { ...INITIAL_TELEMETRY_DATA };
   private telemetryHistory: TelemetryData[] = [{ ...INITIAL_TELEMETRY_DATA }];
   private telemetryArchive: TelemetryData[] = [];
+  private fireAlertActive = false;
 
   private statusListeners: Set<StatusListener> = new Set();
   private logListeners: Set<LogListener> = new Set();
@@ -373,7 +375,7 @@ class SerialService {
             this.status.bytesReceived += value.length;
             lineBuffer += value;
 
-            const lines = lineBuffer.split(/\r?\n/);
+            const lines = lineBuffer.split(/\r\n|\n|\r/);
             // El último elemento puede ser una línea incompleta, la dejamos en el buffer
             lineBuffer = lines.pop() || '';
 
@@ -419,6 +421,14 @@ class SerialService {
         this.telemetryHistory = this.telemetryHistory.slice(this.telemetryHistory.length - 7200);
       }
       this.addLog(rawLine, 'telemetry');
+      const fireRisk = evaluateForestFireRisk(this.telemetryHistory);
+      if (fireRisk.active && !this.fireAlertActive) {
+        const detail = fireRisk.reason === 'rapid-rise'
+          ? `incremento brusco de +${fireRisk.increase.toFixed(0)} ppm`
+          : `concentración de ${fireRisk.voc.toFixed(0)} ppm`;
+        this.addLog(`[ALERTA] Posible incendio forestal: ${detail} de gas/VOC. Verificar con los demás sensores.`, 'error');
+      }
+      this.fireAlertActive = fireRisk.active;
       // Persistencia automática local para no perder la captura al cambiar de pestaña
       // o recargar accidentalmente la interfaz durante la misión.
       if (typeof localStorage !== 'undefined') {
@@ -430,6 +440,9 @@ class SerialService {
       // Mensaje de texto estándar del Arduino / receptor LoRa
       this.addLog(rawLine, 'rx');
     }
+    // El lector físico ya informa bytes por bloque, pero la simulación también
+    // necesita publicar el contador de paquetes después de cada trama.
+    this.notifyStatus();
   }
 
   // Trama oficial (TR-01/TR-02) + carga útil secundaria anexada al final:
@@ -440,11 +453,12 @@ class SerialService {
   private parseTelemetryLine(line: string): TelemetryData | null {
     try {
       if (!line.includes(',')) return null;
-      const clean = line.replace(/^\$(CANSAT|ORBITEC),?/, '').trim();
+      const clean = line.replace(/^\$(CANSAT|ORBITEC),?/i, '').trim();
       const parts = clean.split(',').map(value => value.trim());
       if (parts.length < 26 || !/^\d{4}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
 
       const n = (index: number, fallback = 0) => {
+        if (parts[index] === undefined || parts[index] === '') return fallback;
         const value = Number(parts[index]);
         return Number.isFinite(value) ? value : fallback;
       };
@@ -469,6 +483,11 @@ class SerialService {
         ? (barometricAltitude - previous.altitude.bme) / deltaTime
         : 0;
 
+      const latitude = n(10, previous.gps.lat);
+      const longitude = n(11, previous.gps.lng);
+      const validLatitude = latitude >= -90 && latitude <= 90 ? latitude : previous.gps.lat;
+      const validLongitude = longitude >= -180 && longitude <= 180 ? longitude : previous.gps.lng;
+
       return {
         time: missionSeconds,
         missionTime: parts[1],
@@ -482,7 +501,7 @@ class SerialService {
         verticalSpeed,
         acceleration: { x: ax, y: ay, z: az, total: accelTotal },
         orientation: { pitch, roll, yaw },
-        gps: { lat: n(10, previous.gps.lat), lng: n(11, previous.gps.lng), sats: previous.gps.sats },
+        gps: { lat: validLatitude, lng: validLongitude, sats: previous.gps.sats },
         environment: { temp: temperature, pressure: n(13, previous.environment.pressure), humidity: n(16, previous.environment.humidity), voc: n(14, previous.environment.voc) },
         gyroscope: { x: n(20), y: n(21), z: n(22) },
         magnetometer: { x: mx, y: my, z: mz },
@@ -591,11 +610,15 @@ class SerialService {
       const az = state === 'LAND' ? 1 : 0.98;
       const lat = 19.4208 + elapsed * 0.000020;
       const lng = -102.0628 + elapsed * 0.000010;
+      // Episodio de prueba para validar la alerta forestal desde el dashboard.
+      const simulatedVoc = elapsed >= 25 && elapsed < 35
+        ? 380 + Math.sin(elapsed) * 20
+        : 105 + Math.sin(elapsed / 6) * 8;
       const packet = [
         '2026', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '7.42',
         ax.toFixed(2), ay.toFixed(2), az.toFixed(2), state,
         lat.toFixed(6), lng.toFixed(6), altitude.toFixed(1), pressure.toFixed(2),
-        (105 + Math.sin(elapsed / 6) * 8).toFixed(1), temp.toFixed(1),
+        simulatedVoc.toFixed(1), temp.toFixed(1),
         (54 + Math.sin(elapsed / 8) * 3).toFixed(1), ax.toFixed(2), ay.toFixed(2), az.toFixed(2),
         (Math.sin(elapsed / 3) * 2).toFixed(2), (Math.cos(elapsed / 4) * 2).toFixed(2), '0.35',
         '22.10', '5.40', '-41.20'

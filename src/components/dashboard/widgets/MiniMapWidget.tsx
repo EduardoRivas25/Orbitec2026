@@ -6,7 +6,10 @@ import { Map, MapMarker, MapControls, Source, Layer } from '../../ui/map';
 export const MiniMapWidget = ({ data }: { data: TelemetryData }) => {
   const mapRef = useRef<any>(null);
   const history = useTelemetryHistory();
-  const routeCoordinates = history.filter(point => point.raw).map(point => [point.gps.lng, point.gps.lat]);
+  const routeCoordinates = history
+    .filter(point => point.raw && Number.isFinite(point.gps.lat) && Number.isFinite(point.gps.lng))
+    .slice(-1000)
+    .map(point => [point.gps.lng, point.gps.lat]);
   const routeGeoJson = { type: 'Feature' as const, properties: {}, geometry: { type: 'LineString' as const, coordinates: routeCoordinates } };
 
   const recenter = () => {
