@@ -114,15 +114,15 @@ export const OverviewView = () => {
                 </div>
                 <p className="mt-1 text-[11px] text-red-100/70">
                   {fireRisk.reason === 'rapid-rise'
-                    ? `El gas/VOC aumentó ${fireRisk.increase.toFixed(0)} ppm respecto al promedio reciente.`
-                    : `La concentración de gas/VOC alcanzó ${fireRisk.voc.toFixed(0)} ppm.`}
+                    ? `La lectura de gas aumentó ${fireRisk.increase.toFixed(0)} unidades respecto al promedio reciente.`
+                    : `La lectura del sensor de gas alcanzó ${fireRisk.voc.toFixed(0)} unidades.`}
                   {' '}Confirma el evento con temperatura, humedad y ubicación GPS.
                 </p>
               </div>
             </div>
             <div className="rounded-lg border border-red-300/25 bg-black/25 px-4 py-2 text-center font-mono">
-              <div className="text-[9px] uppercase text-red-100/50">Gas / VOC actual</div>
-              <div className="text-xl font-bold text-red-200">{fireRisk.voc.toFixed(0)} ppm</div>
+              <div className="text-[9px] uppercase text-red-100/50">Sensor de gas actual</div>
+              <div className="text-xl font-bold text-red-200">{fireRisk.voc.toFixed(0)} u.</div>
             </div>
           </div>
         </div>

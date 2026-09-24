@@ -67,7 +67,7 @@ class SerialService {
     isConnected: false,
     isConnecting: false,
     portName: '',
-    baudRate: 115200,
+    baudRate: 9600,
     packetsReceived: 0,
     bytesReceived: 0,
     bytesSent: 0,
@@ -144,8 +144,16 @@ class SerialService {
   }
 
   public getTelemetryCSV(): string {
-    const header = 'RECEIVED_AT,TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,ALTITUDE_PRESSURE,PRESSURE,VOC,TEMPERATURE_SECONDARY,HUMIDITY,ACCEL_X_SECONDARY,ACCEL_Y_SECONDARY,ACCEL_Z_SECONDARY,GYRO_X,GYRO_Y,GYRO_Z,MAG_X,MAG_Y,MAG_Z';
-    const rows = this.telemetryArchive.map(item => `${item.receivedAt},${item.raw}`);
+    const header = 'RECEIVED_AT,TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,PRESSURE,HUMIDITY,GAS,GYRO_X,GYRO_Y,GYRO_Z,MAG_X,MAG_Y,MAG_Z';
+    const rows = this.telemetryArchive.map(item => [
+      item.receivedAt, item.teamId, item.missionTime, item.packetCount,
+      item.altitude.bme, item.environment.temp, item.voltage,
+      item.acceleration.x, item.acceleration.y, item.acceleration.z, item.state,
+      item.gps.lat, item.gps.lng, item.environment.pressure,
+      item.environment.humidity, item.environment.voc,
+      item.gyroscope.x, item.gyroscope.y, item.gyroscope.z,
+      item.magnetometer.x, item.magnetometer.y, item.magnetometer.z,
+    ].join(','));
     return [header, ...rows].join('\n');
   }
 
@@ -276,7 +284,7 @@ class SerialService {
     }
   }
 
-  public async requestAndConnect(baudRate: number = 115200): Promise<boolean> {
+  public async requestAndConnect(baudRate: number = 9600): Promise<boolean> {
     if (!this.isSupported()) {
       this.addLog('[ERROR] Web Serial API no soportada en este navegador. Utiliza Google Chrome o Microsoft Edge.', 'error');
       return false;
@@ -305,7 +313,7 @@ class SerialService {
     }
   }
 
-  public async connectWithPort(selectedPort: any, baudRate: number = 115200): Promise<boolean> {
+  public async connectWithPort(selectedPort: any, baudRate: number = 9600): Promise<boolean> {
     if (this.status.isSimulating) {
       this.stopSimulation();
     }
@@ -424,8 +432,8 @@ class SerialService {
       const fireRisk = evaluateForestFireRisk(this.telemetryHistory);
       if (fireRisk.active && !this.fireAlertActive) {
         const detail = fireRisk.reason === 'rapid-rise'
-          ? `incremento brusco de +${fireRisk.increase.toFixed(0)} ppm`
-          : `concentración de ${fireRisk.voc.toFixed(0)} ppm`;
+          ? `incremento brusco de +${fireRisk.increase.toFixed(0)} unidades`
+          : `lectura de ${fireRisk.voc.toFixed(0)} unidades`;
         this.addLog(`[ALERTA] Posible incendio forestal: ${detail} de gas/VOC. Verificar con los demás sensores.`, 'error');
       }
       this.fireAlertActive = fireRisk.active;
@@ -445,7 +453,12 @@ class SerialService {
     this.notifyStatus();
   }
 
-  // Trama oficial (TR-01/TR-02) + carga útil secundaria anexada al final:
+  // Formato real de 21 campos recibido por la estación:
+  // TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,
+  // ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,PRESSURE,
+  // HUMIDITY,GAS,GYRO_X,GYRO_Y,GYRO_Z,MAG_X,MAG_Y,MAG_Z
+  //
+  // También se conserva compatibilidad con la trama extendida de 26 campos:
   // TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,
   // ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,ALTITUDE_PRESSURE,
   // PRESSURE,VOC,TEMPERATURE_SECONDARY,HUMIDITY,ACCEL_X_SECONDARY,
@@ -455,7 +468,7 @@ class SerialService {
       if (!line.includes(',')) return null;
       const clean = line.replace(/^\$(CANSAT|ORBITEC),?/i, '').trim();
       const parts = clean.split(',').map(value => value.trim());
-      if (parts.length < 26 || !/^\d{4}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
+      if (parts.length < 21 || !/^\d{4}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
 
       const n = (index: number, fallback = 0) => {
         if (parts[index] === undefined || parts[index] === '') return fallback;
@@ -466,13 +479,20 @@ class SerialService {
       if (!['WAIT', 'DESC', 'LAND'].includes(state)) return null;
 
       const missionSeconds = parts[1].split(':').reduce((total, value) => total * 60 + Number(value), 0);
+      const isExtendedFrame = parts.length >= 26;
       const requiredAltitude = n(3, this.currentTelemetry.altitude.bme);
-      const barometricAltitude = n(12, requiredAltitude);
-      const temperature = n(15, n(4, this.currentTelemetry.environment.temp));
-      const ax = n(17, n(6));
-      const ay = n(18, n(7));
-      const az = n(19, n(8));
-      const mx = n(23), my = n(24), mz = n(25);
+      const barometricAltitude = isExtendedFrame ? n(12, requiredAltitude) : requiredAltitude;
+      const temperature = isExtendedFrame ? n(15, n(4, this.currentTelemetry.environment.temp)) : n(4, this.currentTelemetry.environment.temp);
+      const ax = isExtendedFrame ? n(17, n(6)) : n(6);
+      const ay = isExtendedFrame ? n(18, n(7)) : n(7);
+      const az = isExtendedFrame ? n(19, n(8)) : n(8);
+      const pressure = isExtendedFrame ? n(13, this.currentTelemetry.environment.pressure) : n(12, this.currentTelemetry.environment.pressure);
+      const humidity = isExtendedFrame ? n(16, this.currentTelemetry.environment.humidity) : n(13, this.currentTelemetry.environment.humidity);
+      const gas = n(14, this.currentTelemetry.environment.voc);
+      const gyroStart = isExtendedFrame ? 20 : 15;
+      const magStart = isExtendedFrame ? 23 : 18;
+      const gx = n(gyroStart), gy = n(gyroStart + 1), gz = n(gyroStart + 2);
+      const mx = n(magStart), my = n(magStart + 1), mz = n(magStart + 2);
       const accelTotal = Math.sqrt(ax * ax + ay * ay + az * az);
       const roll = Math.atan2(ay, az || Number.EPSILON) * 180 / Math.PI;
       const pitch = Math.atan2(-ax, Math.sqrt(ay * ay + az * az) || Number.EPSILON) * 180 / Math.PI;
@@ -502,8 +522,8 @@ class SerialService {
         acceleration: { x: ax, y: ay, z: az, total: accelTotal },
         orientation: { pitch, roll, yaw },
         gps: { lat: validLatitude, lng: validLongitude, sats: previous.gps.sats },
-        environment: { temp: temperature, pressure: n(13, previous.environment.pressure), humidity: n(16, previous.environment.humidity), voc: n(14, previous.environment.voc) },
-        gyroscope: { x: n(20), y: n(21), z: n(22) },
+        environment: { temp: temperature, pressure, humidity, voc: gas },
+        gyroscope: { x: gx, y: gy, z: gz },
         magnetometer: { x: mx, y: my, z: mz },
         lora: { ...previous.lora, packets: Math.trunc(n(2)), dropped: Math.max(0, Math.trunc(n(2)) - previous.packetCount - 1) + previous.lora.dropped }
       };
@@ -578,7 +598,7 @@ class SerialService {
   }
 
   // Modo Simulación de Prueba (para cuando no hay Arduino físico conectado)
-  public startSimulation(baudRate: number = 115200) {
+  public startSimulation(baudRate: number = 9600) {
     if (this.status.isConnected) {
       this.disconnect();
     }
@@ -592,7 +612,7 @@ class SerialService {
     this.notifyStatus();
 
     this.addLog(`[SISTEMA] Iniciando simulación de enlace LoRa a ${baudRate} bps...`, 'system');
-    this.addLog(`[SISTEMA] Transmitiendo a 1 Hz la trama oficial TR-02 y sus 16 campos adicionales...`, 'system');
+    this.addLog(`[SISTEMA] Transmitiendo a 1 Hz el formato real de 21 campos de la estación...`, 'system');
 
     let simIndex = 0;
     this.simulationInterval = window.setInterval(() => {
@@ -611,17 +631,16 @@ class SerialService {
       const lat = 19.4208 + elapsed * 0.000020;
       const lng = -102.0628 + elapsed * 0.000010;
       // Episodio de prueba para validar la alerta forestal desde el dashboard.
-      const simulatedVoc = elapsed >= 25 && elapsed < 35
-        ? 380 + Math.sin(elapsed) * 20
-        : 105 + Math.sin(elapsed / 6) * 8;
+      const simulatedGas = elapsed >= 25 && elapsed < 35
+        ? 23000 + Math.sin(elapsed) * 800
+        : 15400 + Math.sin(elapsed / 6) * 180;
       const packet = [
-        '2026', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '7.42',
+        '0001', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '8.12',
         ax.toFixed(2), ay.toFixed(2), az.toFixed(2), state,
-        lat.toFixed(6), lng.toFixed(6), altitude.toFixed(1), pressure.toFixed(2),
-        simulatedVoc.toFixed(1), temp.toFixed(1),
-        (54 + Math.sin(elapsed / 8) * 3).toFixed(1), ax.toFixed(2), ay.toFixed(2), az.toFixed(2),
+        lat.toFixed(6), lng.toFixed(6), pressure.toFixed(2),
+        (55 + Math.sin(elapsed / 8) * 1.5).toFixed(1), simulatedGas.toFixed(0),
         (Math.sin(elapsed / 3) * 2).toFixed(2), (Math.cos(elapsed / 4) * 2).toFixed(2), '0.35',
-        '22.10', '5.40', '-41.20'
+        '26.50', '-7.70', '35.10'
       ].join(',');
       this.handleIncomingLine(packet);
     }, 1000);

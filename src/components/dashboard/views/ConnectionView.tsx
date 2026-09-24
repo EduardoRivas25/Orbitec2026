@@ -14,7 +14,7 @@ export const ConnectionView = () => {
   const [status, setStatus] = useState<SerialStatus>(() => serialService.getStatus());
   const [logs, setLogs] = useState<SerialLogItem[]>(() => serialService.getLogs());
   const [authorizedPorts, setAuthorizedPorts] = useState<KnownPortInfo[]>([]);
-  const [selectedBaud, setSelectedBaud] = useState<string>('115200');
+  const [selectedBaud, setSelectedBaud] = useState<string>('9600');
   const [commandInput, setCommandInput] = useState<string>('');
   const [isPaused, setIsPaused] = useState<boolean>(false);
   const [autoScroll, setAutoScroll] = useState<boolean>(true);
@@ -58,7 +58,7 @@ export const ConnectionView = () => {
     if (status.isConnected) {
       await serialService.disconnect();
     } else {
-      const baud = parseInt(selectedBaud, 10) || 115200;
+      const baud = parseInt(selectedBaud, 10) || 9600;
       const success = await serialService.requestAndConnect(baud);
       if (success) {
         const ports = await serialService.getAuthorizedPorts();
@@ -72,7 +72,7 @@ export const ConnectionView = () => {
     if (status.isConnected) {
       await serialService.disconnect();
     }
-    const baud = parseInt(selectedBaud, 10) || 115200;
+    const baud = parseInt(selectedBaud, 10) || 9600;
     await serialService.connectWithPort(portInfo.port, baud);
   };
 
@@ -81,7 +81,7 @@ export const ConnectionView = () => {
     if (status.isSimulating) {
       serialService.stopSimulation();
     } else {
-      const baud = parseInt(selectedBaud, 10) || 115200;
+      const baud = parseInt(selectedBaud, 10) || 9600;
       serialService.startSimulation(baud);
     }
   };
@@ -268,11 +268,11 @@ export const ConnectionView = () => {
                     disabled={status.isConnected || status.isConnecting}
                     className="w-full rounded-lg border border-white/15 bg-black/80 px-3 py-2 text-xs text-white focus:outline-none focus:ring-1 focus:ring-[#38bdf8] focus:border-[#38bdf8] disabled:opacity-40 appearance-none transition-all shadow-inner font-mono cursor-pointer"
                   >
-                    <option value="9600">9600 bps (Arduino Básico)</option>
+                    <option value="9600">9600 bps (Receptor LoRa actual)</option>
                     <option value="19200">19200 bps</option>
                     <option value="38400">38400 bps</option>
                     <option value="57600">57600 bps</option>
-                    <option value="115200">115200 bps (LoRa / ESP32 Recomendado)</option>
+                    <option value="115200">115200 bps (ESP32 alta velocidad)</option>
                     <option value="230400">230400 bps</option>
                     <option value="460800">460800 bps</option>
                     <option value="921600">921600 bps</option>

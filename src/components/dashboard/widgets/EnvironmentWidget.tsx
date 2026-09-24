@@ -129,10 +129,10 @@ export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
           <div className="flex items-start justify-between mb-3">
             <div>
               <div className="flex items-center gap-1.5 text-xs text-white/50 font-semibold font-mono uppercase">
-                <FlaskConical size={16} className="text-[#22c55e]" /> VOC / Calidad Aire
+                <FlaskConical size={16} className="text-[#22c55e]" /> Sensor de Gas
               </div>
               <div className="text-2xl font-bold font-mono text-[#22c55e] mt-1">
-                {data.environment.voc.toFixed(0)} <span className="text-sm font-normal text-white/50">ppm</span>
+                {data.environment.voc.toFixed(0)} <span className="text-sm font-normal text-white/50">u.</span>
               </div>
             </div>
             <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${fireRisk.active ? 'text-red-300 bg-red-500/15 border-red-400/40' : 'text-[#22c55e] bg-[#22c55e]/10 border-[#22c55e]/30'}`}>
@@ -152,7 +152,7 @@ export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
                 <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
                 <XAxis dataKey="t" stroke="#ffffff40" fontSize={9} tickLine={false} dy={5} />
                 <YAxis domain={['dataMin - 2', 'dataMax + 2']} stroke="#ffffff40" fontSize={9} tickLine={false} />
-                <Tooltip content={<CustomTooltip unit="ppm" color="#22c55e" />} />
+                <Tooltip content={<CustomTooltip unit="u." color="#22c55e" />} />
                 <Area type="monotone" dataKey="value" stroke="#22c55e" strokeWidth={2.5} fillOpacity={1} fill="url(#gradVoc)" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>

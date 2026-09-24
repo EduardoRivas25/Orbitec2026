@@ -46,10 +46,10 @@ const sensorCards: SensorCard[] = [
   },
   {
     id: 'voc',
-    label: 'GAS / VOC',
+    label: 'GAS',
     icon: Wind,
     getValue: (d, hasFrame) => hasFrame ? d.environment.voc.toFixed(0) : '---',
-    getUnit: () => 'VOC',
+    getUnit: () => 'u.',
     color: '#f97316',
   },
   {

@@ -1,9 +1,11 @@
 import type { TelemetryData } from './telemetryTypes';
 
-export const FIRE_VOC_WARNING_PPM = 300;
-export const FIRE_VOC_CRITICAL_PPM = 500;
-export const FIRE_VOC_RAPID_RISE_PPM = 80;
-export const FIRE_VOC_RAPID_RISE_FACTOR = 1.5;
+// La trama transmite la lectura cruda del sensor de gas, no una conversión a ppm.
+// Estos valores pueden calibrarse cuando se disponga de mediciones de campo.
+export const FIRE_GAS_WARNING_VALUE = 20000;
+export const FIRE_GAS_CRITICAL_VALUE = 30000;
+export const FIRE_GAS_RAPID_RISE_VALUE = 2500;
+export const FIRE_GAS_RAPID_RISE_FACTOR = 1.2;
 
 export interface FireRiskAssessment {
   active: boolean;
@@ -27,10 +29,10 @@ export function evaluateForestFireRisk(history: TelemetryData[]): FireRiskAssess
     : null;
   const increase = baseline === null ? 0 : current - baseline;
   const rapidRise = previous.length >= 3
-    && increase >= FIRE_VOC_RAPID_RISE_PPM
-    && current >= baseline * FIRE_VOC_RAPID_RISE_FACTOR;
-  const critical = current >= FIRE_VOC_CRITICAL_PPM;
-  const high = current >= FIRE_VOC_WARNING_PPM;
+    && increase >= FIRE_GAS_RAPID_RISE_VALUE
+    && current >= baseline * FIRE_GAS_RAPID_RISE_FACTOR;
+  const critical = current >= FIRE_GAS_CRITICAL_VALUE;
+  const high = current >= FIRE_GAS_WARNING_VALUE;
 
   return {
     active: critical || high || rapidRise,

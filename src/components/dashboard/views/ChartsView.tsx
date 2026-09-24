@@ -8,7 +8,7 @@ import {
   ResponsiveContainer, AreaChart, Area, LineChart, Line,
   XAxis, YAxis, CartesianGrid, Tooltip, ComposedChart, ReferenceLine
 } from 'recharts';
-import { FIRE_VOC_WARNING_PPM } from '../data/fireRisk';
+import { FIRE_GAS_WARNING_VALUE } from '../data/fireRisk';
 
 const VectorTimeChart = ({ title, data, keys, unit }: {
   title: string;
@@ -169,10 +169,10 @@ export const ChartsView = () => {
         <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-3.5 flex flex-col justify-between h-[130px] relative overflow-hidden">
           <div>
             <div className="flex items-center gap-1.5 text-[9px] text-[#a855f7] font-bold uppercase tracking-wider">
-              <Atom size={14} className="text-[#a855f7]" /> PARTÍCULAS VOC
+              <Atom size={14} className="text-[#a855f7]" /> SENSOR DE GAS
             </div>
             <div className="text-2xl font-bold text-[#a855f7] mt-1">
-              {currentVoc} <span className="text-xs text-white/50 font-normal">ppm</span>
+              {currentVoc} <span className="text-xs text-white/50 font-normal">u.</span>
             </div>
             <div className="text-[9px] text-white/40 font-semibold mt-0.5">
               CALIDAD DEL AIRE
@@ -349,13 +349,13 @@ export const ChartsView = () => {
             <div className="flex items-center gap-2">
               <Atom className="text-[#a855f7]" size={18} />
               <h3 className="text-white font-bold text-xs uppercase tracking-wider">
-                Concentración de Partículas VOC
+                Lectura del Sensor de Gas
               </h3>
             </div>
             <div className="flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] flex-wrap">
               <div className="flex items-center gap-1.5">
                 <span className="w-3 h-0.5 bg-[#a855f7]" />
-                <span className="text-white/60">CONCENTRACIÓN VOC (ppm)</span>
+                <span className="text-white/60">LECTURA GAS (valor crudo)</span>
               </div>
             </div>
           </div>
@@ -374,7 +374,7 @@ export const ChartsView = () => {
                 <XAxis dataKey="label" stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} />
                 <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
-                <ReferenceLine y={FIRE_VOC_WARNING_PPM} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'ALERTA', fill: '#ef4444', fontSize: 9 }} />
+                <ReferenceLine y={FIRE_GAS_WARNING_VALUE} stroke="#ef4444" strokeDasharray="4 4" label={{ value: 'ALERTA', fill: '#ef4444', fontSize: 9 }} />
                 <Area type="monotone" dataKey="voc" stroke="#a855f7" strokeWidth={2} fill="url(#vocMainGrad)" isAnimationActive={false} />
               </AreaChart>
             </ResponsiveContainer>
