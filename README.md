@@ -57,11 +57,13 @@ La página de especificaciones presenta como referencia un cuerpo de **115 mm de
 
 Estas son las **tres fotografías reales** incorporadas al proyecto. Muestran la evolución del prototipo que se conecta con la estación de tierra para enviar información al dashboard.
 
-<div align="center">
+<p align="center">
   <img src="public/cansat_fisico/Impresion%203D%20Colmena.jpg" alt="Carcasa impresa en 3D con patrón de colmena y escudo de ORBITEC" width="225">
-  <img src="public/cansat_fisico/vista%20de%20pcbs.jpg" alt="Vista cercana de las placas electrónicas apiladas del CanSat" width="335">
-  <img src="public/cansat_fisico/vista%20pcbs%20con%20estacion%20de%20carga%20util%20y%20estacion%20de%20tierra.jpg" alt="Prototipo, carga útil y estación de tierra ORBITEC" width="335">
-</div>
+</p>
+<p align="center">
+  <img src="public/cansat_fisico/vista%20de%20pcbs.jpg" alt="Vista cercana de las placas electrónicas apiladas del CanSat" width="48%">
+  <img src="public/cansat_fisico/vista%20pcbs%20con%20estacion%20de%20carga%20util%20y%20estacion%20de%20tierra.jpg" alt="Prototipo, carga útil y estación de tierra ORBITEC" width="48%">
+</p>
 
 | Vista | Qué se aprecia |
 | :-- | :-- |
@@ -143,7 +145,7 @@ La sección del equipo en la web presenta a **Eduardo** (software), **Jaime** y 
 
 ## 📄 Licencia
 
-Este repositorio aún no incluye un archivo `LICENSE`. Para reutilizar código, imágenes o elementos de identidad visual fuera de este proyecto, consulta primero con el equipo ORBITEC.
+**Todos los derechos reservados.** ORBITEC creó este proyecto con fines educativos, pero su publicación no autoriza a otras personas a usar, copiar, modificar, distribuir o explotar su material original, ya sea con fines comerciales, educativos o de cualquier otro tipo. Para cualquier uso por terceros se requiere **permiso previo, expreso y por escrito** de las personas titulares de los derechos. Consulta el archivo [LICENSE](LICENSE) y contacta al [equipo ORBITEC](https://github.com/OrbitecUruapan) para solicitar autorización. Las dependencias, fuentes y otros materiales de terceros conservan sus propias licencias.
 
 ---
 
