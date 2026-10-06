@@ -1,312 +1,153 @@
-<p align="center">
-  <img src="https://res.cloudinary.com/pwwxj8hf/image/upload/v1785352240/logo_cansat2026-final1_xvqgvl.png" width="260" alt="ORBITEC Logo"/>
-</p>
+<div align="center">
 
-<h1 align="center">
-🚀 ORBITEC • NightRaptor CanSat Mission
-</h1>
+<img src="public/logo-texto-cansat2026-cropped.webp" alt="ORBITEC CanSat Team" width="440">
 
-<p align="center">
-<b>Explorar. Innovar. Inspirar.</b>
-</p>
+<br><br>
 
-<p align="center">
+<img src="public/astronauta.webp" alt="Astronauta de la página de acceso" width="145">&nbsp;&nbsp;&nbsp;<img src="public/logo%20cansat2026-final1_sbg.webp" alt="Escudo de ORBITEC" width="245">
 
-![Astro](https://img.shields.io/badge/Astro-5-FF5D01?style=for-the-badge&logo=astro)
+<h1>🚀 NightRaptor · CanSat 2026</h1>
 
-![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4-38BDF8?style=for-the-badge&logo=tailwindcss)
+<p><strong>Explorar. Innovar. Inspirar.</strong></p>
 
-![React](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react)
+<p>Una misión estudiantil para observar el entorno, seguir el vuelo y explorar la detección temprana de incendios forestales.</p>
 
-![Arduino](https://img.shields.io/badge/Arduino-C++-00979D?style=for-the-badge&logo=arduino)
+<p><a href="#-la-misión">La misión</a> · <a href="#-el-cansat-físico">El CanSat real</a> · <a href="#-estación-de-tierra-y-dashboard">Dashboard</a> · <a href="#-inicio-rápido">Inicio rápido</a></p>
 
-![LoRa](https://img.shields.io/badge/LoRa-Telemetry-blue?style=for-the-badge)
+<br>
 
-![GPS](https://img.shields.io/badge/GPS-Live-green?style=for-the-badge)
+<img alt="Astro" src="https://img.shields.io/badge/Astro-7-BC52EE?style=for-the-badge&amp;logo=astro&amp;logoColor=white">
+<img alt="React" src="https://img.shields.io/badge/React-19-149ECA?style=for-the-badge&amp;logo=react&amp;logoColor=white">
+<img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind_CSS-4-06B6D4?style=for-the-badge&amp;logo=tailwindcss&amp;logoColor=white">
+<img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&amp;logo=typescript&amp;logoColor=white">
+<img alt="Arduino" src="https://img.shields.io/badge/Arduino-Nano_ESP32-00878F?style=for-the-badge&amp;logo=arduino&amp;logoColor=white">
 
-![3D Printing](https://img.shields.io/badge/3D%20Printed-PLA%20CF-orange?style=for-the-badge)
+<br>
 
-</p>
+<img alt="LoRa" src="https://img.shields.io/badge/LoRa-Telemetria-C8102E?style=flat-square">
+<img alt="Web Serial" src="https://img.shields.io/badge/Web_Serial-USB-2563EB?style=flat-square">
+<img alt="Three.js" src="https://img.shields.io/badge/Three.js-Visor_3D-111111?style=flat-square&amp;logo=threedotjs&amp;logoColor=white">
+<img alt="MapLibre" src="https://img.shields.io/badge/MapLibre-Mapas-396CB2?style=flat-square&amp;logo=maplibre&amp;logoColor=white">
+<img alt="Recharts" src="https://img.shields.io/badge/Recharts-Graficas-EC4899?style=flat-square">
 
----
-
-# 🌎 ¿Qué es ORBITEC?
-
-ORBITEC es un equipo multidisciplinario del **Instituto Tecnológico Superior de Uruapan** dedicado al diseño y desarrollo de tecnologías espaciales, sistemas embebidos y plataformas CanSat.
-
-Nuestro objetivo es aplicar ingeniería, programación, electrónica y diseño mecánico para desarrollar soluciones que contribuyan a la sociedad mediante tecnologías aeroespaciales.
+</div>
 
 ---
 
-# 🚀 NightRaptor
+## 🌎 ¿Quiénes somos?
 
-NightRaptor es nuestro CanSat de última generación.
+**ORBITEC** es un equipo multidisciplinario del **Instituto Tecnológico Superior de Uruapan (ITSU)** que desarrolla tecnología espacial mediante la plataforma CanSat. Reunimos electrónica, programación y diseño mecánico para aprender haciendo y crear proyectos con impacto positivo.
 
-Su misión principal consiste en la **detección temprana de incendios forestales**, obteniendo información ambiental durante su descenso para apoyar la protección del medio ambiente.
+## 🌲 La misión
 
-El sistema integra:
+**NightRaptor** es nuestro CanSat 2026. Durante el descenso, su objetivo es recopilar datos ambientales y de vuelo para investigar señales que puedan ayudar a la **detección temprana de incendios forestales**. El dashboard presenta las lecturas y una alerta de posible riesgo basada en gas/VOC; una alerta requiere confirmación con el resto de los sensores y la ubicación.
 
-- 🌡 Temperatura
-- 💧 Humedad
-- 🌬 Presión atmosférica
-- 📍 GPS
-- 🧭 Magnetómetro
-- 📈 Acelerómetro
-- 🔄 Giroscopio
-- 📡 Telemetría LoRa
-- 🪂 Sistema de despliegue de paracaídas
-- 💾 Registro de datos
+| Subsistema | Función en la misión |
+| :-- | :-- |
+| **BME688** | Temperatura, presión, humedad y lectura de gas/VOC. |
+| **BNO085** | Movimiento y orientación mediante acelerómetro, giroscopio y magnetómetro. |
+| **GPS NEO-6M** | Coordenadas para ubicar y recuperar el CanSat. |
+| **LoRa** | Enlace de telemetría con la estación de tierra. |
+| **Arduino Nano ESP32** | Control del sistema y adquisición de datos. |
+| **Paracaídas y estructura impresa en 3D** | Descenso controlado y protección de la electrónica. |
 
----
+La página de especificaciones presenta como referencia un cuerpo de **115 mm de altura**, **66 mm de diámetro**, **300 g** y batería de **3.7 V**. Estas cifras describen el diseño mostrado en la web y pueden cambiar durante la integración física.
 
-# 🌌 Sitio Web Oficial
+## 📸 El CanSat físico
 
-Este repositorio contiene el desarrollo completo del sitio web oficial de ORBITEC.
+Estas son las **tres fotografías reales** incorporadas al proyecto. Muestran la evolución del prototipo que se conecta con la estación de tierra para enviar información al dashboard.
 
-La plataforma combina una página informativa con una estación de tierra completamente funcional.
+<div align="center">
+  <img src="public/cansat_fisico/Impresion%203D%20Colmena.jpg" alt="Carcasa impresa en 3D con patrón de colmena y escudo de ORBITEC" width="225">
+  <img src="public/cansat_fisico/vista%20de%20pcbs.jpg" alt="Vista cercana de las placas electrónicas apiladas del CanSat" width="335">
+  <img src="public/cansat_fisico/vista%20pcbs%20con%20estacion%20de%20carga%20util%20y%20estacion%20de%20tierra.jpg" alt="Prototipo, carga útil y estación de tierra ORBITEC" width="335">
+</div>
 
-## La web incluye
+| Vista | Qué se aprecia |
+| :-- | :-- |
+| [Carcasa de colmena](public/cansat_fisico/Impresion%203D%20Colmena.jpg) | Estructura exterior impresa en 3D. |
+| [Electrónica apilada](public/cansat_fisico/vista%20de%20pcbs.jpg) | Placas circulares, cableado y módulos del prototipo. |
+| [CanSat y estación de tierra](public/cansat_fisico/vista%20pcbs%20con%20estacion%20de%20carga%20util%20y%20estacion%20de%20tierra.jpg) | Conjunto físico y equipo receptor. |
 
-- Landing Page inspirada en NASA
-- Historia del equipo
-- ¿Qué es un CanSat?
-- Componentes del NightRaptor
-- Diseño 3D interactivo
-- Animaciones espaciales
-- Información del proyecto
-- Equipo de desarrollo
-- Patrocinadores
-- Galería
-- Misiones
-- Blog
-- Contacto
+## 🛰 Estación de tierra y dashboard
 
----
+El repositorio incluye una web informativa en `/`, una pantalla de acceso en `/login` y el panel de misión en `/dashboard`. La pantalla de acceso lleva al panel, pero **todavía no implementa autenticación real**.
 
-# 🛰 Ground Station Dashboard
+    CanSat → enlace LoRa → receptor de la estación de tierra
+           → USB / puerto serie → navegador (Web Serial) → dashboard
+                                                  └── historial y exportación CSV
 
-Uno de los principales módulos del proyecto es una estación de tierra completamente web.
+En la vista **Conexión LoRa**, el operador selecciona el puerto USB y la velocidad que corresponda al receptor; la opción inicial es **9600 bps**. Cuando llegan tramas válidas, el panel actualiza las vistas de telemetría, gráficas, mapa y modelo 3D. También permite **simular una transmisión** para recorrer la interfaz sin hardware. El navegador guarda un respaldo local de las tramas y permite descargar un CSV o elegir un archivo para registro automático cuando la API de archivos está disponible.
 
-La estación recibirá información en tiempo real mediante una antena LoRa conectada al servidor.
+> **Para usar el receptor físico:** abre el dashboard en un contexto seguro (HTTPS o `localhost`) con un navegador compatible con Web Serial, como Chrome o Edge, conecta el receptor USB y concede acceso al puerto. La recepción en vivo depende de que el hardware envíe tramas con el formato esperado; abrir el panel por sí solo no establece una conexión.
 
-Desde el navegador será posible visualizar:
+El lector acepta tramas CSV de **21 campos** con identificador de equipo, tiempo de misión, contador, altitud, temperatura, voltaje, aceleración, estado de vuelo, coordenadas, presión, humedad, gas/VOC, giroscopio y magnetómetro. También admite una variante extendida de 26 campos. Los estados de vuelo admitidos son `WAIT`, `DESC` y `LAND`.
 
-## Telemetría
+### Lo que puedes explorar
 
-- Temperatura
-- Humedad
-- Presión
-- Altitud
-- Estado de la batería
-- Voltaje
-- Intensidad de señal
-- RSSI
-- SNR
+- **Resumen y telemetría:** altitud, velocidad vertical, batería, movimiento, variables ambientales y estado de vuelo.
+- **Conexión:** selección de puerto, velocidad, consola de tramas y modo de simulación.
+- **Mapa:** posición GPS, recorrido y preparación de una zona para consulta sin conexión.
+- **Gráficas:** evolución de las lecturas recibidas durante la misión.
+- **Modelo 3D:** visualización de la actitud del CanSat con Three.js.
+- **Registro:** historial local y exportación de telemetría a CSV.
 
----
+Algunos indicadores de la interfaz usan valores iniciales o demostrativos hasta que se reciben datos compatibles. La alerta de incendios es una señal de apoyo para investigación, no una confirmación automática de un incendio.
 
-## IMU
+## ✨ El sitio web
 
-- Acelerómetro
-- Giroscopio
-- Magnetómetro
-- Orientación
+La página principal presenta al equipo, la misión NightRaptor, el diseño del CanSat, sus especificaciones, las PCBs, el microcontrolador, los sensores, la telemetría, la recuperación con paracaídas y los integrantes. Utiliza vídeo, animaciones y recursos espaciales locales, incluido el [astronauta](public/astronauta.webp) de la pantalla de acceso.
 
----
+## 🧰 Tecnologías del repositorio
 
-## GPS
+| Área | Tecnologías verificadas en el proyecto |
+| :-- | :-- |
+| Sitio | Astro 7, React 19, TypeScript y Tailwind CSS 4. |
+| Animación e interfaz | GSAP, Framer Motion y Lucide React. |
+| Datos y visualización | Recharts, MapLibre GL, React Three Fiber, Drei y Three.js. |
+| Conexión local | Web Serial, almacenamiento del navegador y exportación CSV. |
+| Hardware presentado | Arduino Nano ESP32, BME688, BNO085, GPS NEO-6M y radio LoRa. |
 
-- Latitud
-- Longitud
-- Velocidad
-- Altitud
-- Número de satélites
-- Precisión
+## 🚀 Inicio rápido
 
----
+**Requisito:** Node.js 22.12 o superior.
 
-## Eventos
+    npm install
+    npm run dev -- --background
 
-- Encendido
-- Lanzamiento
-- Separación
-- Despliegue del paracaídas
-- Aterrizaje
-- Pérdida de señal
-- Recuperación
+Abre la dirección local que muestre Astro y visita `/`, `/login` o `/dashboard`. Para gestionar el servidor iniciado en segundo plano:
 
----
+    npx astro dev status
+    npx astro dev logs
+    npx astro dev stop
 
-## Comunicaciones
+Para generar y revisar la versión de producción:
 
-- Paquetes recibidos
-- Paquetes perdidos
-- CRC
-- RSSI
-- SNR
-- Tiempo entre paquetes
+    npm run build
+    npm run preview
 
----
+## 🗂 Organización
 
-## Visualización
+    public/                  Logos, astronauta, vídeos, imágenes y fotos del CanSat
+      cansat_fisico/         Tres fotografías del prototipo
+    src/pages/               Página principal, acceso y dashboard
+    src/components/          Secciones de la web
+      dashboard/             Vistas, widgets y recepción de telemetría
+    src/styles/              Estilos globales
 
-- Mapa interactivo
-- Ruta recorrida
-- Posición actual
-- Altitud en tiempo real
-- Gráficas históricas
-- Registro de eventos
+## 👨‍🚀 Equipo y enlaces
+
+La sección del equipo en la web presenta a **Eduardo** (software), **Jaime** y **Ariadna** (estructuras), y **David** y **Aldo** (electrónica).
+
+[GitHub de ORBITEC](https://github.com/OrbitecUruapan) · [LinkedIn](https://www.linkedin.com/company/orbitec-uruapan/) · [Instagram del Tecnológico de Uruapan](https://www.instagram.com/tecnmcampusuruapan/)
+
+## 📄 Licencia
+
+Este repositorio aún no incluye un archivo `LICENSE`. Para reutilizar código, imágenes o elementos de identidad visual fuera de este proyecto, consulta primero con el equipo ORBITEC.
 
 ---
 
-# 🛠 Arquitectura del CanSat
-
-NightRaptor está construido mediante una estructura impresa en 3D con un diseño modular.
-
-El sistema está dividido en cuatro niveles de PCBs circulares.
-
-| Piso | Función |
-|------|----------|
-| 🔋 Nivel 1 | Energía |
-| 🧠 Nivel 2 | Control |
-| 📡 Nivel 3 | Sensores |
-| 📶 Nivel 4 | Comunicaciones |
-
-La estructura fue diseñada para ser ligera, resistente y completamente modular, permitiendo mantenimiento y futuras actualizaciones.
-
----
-
-# 💻 Tecnologías
-
-## Frontend
-
-- Astro
-- React
-- Tailwind CSS
-- TypeScript
-
----
-
-## Backend
-
-- Node.js
-- API REST
-- WebSockets
-
----
-
-## Embedded
-
-- Arduino Framework (C++)
-- LoRa
-- GPS
-- Sensores I2C
-
----
-
-## Diseño
-
-- Fusion 360
-- Impresión 3D
-- Figma
-
----
-
-# 📂 Estructura del proyecto
-
-```
-.
-├── public
-├── src
-│   ├── assets
-│   ├── components
-│   ├── layouts
-│   ├── pages
-│   ├── sections
-│   ├── hooks
-│   ├── services
-│   ├── dashboard
-│   └── styles
-├── firmware
-├── docs
-└── README.md
-```
-
----
-
-# ✨ Características
-
-- Landing Page moderna
-- Animaciones espaciales
-- Dashboard en tiempo real
-- Telemetría LoRa
-- Mapa GPS
-- Diseño responsive
-- Modo oscuro
-- Componentes reutilizables
-- Arquitectura modular
-
----
-
-# 👨‍🚀 Equipo
-
-Próximamente...
-
----
-
-# 🎯 Objetivo
-
-Inspirar a nuevas generaciones de ingenieros mientras desarrollamos tecnologías espaciales que contribuyan a la protección del medio ambiente.
-
----
-
-# 📸 Capturas
-
-Próximamente...
-
----
-
-# 🚀 Roadmap
-
-- [x] Diseño conceptual
-- [x] Diseño mecánico
-- [x] Arquitectura electrónica
-- [ ] Firmware
-- [ ] Dashboard
-- [ ] Integración LoRa
-- [ ] Telemetría en tiempo real
-- [ ] Lanzamiento oficial
-
----
-
-# 🤝 Contribuciones
-
-Las contribuciones son bienvenidas para fines educativos y de investigación.
-
-Antes de realizar cambios importantes, abre primero un Issue para discutir la propuesta.
-
----
-
-# 📄 Licencia
-
-Este proyecto está bajo un esquema de **Doble Licenciamiento**.
-
-### Uso educativo y de investigación
-
-El código puede utilizarse libremente para fines educativos, académicos y de investigación bajo los términos especificados por el proyecto.
-
-### Uso comercial
-
-Queda prohibida la utilización del proyecto con fines comerciales sin autorización expresa del equipo ORBITEC.
-
-Para solicitar permisos especiales o una licencia comercial, contacta al equipo de desarrollo.
-
----
-
-<p align="center">
-
-⭐ Si este proyecto te parece interesante, considera darle una estrella al repositorio.
-
-**ORBITEC • Instituto Tecnológico Superior de Uruapan**
-
-</p>
+<div align="center">
+  <img src="public/logo%20cansat2026-final1_sbg.webp" alt="Escudo de ORBITEC" width="100">
+  <p><strong>ORBITEC · Instituto Tecnológico Superior de Uruapan</strong><br>De Uruapan hacia nuevas fronteras. 🚀</p>
+</div>
