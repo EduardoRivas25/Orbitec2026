@@ -1,6 +1,7 @@
 ---
 import innotvaTecNMLogo from '../assets/innotvatecnm2026.png';
 import ShiftingCountdown from './ui/countdown-timer';
+import { RevealText } from './ui/reveal-text';
 ---
 
 <section
@@ -9,6 +10,7 @@ import ShiftingCountdown from './ui/countdown-timer';
   <!-- Video Background -->
   <div class="absolute inset-0 w-full h-full z-0">
     <video
+      id="hero-video"
       autoplay
       loop
       muted
@@ -30,17 +32,24 @@ import ShiftingCountdown from './ui/countdown-timer';
     class="relative z-20 text-center px-4 max-w-5xl mx-auto flex flex-col items-center pt-20 pb-8 sm:pt-24"
   >
     <span
-      class="font-title text-gray-400 tracking-[0.3em] uppercase text-sm mb-4 font-bold"
-      >Proyecto Aeroespacial</span
+      class="font-title mb-4 max-w-[26rem] text-xs font-bold tracking-[0.12em] text-gray-300 sm:max-w-none sm:text-sm sm:tracking-[0.2em]"
+      >Sistemas Aeroespaciales Tipo: Cansat</span
     >
 
     <h1
-      class="text-5xl sm:text-6xl md:text-8xl lg:text-9xl font-title font-bold text-white mb-4 sm:mb-6 tracking-tighter drop-shadow-2xl uppercase"
+      aria-label="PATSARHI-1"
+      class="font-title mb-4 font-bold tracking-tighter text-white drop-shadow-2xl uppercase sm:mb-6"
     >
-      CANSAT <span
-        class="text-transparent bg-clip-text bg-gradient-to-r from-white via-azul-light to-rojo-light"
-        >2026</span
-      >
+      <RevealText
+        text="PATSARHI-1"
+        textColor="text-white"
+        fontSize="text-[clamp(36px,calc(10vw-4px),124px)]"
+        letterDelay={0.08}
+        overlayDelay={0.15}
+        overlayDuration={2.8}
+        springDuration={600}
+        client:load
+      />
     </h1>
 
     <div class="mb-4 sm:mb-5 flex flex-col items-center gap-2 sm:gap-3">
@@ -56,3 +65,12 @@ import ShiftingCountdown from './ui/countdown-timer';
     <ShiftingCountdown client:load />
   </div>
 </section>
+
+<script>
+  const heroVideo = document.querySelector<HTMLVideoElement>('#hero-video');
+
+  heroVideo?.addEventListener('ended', () => {
+    heroVideo.currentTime = 0;
+    void heroVideo.play();
+  });
+</script>
