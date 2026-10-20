@@ -1,4 +1,5 @@
 ---
+import innotvaTecNMLogo from '../assets/innotvatecnm2026.png';
 import ShiftingCountdown from './ui/countdown-timer';
 ---
 
@@ -26,7 +27,7 @@ import ShiftingCountdown from './ui/countdown-timer';
 
   <!-- Hero Content -->
   <div
-    class="relative z-20 text-center px-4 max-w-5xl mx-auto flex flex-col items-center mt-20"
+    class="relative z-20 text-center px-4 max-w-5xl mx-auto flex flex-col items-center pt-20 pb-8 sm:pt-24"
   >
     <span
       class="font-title text-gray-400 tracking-[0.3em] uppercase text-sm mb-4 font-bold"
@@ -43,12 +44,22 @@ import ShiftingCountdown from './ui/countdown-timer';
     </h1>
 
     <p
-      class="font-title text-base sm:text-lg md:text-2xl text-gray-300 mb-8 sm:mb-10 max-w-2xl font-light leading-relaxed"
+      class="font-title text-base sm:text-lg md:text-2xl text-gray-300 mb-6 sm:mb-8 max-w-2xl font-light leading-relaxed"
     >
       Misión espacial estudiantil. Explorando los límites de la tecnología y la
       innovación.
     </p>
 
+    <div class="mb-4 sm:mb-5 flex flex-col items-center gap-2 sm:gap-3">
+      <img
+        src={innotvaTecNMLogo.src}
+        alt="InnovaTecNM 2026"
+        class="h-20 w-auto max-w-[min(75vw,22rem)] object-contain drop-shadow-[0_0_24px_rgba(255,255,255,0.22)] sm:h-28 md:h-32"
+      />
+      <span class="rounded-full border border-white/20 bg-black/45 px-5 py-1.5 font-title text-xs sm:px-6 sm:py-2 sm:text-sm font-bold uppercase tracking-[0.22em] text-white shadow-[0_0_24px_rgba(0,0,0,0.35)] backdrop-blur-sm">
+        Etapa Nacional · 2026
+      </span>
+    </div>
     <ShiftingCountdown client:load />
   </div>
 </section>
