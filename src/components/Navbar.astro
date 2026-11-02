@@ -1,14 +1,16 @@
 ---
 const links = [
   { label: "Misión", href: "#nightraptor" },
-  { label: "Equipo", href: "#equipo" },
   { label: "Specs", href: "#especificaciones" },
+  { label: "Team", href: "#equipo" },
+  { label: "Video", href: "#video-promocional" },
   { label: "Contacto", href: "#contacto" },
 ];
 
 const dropdownLinks = [
   { label: "Microcontrolador", href: "#microcontrolador" },
   { label: "Sensores", href: "#sensores" },
+  { label: "Cámara", href: "#camara" },
   { label: "Telemetría", href: "#telemetria" },
   { label: "Paracaídas", href: "#recuperacion" },
 ];
@@ -38,7 +40,7 @@ const dropdownLinks = [
     </a>
 
     <!-- Desktop Menu -->
-    <div class="hidden items-center gap-2 md:flex">
+    <div class="hidden items-center gap-2 xl:flex">
       {
         links.map((link) => (
           <a
@@ -69,22 +71,16 @@ const dropdownLinks = [
 
       <a
         href="/login"
-        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 px-4 py-2 font-title uppercase tracking-widest ml-2"
+        class="inline-flex items-center justify-center whitespace-nowrap rounded-md bg-white text-sm font-medium text-[#000004] transition-colors hover:bg-gray-200 h-10 px-4 py-2 font-title uppercase tracking-widest ml-2"
       >
         Ingresar
-      </a>
-      <a
-        href="/login"
-        class="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors bg-white hover:bg-gray-200 text-[#000004] h-10 px-4 py-2 font-title uppercase tracking-widest ml-2"
-      >
-        Únete
       </a>
     </div>
 
     <!-- Mobile Menu Button -->
     <button
       id="mobile-menu-btn"
-      class="md:hidden relative z-50 pointer-events-auto inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 w-10"
+      class="xl:hidden relative z-50 pointer-events-auto inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-10 w-10"
       aria-expanded="false"
       aria-controls="mobile-menu"
       aria-label="Toggle menu"
@@ -113,7 +109,7 @@ const dropdownLinks = [
   <!-- Mobile Menu -->
   <div
     id="mobile-menu"
-    class="fixed top-[4.5rem] right-0 bottom-0 left-0 z-40 flex-col overflow-hidden border-t border-white/10 md:hidden bg-[#000004]/95 backdrop-blur-xl hidden"
+    class="fixed top-[4.5rem] right-0 bottom-0 left-0 z-40 flex-col overflow-y-auto border-t border-white/10 xl:hidden bg-[#000004]/95 backdrop-blur-xl hidden"
   >
     <div class="size-full p-4 flex flex-col gap-2">
       <div class="grid gap-y-2 mt-4">
@@ -148,15 +144,9 @@ const dropdownLinks = [
       <div class="flex flex-col gap-3 mt-8">
         <a
           href="/login"
-          class="mobile-link inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-transparent hover:bg-white/10 text-white h-12 px-4 py-2 font-title uppercase tracking-widest w-full"
+          class="mobile-link inline-flex items-center justify-center whitespace-nowrap rounded-md bg-white text-sm font-medium text-[#000004] transition-colors hover:bg-gray-200 h-12 px-4 py-2 font-title uppercase tracking-widest w-full"
         >
           Ingresar
-        </a>
-        <a
-          href="/login"
-          class="mobile-link inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium transition-colors border border-white/20 bg-white hover:bg-gray-200 text-[#000004] h-12 px-4 py-2 font-title uppercase tracking-widest w-full"
-        >
-          Únete
         </a>
       </div>
     </div>

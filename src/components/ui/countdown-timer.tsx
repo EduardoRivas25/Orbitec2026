@@ -10,7 +10,7 @@ const DAY = HOUR * 24;
 
 export default function ShiftingCountdown() {
   return (
-    <div className="relative px-4 sm:px-6 md:px-8 py-2 md:py-2.5 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-full flex flex-row items-center gap-1 sm:gap-3 justify-center shadow-[0_0_30px_rgba(200,10,25,0.15)] w-auto mx-auto max-w-[95%]">
+    <div className="relative px-3 sm:px-6 md:px-8 py-2.5 sm:py-2 md:py-2.5 bg-white/10 border border-white/20 backdrop-blur-md text-white rounded-full flex flex-row items-center gap-1 sm:gap-3 justify-center shadow-[0_0_30px_rgba(200,10,25,0.15)] w-auto mx-auto max-w-[98%]">
       <span className="font-title text-rojo-light font-bold text-xl md:text-2xl mr-1 sm:mr-2">T-</span>
       <div className="flex items-center">
         <CountdownItem unit="Day" label="DÍAS" />
@@ -34,12 +34,12 @@ function CountdownItem({ unit, label, highlight = false }: { unit: string, label
       <div className="relative overflow-hidden text-center h-6 sm:h-7 md:h-8 w-full flex items-center justify-center">
         <span
           ref={ref}
-          className="block font-mono font-bold text-lg sm:text-xl md:text-2xl tracking-tight sm:tracking-widest text-white absolute"
+          className="block font-mono font-bold text-xl sm:text-xl md:text-2xl tracking-tight sm:tracking-widest text-white absolute"
         >
           {display}
         </span>
       </div>
-      <span className={`text-[8px] sm:text-[9px] md:text-[10px] uppercase font-sans tracking-widest mt-0.5 ${highlight ? 'text-rojo-light' : 'text-gray-400'}`}>
+      <span className={`text-[9px] sm:text-[9px] md:text-[10px] uppercase font-sans tracking-widest mt-0.5 ${highlight ? 'text-rojo-light' : 'text-gray-400'}`}>
         {label}
       </span>
     </div>
