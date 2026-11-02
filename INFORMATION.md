@@ -16,11 +16,11 @@ Nuestro objetivo es acercar la ingeniería aeroespacial a los estudiantes y desa
 
 # Proyecto principal
 
-## NightRaptor
+## PATSARHI-1
 
-**NightRaptor** es el CanSat desarrollado por ORBITEC.
+**PATSARHI-1** es el prototipo CanSat desarrollado por ORBITEC.
 
-Su misión principal consiste en la **detección temprana de incendios forestales**, obteniendo información ambiental y de vuelo durante todo el descenso para apoyar la protección del medio ambiente.
+Su misión recopila información ambiental, visual y de vuelo para investigar la detección temprana de incendios forestales y los cambios de uso de suelo en los bosques. Las alertas basadas en sensores son indicios que requieren confirmación; no constituyen por sí solas una detección concluyente.
 
 ---
 
@@ -36,7 +36,7 @@ Debe incluir:
 
 - Historia del equipo
 - ¿Qué es un CanSat?
-- Información del proyecto NightRaptor
+- Información del proyecto PATSARHI-1
 - Diseño del prototipo
 - Componentes electrónicos
 - Arquitectura del sistema
@@ -229,15 +229,18 @@ Usar en:
 
 # Arquitectura del CanSat
 
-NightRaptor posee una estructura impresa en 3D.
+PATSARHI-1 posee una estructura impresa en 3D.
 
 Características:
 
-- Diámetro máximo: **66 mm**
-- Altura máxima: **115 mm**
+- Diámetro: **100 mm**
+- Altura: **200 mm**
 - Fabricado mediante impresión 3D
-- Material: PLA reforzado con fibra de carbono
 - Arquitectura modular
+- Bahía de bus para las PCBs, separada de la bahía de carga útil.
+- La bahía de carga útil lleva un huevo como tripulante a bordo.
+- Cámara XIAO ESP32S3 Sense para grabación a bordo.
+- Paracaídas hemisférico para el descenso.
 
 El sistema está dividido en cuatro niveles de PCB circulares.
 
@@ -257,7 +260,7 @@ Sistema de Sensores
 
 Sistema de Comunicaciones
 
-Esta arquitectura facilita el mantenimiento y futuras expansiones.
+Esta arquitectura facilita el mantenimiento y futuras expansiones. El prototipo tiene 100 mm de diámetro y 200 mm de altura; separa la bahía de bus de la bahía de carga útil, que aloja el huevo como tripulante a bordo. También incorpora una cámara XIAO ESP32S3 Sense para grabación y un paracaídas hemisférico.
 
 ---
 
@@ -281,6 +284,7 @@ El CanSat integra sensores para obtener información de vuelo y del entorno.
 ## Navegación
 
 - GPS
+- Cámara XIAO ESP32S3 Sense para grabación a bordo
 
 ## Comunicación
 
@@ -325,7 +329,7 @@ La estación de tierra debe mostrar información en tiempo real.
 - Encendido
 - Lanzamiento
 - Separación
-- Despliegue del paracaídas
+- Despliegue del paracaídas hemisférico
 - Aterrizaje
 
 ## Visualización
@@ -342,7 +346,7 @@ La estación de tierra debe mostrar información en tiempo real.
 - Hero
 - ¿Qué es ORBITEC?
 - ¿Qué es un CanSat?
-- NightRaptor
+- PATSARHI-1
 - Diseño 3D
 - Arquitectura del sistema
 - Componentes
