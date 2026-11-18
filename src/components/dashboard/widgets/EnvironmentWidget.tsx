@@ -2,7 +2,6 @@ import React from 'react';
 import { useTelemetryHistory, type TelemetryData } from '../data/mockTelemetry';
 import { Thermometer, Wind, Droplets, FlaskConical, Activity, TrendingUp, TrendingDown } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { evaluateForestFireRisk } from '../data/fireRisk';
 
 export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
   const history = useTelemetryHistory();
@@ -11,7 +10,6 @@ export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
   const tempData = frames.map(frame => ({ t: frame.missionTime, value: frame.environment.temp }));
   const pressData = frames.map(frame => ({ t: frame.missionTime, value: frame.environment.pressure }));
   const vocData = frames.map(frame => ({ t: frame.missionTime, value: frame.environment.voc }));
-  const fireRisk = evaluateForestFireRisk(history);
   const previousTemperature = frames.at(-2)?.environment.temp ?? data.environment.temp;
   const temperatureRising = data.environment.temp >= previousTemperature;
 
@@ -135,8 +133,8 @@ export const EnvironmentWidget = ({ data }: { data: TelemetryData }) => {
                 {data.environment.voc.toFixed(0)} <span className="text-sm font-normal text-white/50">u.</span>
               </div>
             </div>
-            <span className={`text-[10px] font-mono px-2 py-0.5 rounded border ${fireRisk.active ? 'text-red-300 bg-red-500/15 border-red-400/40' : 'text-[#22c55e] bg-[#22c55e]/10 border-[#22c55e]/30'}`}>
-              {fireRisk.active ? 'ALERTA INCENDIO' : 'NIVEL NORMAL'}
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded border text-[#22c55e] bg-[#22c55e]/10 border-[#22c55e]/30">
+              LECTURA ACTUAL
             </span>
           </div>
 

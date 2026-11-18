@@ -1,6 +1,5 @@
 import type { TelemetryData } from './telemetryTypes';
 import { INITIAL_TELEMETRY_DATA } from './telemetryTypes';
-import { evaluateForestFireRisk } from './fireRisk';
 
 export interface SerialLogItem {
   id: string;
@@ -96,7 +95,6 @@ class SerialService {
   private rejectedTelemetry: RejectedTelemetryFrame[] = [];
   private invalidTelemetryCount = 0;
   private invalidTelemetryDiagnosticsAvailable = true;
-  private fireAlertActive = false;
 
   private statusListeners: Set<StatusListener> = new Set();
   private logListeners: Set<LogListener> = new Set();
@@ -491,15 +489,6 @@ class SerialService {
         this.telemetryHistory = this.telemetryHistory.slice(this.telemetryHistory.length - 7200);
       }
       this.addLog(rawLine, 'telemetry');
-      const fireRisk = evaluateForestFireRisk(this.telemetryHistory);
-      const shouldRaiseFireAlert = !this.status.isSimulating && fireRisk.active;
-      if (shouldRaiseFireAlert && !this.fireAlertActive) {
-        const detail = fireRisk.reason === 'rapid-rise'
-          ? `incremento brusco de +${fireRisk.increase.toFixed(0)} unidades`
-          : `lectura de ${fireRisk.voc.toFixed(0)} unidades`;
-        this.addLog(`[ALERTA] Posible incendio forestal: ${detail} de gas/VOC. Verificar con los demás sensores.`, 'error');
-      }
-      this.fireAlertActive = shouldRaiseFireAlert;
       // Persistencia automática local para no perder la captura al cambiar de pestaña
       // o recargar accidentalmente la interfaz durante la misión.
       if (typeof localStorage !== 'undefined') {

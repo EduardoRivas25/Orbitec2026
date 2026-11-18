@@ -40,7 +40,7 @@
 
 ## 🌲 La misión
 
-**NightRaptor** es nuestro CanSat 2026. Durante el descenso, su objetivo es recopilar datos ambientales y de vuelo para investigar señales que puedan ayudar a la **detección temprana de incendios forestales**. El dashboard presenta las lecturas y una alerta de posible riesgo basada en gas/VOC; una alerta requiere confirmación con el resto de los sensores y la ubicación.
+**NightRaptor** es nuestro CanSat 2026. Durante el descenso, su objetivo es recopilar datos ambientales y de vuelo para investigar señales que puedan ayudar a la **detección temprana de incendios forestales**. El dashboard presenta las lecturas de los sensores ambientales, incluida la medición cruda de gas/VOC.
 
 | Subsistema | Función en la misión |
 | :-- | :-- |
@@ -94,7 +94,7 @@ El lector acepta tramas CSV de **21 campos** con identificador de equipo, tiempo
 - **Modelo 3D:** visualización de la actitud del CanSat con Three.js.
 - **Registro:** historial local y exportación de telemetría a CSV.
 
-Algunos indicadores de la interfaz usan valores iniciales o demostrativos hasta que se reciben datos compatibles. La alerta de incendios es una señal de apoyo para investigación, no una confirmación automática de un incendio.
+Algunos indicadores de la interfaz usan valores iniciales o demostrativos hasta que se reciben datos compatibles. La lectura de gas/VOC se muestra como dato de sensor y no genera una alerta visual.
 
 ## ✨ El sitio web
 
