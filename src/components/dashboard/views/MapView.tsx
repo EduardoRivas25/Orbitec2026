@@ -7,7 +7,7 @@ import { prepareOfflineMap, getOfflineMapMetadata, type OfflineMapProgress } fro
 export const MapView = () => {
   const data = useTelemetryData();
   const history = useTelemetryHistory();
-  const [selectedStyle, setSelectedStyle] = useState<keyof typeof MAP_STYLES>('dark');
+  const [selectedStyle, setSelectedStyle] = useState<keyof typeof MAP_STYLES>('satellite');
   const [radiusKm, setRadiusKm] = useState(3);
   const [offlineProgress, setOfflineProgress] = useState<OfflineMapProgress>({ completed: 0, total: 0, status: 'idle', message: '' });
   const [savedZone, setSavedZone] = useState<any>(() => typeof window !== 'undefined' ? getOfflineMapMetadata() : null);
@@ -81,14 +81,6 @@ export const MapView = () => {
               }`}
             >
               Satélite
-            </button>
-            <button
-              onClick={() => setSelectedStyle('dark')}
-              className={`px-2 py-1 rounded-md transition-all font-bold cursor-pointer text-[11px] sm:text-xs ${
-                selectedStyle === 'dark' ? 'bg-[#38bdf8] text-black shadow' : 'text-white/40 hover:text-white'
-              }`}
-            >
-              Oscuro
             </button>
           </div>
 

@@ -8,8 +8,8 @@ const REGULATION_STATES = [
   { id: 'LAND', icon: CheckCircle2, description: 'Aterrizaje' },
 ] as const;
 
-export const FlightStatusWidget = ({ data }: { data: TelemetryData }) => {
-  const activeIndex = Math.max(0, REGULATION_STATES.findIndex(item => item.id === data.state));
+export const FlightStatusWidget = ({ data, state = data.state }: { data: TelemetryData; state?: TelemetryData['state'] }) => {
+  const activeIndex = Math.max(0, REGULATION_STATES.findIndex(item => item.id === state));
   const activeState = REGULATION_STATES[activeIndex];
   const verticalColor = data.verticalSpeed < 0 ? 'text-[#38bdf8]' : data.verticalSpeed > 0 ? 'text-[#22c55e]' : 'text-white';
 

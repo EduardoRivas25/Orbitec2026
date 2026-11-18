@@ -80,26 +80,10 @@ const CARTO_VOYAGER_RASTER = {
   ]
 };
 
-// Mosaicos raster públicos de CARTO: compatibles con MapLibre, sin token/API key
-// y con el mismo formato que usa el modo de precarga offline.
-const CARTO_DARK_RASTER = {
-  version: 8,
-  sources: {
-    'carto-dark': {
-      type: 'raster',
-      tiles: ['https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png'],
-      tileSize: 256,
-      attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
-    }
-  },
-  layers: [{ id: 'carto-dark-layer', type: 'raster', source: 'carto-dark', minzoom: 0, maxzoom: 19 }]
-};
-
 export const MAP_STYLES = {
   streets: ESRI_STREETS_STYLE,
   voyager: CARTO_VOYAGER_RASTER,
   satellite: ESRI_SATELLITE_STYLE,
-  dark: CARTO_DARK_RASTER
 } as const;
 
 export interface ComponentMapProps extends Omit<MapProps, 'longitude' | 'latitude'> {
@@ -111,7 +95,7 @@ export interface ComponentMapProps extends Omit<MapProps, 'longitude' | 'latitud
 }
 
 export const Map = React.forwardRef<any, ComponentMapProps>(
-  ({ children, center, longitude, latitude, zoom = 14, mapStyle = CARTO_DARK_RASTER, style, ...props }, ref) => {
+  ({ children, center, longitude, latitude, zoom = 14, mapStyle = ESRI_SATELLITE_STYLE, style, ...props }, ref) => {
     let defaultLng = -102.0628;
     let defaultLat = 19.4208;
 

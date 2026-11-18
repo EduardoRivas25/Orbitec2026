@@ -52,7 +52,7 @@ export const DashboardApp = () => {
   };
 
   return (
-    <div className="flex h-screen w-full overflow-hidden bg-[#0a0a0a] text-white selection:bg-[#c80a19]/30">
+    <div className="dashboard-shell flex h-screen w-full overflow-hidden bg-black text-white selection:bg-white/20">
       <Sidebar 
         activeView={activeView} 
         setActiveView={setActiveView} 
@@ -115,7 +115,7 @@ export const DashboardApp = () => {
           </span>
         </header>
 
-        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 custom-scrollbar scroll-smooth">
+        <main className={`flex-1 overflow-y-auto p-3 sm:p-4 md:p-6 custom-scrollbar scroll-smooth ${['overview', 'connection', 'telemetry', 'sensors', 'map', '3d'].includes(activeView) ? 'dashboard-content' : ''}`}>
           {renderView()}
         </main>
       </div>

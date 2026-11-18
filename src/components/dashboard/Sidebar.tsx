@@ -66,7 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
       {/* Contenedor Principal del Sidebar (Desktop Panel + Mobile Drawer) */}
       <aside 
-        className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[#c80a19]/20 bg-[#0a0a0a]/98 backdrop-blur-2xl transition-all duration-300 ease-in-out md:static md:z-20 md:border-[#c80a19]/10 pt-16 md:pt-0 ${
+        className={`dashboard-sidebar fixed inset-y-0 left-0 z-50 flex flex-col border-r border-[#c80a19]/20 bg-black transition-all duration-300 ease-in-out md:static md:z-20 md:border-[#c80a19]/10 pt-16 md:pt-0 ${
           mobileOpen ? 'translate-x-0 w-72 shadow-[0_0_50px_rgba(200,10,25,0.25)]' : '-translate-x-full md:translate-x-0'
         } ${
           isOpen ? 'md:w-64' : 'md:w-20'

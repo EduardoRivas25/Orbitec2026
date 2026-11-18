@@ -20,16 +20,16 @@ const VectorTimeChart = ({ title, data, keys, unit }: {
     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 pb-3">
       <h3 className="text-white font-bold text-xs uppercase tracking-wider">{title}</h3>
       <div className="flex flex-wrap gap-3 text-[9px]">
-        {keys.map(item => <span key={item.key} style={{ color: item.color }}>{item.label} ({unit})</span>)}
+        {keys.map(item => <span key={item.key} className="text-[#f0f0fa]">{item.label} ({unit})</span>)}
       </div>
     </div>
     <div className="flex-1 min-h-0 mt-3">
       <ResponsiveContainer width="100%" height="100%">
         <LineChart data={data} margin={{ top: 6, right: 10, left: -12, bottom: 0 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.06)" vertical={false} />
-          <XAxis dataKey="label" stroke="rgba(255,255,255,0.35)" fontSize={9} tickLine={false} />
-          <YAxis stroke="rgba(255,255,255,0.35)" fontSize={9} tickLine={false} domain={['auto', 'auto']} />
-          <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
+          <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+          <XAxis dataKey="label" stroke="#545457" tick={{ fill: '#f0f0fa' }} fontSize={10} tickLine={false} />
+          <YAxis stroke="#545457" tick={{ fill: '#f0f0fa' }} fontSize={10} tickLine={false} domain={['auto', 'auto']} />
+          <Tooltip contentStyle={{ backgroundColor: '#000000', color: '#f0f0fa', borderColor: '#545457', borderRadius: '4px', fontSize: '11px' }} labelStyle={{ color: '#f0f0fa' }} itemStyle={{ color: '#f0f0fa' }} />
           {keys.map(item => <Line key={item.key} type="monotone" dataKey={item.key} name={item.label} stroke={item.color} strokeWidth={1.8} dot={false} isAnimationActive={false} />)}
         </LineChart>
       </ResponsiveContainer>
@@ -290,8 +290,8 @@ export const ChartsView = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="label" stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} />
-                <YAxis yAxisId="left" stroke="#f97316" fontSize={9} tickLine={false} domain={[15, 30]} />
-                <YAxis yAxisId="right" orientation="right" stroke="#38bdf8" fontSize={9} tickLine={false} domain={[30, 80]} />
+                <YAxis yAxisId="left" stroke="#f97316" fontSize={9} tickLine={false} domain={['dataMin - 0.5', 'dataMax + 0.5']} />
+                <YAxis yAxisId="right" orientation="right" stroke="#38bdf8" fontSize={9} tickLine={false} domain={['dataMin - 1', 'dataMax + 1']} />
                 <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
                 <Area yAxisId="left" type="monotone" dataKey="temp" stroke="#f97316" strokeWidth={2} fill="url(#tempDualGrad)" isAnimationActive={false} />
                 <Line yAxisId="right" type="monotone" dataKey="humidity" stroke="#38bdf8" strokeWidth={2} dot={false} isAnimationActive={false} />
@@ -332,7 +332,7 @@ export const ChartsView = () => {
               <LineChart data={flightData} margin={{ top: 10, right: 10, left: -15, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
                 <XAxis dataKey="label" stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} />
-                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={[-20, 180]} />
+                <YAxis stroke="rgba(255,255,255,0.3)" fontSize={9} tickLine={false} domain={['auto', 'auto']} />
                 <Tooltip contentStyle={{ backgroundColor: '#0a0a0a', borderColor: 'rgba(255,255,255,0.2)', borderRadius: '8px', fontSize: '10px' }} />
                 <Line type="monotone" dataKey="pitch" stroke="#38bdf8" strokeWidth={1.5} dot={false} isAnimationActive={false} />
                 <Line type="monotone" dataKey="roll" stroke="#c80a19" strokeWidth={1.5} dot={false} isAnimationActive={false} />

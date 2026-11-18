@@ -1,4 +1,4 @@
-export type OfflineMapStyle = 'streets' | 'voyager' | 'satellite' | 'dark';
+export type OfflineMapStyle = 'streets' | 'voyager' | 'satellite';
 
 export interface OfflineMapProgress {
   completed: number;
@@ -12,7 +12,6 @@ const TILE_URLS: Record<OfflineMapStyle, string> = {
   streets: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
   satellite: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
   voyager: 'https://basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png',
-  dark: 'https://basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png',
 };
 
 const longitudeToTileX = (longitude: number, zoom: number) =>

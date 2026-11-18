@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
-import { useTelemetryData, useTelemetryHistory } from '../data/mockTelemetry';
+import { useState } from 'react';
+import { serialService, useSerialStatus, useTelemetryData, useTelemetryHistory } from '../data/mockTelemetry';
+import { openTelemetryReport } from '../data/telemetryReport';
 import { FlightStatusWidget } from '../widgets/FlightStatusWidget';
 import { SensorStatusWidget } from '../widgets/SensorStatusWidget';
-import { 
-  Activity, Database, Cpu, Radio, Search, Clock, Zap
-} from 'lucide-react';
+import { FileDown } from 'lucide-react';
+import { Activity, Database, Radio, Search } from 'lucide-react';
 
 export const TelemetryView = () => {
   const data = useTelemetryData();
   const history = useTelemetryHistory();
+  const serialStatus = useSerialStatus();
   const [viewMode, setViewMode] = useState<'decoded' | 'raw'>('decoded');
   const [searchTerm, setSearchTerm] = useState('');
+  const [reportMessage, setReportMessage] = useState('');
+  const receivedFrames = serialService.getTelemetryArchive();
+  const currentSessionFrame = Boolean(
+    serialStatus.startTime && data.receivedAt && Date.parse(data.receivedAt) >= serialStatus.startTime
+  );
+  const displayedFlightState = currentSessionFrame ? data.state : 'WAIT';
+
+  const createReport = () => {
+    if (!receivedFrames.length) {
+      setReportMessage('Aún no hay tramas recibidas para generar el reporte.');
+      return;
+    }
+    const opened = openTelemetryReport(receivedFrames, serialStatus.isConnected, serialService.getTelemetryDiagnostics());
+    setReportMessage(opened ? 'Reporte listo: usa “Imprimir / Guardar como PDF” en la nueva pestaña.' : 'El navegador bloqueó la ventana del reporte. Permite ventanas emergentes e inténtalo de nuevo.');
+  };
 
   const rawFrames = history.filter(frame => frame.raw).slice().reverse().map(frame => ({
     id: frame.packetCount, time: frame.missionTime, teamId: frame.teamId,
@@ -27,19 +43,11 @@ export const TelemetryView = () => {
     frame.status.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Formato horas:minutos:segundos del tiempo de misión (MET)
-  const formatMET = (totalSeconds: number) => {
-    const mins = Math.floor(totalSeconds / 60);
-    const secs = Math.floor(totalSeconds % 60);
-    const hrs = Math.floor(mins / 60);
-    return `${hrs.toString().padStart(2, '0')}:${(mins % 60).toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
   return (
     <div className="space-y-4 pb-12 font-mono animate-in fade-in duration-300">
       
       {/* Header Principal de Telemetría */}
-      <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 flex items-center justify-between">
+      <div className="bg-[#0d0d0d] border border-white/10 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="p-2.5 bg-black/60 border border-white/10 rounded-xl">
             <Activity size={22} className="text-[#22c55e]" />
@@ -47,6 +55,31 @@ export const TelemetryView = () => {
           <h1 className="text-xl font-bold font-title text-white tracking-wide uppercase">
             Centro de Telemetría y Datos
           </h1>
+        </div>
+        <div className="flex flex-col items-start sm:items-end gap-1.5">
+          <div className="flex flex-wrap gap-2">
+          <button
+            type="button"
+            onClick={() => serialService.downloadTelemetryCSV()}
+            disabled={!receivedFrames.length}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3 py-2.5 text-xs font-bold uppercase tracking-wider text-white/75 transition hover:bg-white/10 disabled:cursor-not-allowed disabled:text-white/30"
+            title="Exportar todas las tramas válidas archivadas a CSV"
+          >
+            <Database size={14} /> Exportar CSV
+          </button>
+          <button
+            type="button"
+            onClick={createReport}
+            disabled={!receivedFrames.length}
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#c80a19]/50 bg-[#c80a19] px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-white shadow-lg shadow-[#c80a19]/15 transition hover:bg-[#a90815] disabled:cursor-not-allowed disabled:border-white/10 disabled:bg-white/5 disabled:text-white/35 disabled:shadow-none"
+            title={receivedFrames.length ? 'Crear reporte PDF de la misión' : 'Espera a recibir telemetría para crear el reporte'}
+          >
+            <FileDown size={15} /> Crear reporte
+          </button>
+          </div>
+          <span aria-live="polite" className="text-[9px] text-white/40">
+            {reportMessage || (receivedFrames.length ? `${receivedFrames.length} tramas archivadas · ${history.length > receivedFrames.length ? 'ventana reciente en pantalla' : 'histórico disponible'}` : 'Esperando tramas de misión')}
+          </span>
         </div>
       </div>
 
@@ -89,7 +122,7 @@ export const TelemetryView = () => {
         </div>
 
         {/* Card 2: Fase de Vuelo */}
-        <FlightStatusWidget data={data} />
+        <FlightStatusWidget data={data} state={displayedFlightState} />
 
         {/* Card 3: Matriz Diagnóstica de Sensores */}
         <div className="md:col-span-2 lg:col-span-1">

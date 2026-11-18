@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 import { useTelemetryHistory, type TelemetryData } from '../data/mockTelemetry';
 import { Map as MapIcon, Crosshair, Navigation, MapPin } from 'lucide-react';
-import { Map, MapMarker, MapControls, Source, Layer } from '../../ui/map';
+import { Map, MapMarker, MapControls, MAP_STYLES, Source, Layer } from '../../ui/map';
 
 export const MiniMapWidget = ({ data }: { data: TelemetryData }) => {
   const mapRef = useRef<any>(null);
@@ -55,6 +55,7 @@ export const MiniMapWidget = ({ data }: { data: TelemetryData }) => {
           ref={mapRef}
           center={[data.gps.lng, data.gps.lat]}
           zoom={15}
+          mapStyle={MAP_STYLES.satellite}
           style={{ width: '100%', height: 'calc(100% - 48px)' }}
         >
           <MapControls />

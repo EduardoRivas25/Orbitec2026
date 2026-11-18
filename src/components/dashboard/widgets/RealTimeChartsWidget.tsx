@@ -10,11 +10,11 @@ import {
 const CustomTooltip = ({ active, payload, label }: any) => {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-black/95 border border-[#c80a19]/30 p-2 rounded-md shadow-lg text-[10px] font-mono min-w-[120px]">
+      <div className="bg-black/95 border border-[#545457] p-2 rounded-md text-[10px] font-mono min-w-[120px]">
         <div className="text-white/50 mb-1">{label}</div>
         {payload.map((p: any, i: number) => (
           <div key={i} className="flex justify-between gap-3">
-            <span style={{ color: p.color }}>{p.name}</span>
+            <span className="text-[#f0f0fa]">{p.name}</span>
             <span className="font-bold text-white">
               {typeof p.value === 'number' ? p.value.toFixed(1) : p.value}
             </span>
@@ -48,7 +48,7 @@ const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names, 
         <span className="text-[9px] font-mono text-white/40 uppercase tracking-wider font-semibold">
           {title}
         </span>
-        <span className="text-[10px] font-mono font-bold" style={{ color: chartColors[0] }}>
+        <span className="text-[10px] font-mono font-bold text-[#f0f0fa]">
           {currentValue} <span className="text-white/30 font-normal">{unit}</span>
         </span>
       </div>
@@ -62,11 +62,12 @@ const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names, 
                   <stop offset="95%" stopColor={chartColors[0]} stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-              <XAxis dataKey="time" stroke="#ffffff20" fontSize={7} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+              <XAxis dataKey="time" stroke="#545457" tick={{ fill: '#f0f0fa' }} fontSize={9} tickLine={false} axisLine={false} />
               <YAxis
-                stroke="#ffffff20"
-                fontSize={7}
+                stroke="#545457"
+                tick={{ fill: '#f0f0fa' }}
+                fontSize={9}
                 tickLine={false}
                 axisLine={false}
                 domain={domain || ['auto', 'auto']}
@@ -85,11 +86,12 @@ const MiniChart = ({ title, dataKey, colors, unit, currentValue, domain, names, 
             </AreaChart>
           ) : (
             <LineChart data={chartData} margin={{ top: 2, right: 4, left: -25, bottom: 0 }}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#ffffff08" vertical={false} />
-              <XAxis dataKey="time" stroke="#ffffff20" fontSize={7} tickLine={false} axisLine={false} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#404040" vertical={false} />
+              <XAxis dataKey="time" stroke="#545457" tick={{ fill: '#f0f0fa' }} fontSize={9} tickLine={false} axisLine={false} />
               <YAxis
-                stroke="#ffffff20"
-                fontSize={7}
+                stroke="#545457"
+                tick={{ fill: '#f0f0fa' }}
+                fontSize={9}
                 tickLine={false}
                 axisLine={false}
                 domain={domain || ['auto', 'auto']}

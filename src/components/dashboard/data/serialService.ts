@@ -32,6 +32,19 @@ export interface KnownPortInfo {
   isArduino: boolean;
 }
 
+export interface RejectedTelemetryFrame {
+  raw: string;
+  receivedAt: string;
+}
+
+export interface TelemetryDiagnostics {
+  validFrames: number;
+  invalidFrames: number | null;
+  totalFrames: number | null;
+  diagnosticsAvailable: boolean;
+  retainedInvalidFrames: RejectedTelemetryFrame[];
+}
+
 export function getUsbVendorName(vendorId?: number, productId?: number): string {
   if (!vendorId) return 'Puerto Serie USB (COM)';
   const vid = vendorId.toString(16).toUpperCase();
@@ -80,6 +93,9 @@ class SerialService {
   private currentTelemetry: TelemetryData = { ...INITIAL_TELEMETRY_DATA };
   private telemetryHistory: TelemetryData[] = [{ ...INITIAL_TELEMETRY_DATA }];
   private telemetryArchive: TelemetryData[] = [];
+  private rejectedTelemetry: RejectedTelemetryFrame[] = [];
+  private invalidTelemetryCount = 0;
+  private invalidTelemetryDiagnosticsAvailable = true;
   private fireAlertActive = false;
 
   private statusListeners: Set<StatusListener> = new Set();
@@ -87,6 +103,7 @@ class SerialService {
   private telemetryListeners: Set<TelemetryListener> = new Set();
 
   private readonly csvStorageKey = 'orbitec-cansat-telemetry-csv';
+  private readonly invalidTelemetryStorageKey = 'orbitec-cansat-invalid-telemetry';
   private csvFileHandle: any = null;
 
   constructor() {
@@ -106,6 +123,13 @@ class SerialService {
           this.currentTelemetry = parsed;
         }
         if (this.telemetryHistory.length > 7200) this.telemetryHistory = this.telemetryHistory.slice(-7200);
+        const savedInvalid = localStorage.getItem(this.invalidTelemetryStorageKey);
+        if (savedInvalid) {
+          const diagnosticData = JSON.parse(savedInvalid) as { count?: number; frames?: RejectedTelemetryFrame[]; available?: boolean };
+          this.invalidTelemetryCount = Math.max(0, Math.trunc(diagnosticData.count || 0));
+          this.rejectedTelemetry = Array.isArray(diagnosticData.frames) ? diagnosticData.frames.slice(-1000) : [];
+          this.invalidTelemetryDiagnosticsAvailable = diagnosticData.available !== false;
+        } else if (this.telemetryArchive.length) this.invalidTelemetryDiagnosticsAvailable = false;
       } catch {}
     }
 
@@ -143,6 +167,21 @@ class SerialService {
     return [...this.telemetryHistory];
   }
 
+  // El dashboard limita su ventana visual; los reportes necesitan el archivo completo de la misión.
+  public getTelemetryArchive(): TelemetryData[] {
+    return [...this.telemetryArchive];
+  }
+
+  public getTelemetryDiagnostics(): TelemetryDiagnostics {
+    return {
+      validFrames: this.telemetryArchive.length,
+      invalidFrames: this.invalidTelemetryDiagnosticsAvailable ? this.invalidTelemetryCount : null,
+      totalFrames: this.invalidTelemetryDiagnosticsAvailable ? this.telemetryArchive.length + this.invalidTelemetryCount : null,
+      diagnosticsAvailable: this.invalidTelemetryDiagnosticsAvailable,
+      retainedInvalidFrames: [...this.rejectedTelemetry],
+    };
+  }
+
   public getTelemetryCSV(): string {
     const header = 'RECEIVED_AT,TEAM_ID,MISSION_TIME,PACKET_COUNT,ALTITUDE,TEMPERATURE,VOLTAGE,ACCEL_X,ACCEL_Y,ACCEL_Z,STATE,LATITUDE,LONGITUDE,PRESSURE,HUMIDITY,GAS,GYRO_X,GYRO_Y,GYRO_Z,MAG_X,MAG_Y,MAG_Z';
     const rows = this.telemetryArchive.map(item => [
@@ -159,7 +198,26 @@ class SerialService {
 
   public downloadTelemetryCSV() {
     if (typeof document === 'undefined') return;
-    const blob = new Blob([this.getTelemetryCSV()], { type: 'text/csv;charset=utf-8' });
+    const csvCell = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+    const header = [
+      'RECEIVED_AT', 'TEAM_ID', 'MISSION_TIME', 'PACKET_COUNT', 'STATE', 'LATITUDE', 'LONGITUDE',
+      'ALTITUDE_BME_M', 'ALTITUDE_GPS_M', 'VERTICAL_SPEED', 'TEMPERATURE_C', 'PRESSURE_HPA', 'HUMIDITY_PERCENT',
+      'VOC', 'VOLTAGE_V', 'ACCEL_X_G', 'ACCEL_Y_G', 'ACCEL_Z_G', 'GYRO_X_DPS', 'GYRO_Y_DPS', 'GYRO_Z_DPS',
+      'MAG_X_UT', 'MAG_Y_UT', 'MAG_Z_UT', 'ORIENTATION_PITCH', 'ORIENTATION_ROLL', 'ORIENTATION_YAW',
+      'LORA_RSSI', 'LORA_SNR', 'FRAME_VALID', 'RAW_FRAME'
+    ];
+    const rows = this.telemetryArchive.map(frame => [
+      frame.receivedAt, frame.teamId, frame.missionTime, frame.packetCount, frame.state,
+      frame.gps.lat, frame.gps.lng, frame.altitude.bme, frame.altitude.gps, frame.verticalSpeed,
+      frame.environment.temp, frame.environment.pressure, frame.environment.humidity, frame.environment.voc,
+      frame.voltage, frame.acceleration.x, frame.acceleration.y, frame.acceleration.z,
+      frame.gyroscope.x, frame.gyroscope.y, frame.gyroscope.z, frame.magnetometer.x, frame.magnetometer.y,
+      frame.magnetometer.z, frame.orientation.pitch, frame.orientation.roll, frame.orientation.yaw,
+      frame.lora.rssi, frame.lora.snr, 'TRUE', frame.raw,
+    ].map(csvCell).join(','));
+    const invalidRows = this.rejectedTelemetry.map(frame => [frame.receivedAt, ...Array(27).fill(''), 'FALSE', frame.raw].map(csvCell).join(','));
+    const csv = [header.map(csvCell).join(','), ...rows, ...invalidRows].join('\r\n');
+    const blob = new Blob(['\uFEFF', csv], { type: 'text/csv;charset=utf-8' });
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement('a');
     anchor.href = url;
@@ -421,6 +479,10 @@ class SerialService {
       if (parsedTelemetry.packetCount === 1 && this.currentTelemetry.packetCount > 1) {
         this.telemetryArchive = [];
         this.telemetryHistory = [];
+        this.rejectedTelemetry = [];
+        this.invalidTelemetryCount = 0;
+        this.invalidTelemetryDiagnosticsAvailable = true;
+        try { localStorage.setItem(this.invalidTelemetryStorageKey, JSON.stringify({ count: 0, frames: [] })); } catch {}
       }
       this.currentTelemetry = parsedTelemetry;
       this.telemetryHistory.push(parsedTelemetry);
@@ -447,7 +509,19 @@ class SerialService {
       this.notifyTelemetry();
     } else {
       // Mensaje de texto estándar del Arduino / receptor LoRa
-      this.addLog(rawLine, 'rx');
+      const looksLikeTelemetryFrame = rawLine.split(',').length >= 10;
+      if (looksLikeTelemetryFrame) {
+        const rejected: RejectedTelemetryFrame = { raw: rawLine, receivedAt: new Date().toISOString() };
+        this.invalidTelemetryCount++;
+        this.rejectedTelemetry.push(rejected);
+        if (this.rejectedTelemetry.length > 1000) this.rejectedTelemetry = this.rejectedTelemetry.slice(-1000);
+        try {
+          localStorage.setItem(this.invalidTelemetryStorageKey, JSON.stringify({ count: this.invalidTelemetryCount, frames: this.rejectedTelemetry, available: this.invalidTelemetryDiagnosticsAvailable }));
+        } catch {}
+        this.addLog(`[TRAMA INVÁLIDA] ${rawLine}`, 'error');
+      } else {
+        this.addLog(rawLine, 'rx');
+      }
     }
     // El lector físico ya informa bytes por bloque, pero la simulación también
     // necesita publicar el contador de paquetes después de cada trama.
@@ -469,7 +543,8 @@ class SerialService {
       if (!line.includes(',')) return null;
       const clean = line.replace(/^\$(CANSAT|ORBITEC),?/i, '').trim();
       const parts = clean.split(',').map(value => value.trim());
-      if (parts.length < 21 || !/^\d{4}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
+      // TEAM_ID puede ser de cuatro o cinco dígitos (el simulador Patsari usa 72523).
+      if (parts.length < 21 || !/^\d{1,10}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
 
       const n = (index: number, fallback = 0) => {
         if (parts[index] === undefined || parts[index] === '') return fallback;
