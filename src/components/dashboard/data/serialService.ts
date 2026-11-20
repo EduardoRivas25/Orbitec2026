@@ -670,7 +670,7 @@ class SerialService {
 
     this.status.isSimulating = true;
     this.status.isConnected = true;
-    this.status.portName = 'Enlace de prueba LoRa SX1278';
+    this.status.portName = 'Enlace de prueba LoRa E22-900T22D';
     this.status.baudRate = baudRate;
     this.status.startTime = Date.now();
     this.status.error = null;

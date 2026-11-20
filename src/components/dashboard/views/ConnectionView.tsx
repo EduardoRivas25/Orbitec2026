@@ -168,7 +168,7 @@ export const ConnectionView = () => {
               )}
             </h1>
             <p className="text-white/40 text-xs mt-0.5">
-              Recepción directa por hardware USB (Arduino, ESP32, SX1278) • Web Serial API
+              Recepción directa por hardware USB (Arduino, ESP32, LoRa E22-900T22D) • Web Serial API
             </p>
           </div>
         </div>

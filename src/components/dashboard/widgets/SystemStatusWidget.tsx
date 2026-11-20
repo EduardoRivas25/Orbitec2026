@@ -16,7 +16,7 @@ const defaultDevices: SystemDevice[] = [
   { name: 'BNO085 (IMU)', icon: Navigation, status: 'disconnected' },
   { name: 'BME688 (AMBIENTAL)', icon: Thermometer, status: 'disconnected' },
   { name: 'GPS NEO-6M', icon: Navigation, status: 'disconnected' },
-  { name: 'SX1278 LoRa', icon: Radio, status: 'disconnected' },
+  { name: 'E22-900T22D LoRa', icon: Radio, status: 'disconnected' },
   { name: 'MICROSD', icon: HardDrive, status: 'disconnected' },
 ];
 

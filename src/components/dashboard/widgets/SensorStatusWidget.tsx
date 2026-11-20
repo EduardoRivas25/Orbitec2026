@@ -6,7 +6,7 @@ export const SensorStatusWidget = () => {
     { name: 'GPS NEO-6M', icon: Navigation, status: 'ok', detail: '3D Fix (9 Sat)' },
     { name: 'BME688', icon: Thermometer, status: 'ok', detail: 'Calibrado' },
     { name: 'BNO085', icon: Cpu, status: 'ok', detail: 'Fusión 100Hz' },
-    { name: 'LoRa SX1278', icon: Wifi, status: 'ok', detail: 'Tx/Rx OK' },
+    { name: 'LoRa E22-900T22D', icon: Wifi, status: 'ok', detail: 'Tx/Rx OK' },
     { name: 'MicroSD', icon: HardDrive, status: 'warning', detail: '75% Lleno' },
   ];
 

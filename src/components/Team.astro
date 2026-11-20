@@ -1,16 +1,22 @@
 ---
+import JaimePhoto from "../assets/team/Jaime.webp";
+import EduardoPhoto from "../assets/team/Eduardo.webp";
+import DavidPhoto from "../assets/team/David.webp";
+import AriadnaPhoto from "../assets/team/Ariadna.webp";
+import AldoPhoto from "../assets/team/Aldo.webp";
+
 const team = [
-  { name: "Eduardo", role: "Software", portrait: 0, linkedin: "https://www.linkedin.com/in/juan-eduardo-rojas-rivas-8ab109386" },
-  { name: "Jaime", role: "Estructuras", portrait: 2, linkedin: null as string | null },
-  { name: "David", role: "Electrónica", portrait: 4, linkedin: null as string | null },
-  { name: "Aldo", role: "Electrónica", portrait: 1, linkedin: null as string | null },
-  { name: "Ariadna", role: "Estructuras", portrait: 3, linkedin: null as string | null },
+  { name: "Eduardo", role: "Líder de Proyecto", photo: EduardoPhoto, linkedin: "https://www.linkedin.com/in/juan-eduardo-rojas-rivas-8ab109386" },
+  { name: "Jaime", role: "Estructuras", photo: JaimePhoto, linkedin: null },
+  { name: "David", role: "Electrónica", photo: DavidPhoto, linkedin: null },
+  { name: "Aldo", role: "Electrónica", photo: AldoPhoto, linkedin: null },
+  { name: "Ariadna", role: "Estructuras", photo: AriadnaPhoto, linkedin: null },
 ];
 ---
 
 <section id="equipo" aria-labelledby="team-title" class="relative w-full overflow-hidden bg-[#000004] py-20 lg:py-28">
   <div class="pointer-events-none absolute left-1/2 top-1/3 h-80 w-80 -translate-x-1/2 rounded-full bg-azul-light/10 blur-[110px]"></div>
-  <div class="relative z-10 mx-auto max-w-6xl px-6">
+  <div class="relative z-10 mx-auto max-w-[1500px] px-6">
     <div class="mx-auto mb-12 max-w-2xl text-center md:mb-16">
       <p class="mb-4 font-mono text-xs uppercase tracking-[0.3em] text-azul-light">Personas detrás de la misión</p>
       <h2 id="team-title" class="font-title text-4xl font-bold uppercase tracking-tighter text-white md:text-5xl lg:text-6xl">
@@ -21,41 +27,187 @@ const team = [
       </p>
     </div>
 
-    <div class="grid grid-cols-2 gap-1 sm:grid-cols-3 lg:grid-cols-5">
+    <div id="team-grid" class="grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-5">
       {team.map((member) => (
-        <article class="group relative isolate overflow-hidden bg-[#0B1120]">
-          <div class="relative overflow-hidden bg-[#050816]">
+        <button
+          type="button"
+          class="team-card group relative isolate overflow-hidden bg-transparent p-3 text-left focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-azul-light"
+          data-team-card
+          data-name={member.name}
+          data-role={member.role}
+          data-photo={member.photo.src}
+          data-linkedin={member.linkedin ?? ""}
+          aria-label={`Ver a ${member.name}, ${member.role}`}
+        >
+          <span class="team-card-photo-frame relative block aspect-[3/4] overflow-hidden bg-transparent">
             <img
-              src="/team-avatars-fictional.png"
-              alt={`Retrato ficticio ilustrativo de ${member.name}`}
-              width="2172"
-              height="724"
+              src={member.photo.src}
+              alt={`Fotografía de ${member.name}`}
+              width={member.photo.width}
+              height={member.photo.height}
               loading="lazy"
-              class="block h-auto max-w-none transition-transform duration-700 ease-out group-hover:scale-105"
-              style={`width: 500%; margin-left: -${member.portrait * 100}%;`}
+              class="team-card-photo h-full w-full object-cover object-center"
             />
-          </div>
-          <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#000004] via-[#000004]/10 to-transparent"></div>
-          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 p-3 sm:p-4">
-            <h3 class="font-title text-lg font-bold leading-tight text-white sm:text-xl">{member.name}</h3>
-            <p class="mt-1 font-mono text-[10px] font-bold uppercase leading-tight tracking-wide text-amber-400 sm:text-xs">{member.role}</p>
-          </div>
-          {member.linkedin && (
-            <a
-              href={member.linkedin}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={`Ver el perfil de LinkedIn de ${member.name}`}
-              class="absolute inset-0 z-20 cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-azul-light"
-            >
-              <span class="absolute right-3 top-3 flex h-9 w-9 -translate-y-2 items-center justify-center rounded-full bg-[#0A66C2] text-white opacity-0 shadow-lg transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100 group-focus-within:translate-y-0 group-focus-within:opacity-100">
-                <svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor" class="h-5 w-5"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.35V9h3.414v1.561h.049c.476-.9 1.637-1.85 3.37-1.85 3.601 0 4.266 2.37 4.266 5.455v6.286ZM5.337 7.433a2.062 2.062 0 1 1 0-4.124 2.062 2.062 0 0 1 0 4.124ZM7.119 20.452H3.555V9h3.564v11.452ZM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003Z"/></svg>
-              </span>
-            </a>
-          )}
-        </article>
+            <span class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#000004] via-[#000004]/10 to-transparent"></span>
+            <span class="pointer-events-none absolute inset-x-0 bottom-0 p-4 sm:p-5">
+              <span class="block font-title text-xl font-bold leading-tight text-white sm:text-2xl">{member.name}</span>
+              <span class="mt-1.5 block font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-[#ff7580] sm:text-xs">{member.role}</span>
+            </span>
+            <span aria-hidden="true" class="pointer-events-none absolute right-3 top-3 rounded-full border border-white/20 bg-black/40 px-2.5 py-1 font-mono text-[9px] uppercase tracking-widest text-white/80 opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100">Ver perfil</span>
+          </span>
+        </button>
       ))}
     </div>
-    <p class="mt-7 text-center font-mono text-xs text-gray-500">Retratos ficticios de referencia; se sustituirán por fotografías del equipo.</p>
   </div>
+
+  <dialog
+    id="team-profile"
+    class="fixed inset-0 m-0 h-dvh w-screen max-h-none max-w-none items-center justify-center overflow-y-auto border-0 bg-transparent px-5 py-10 text-white"
+    aria-labelledby="team-profile-name"
+    aria-describedby="team-profile-role"
+  >
+    <button type="button" data-team-close class="absolute right-5 top-5 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-white/20 bg-white/5 text-2xl leading-none text-white transition-colors hover:border-[#69b7ff]/70 hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-azul-light" aria-label="Cerrar perfil">×</button>
+    <div class="team-profile-content relative mx-auto flex min-h-full w-full max-w-xl flex-col items-center justify-center text-center">
+      <img id="team-profile-photo" src="" alt="" class="team-profile-photo h-[min(72vh,680px)] w-auto max-w-[min(92vw,520px)] rounded-sm object-contain shadow-[0_16px_60px_rgba(1,95,179,0.2)]" />
+      <div class="mt-2">
+        <p class="mb-1 font-mono text-[10px] uppercase tracking-[0.35em] text-[#69b7ff]">Equipo ORBITEC · CanSat 2026</p>
+        <h3 id="team-profile-name" class="font-title text-4xl font-bold uppercase tracking-tight text-white sm:text-5xl md:text-6xl"></h3>
+        <p id="team-profile-role" class="mt-3 font-mono text-sm font-bold uppercase tracking-[0.24em] text-[#e55360] sm:text-base"></p>
+        <a id="team-profile-linkedin" class="mt-6 hidden items-center gap-2 rounded-sm border border-white/15 px-4 py-2 font-mono text-xs uppercase tracking-widest text-white/80 transition-colors hover:border-[#69b7ff]/60 hover:text-white" target="_blank" rel="noopener noreferrer">
+          LinkedIn <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+    </div>
+  </dialog>
 </section>
+
+<script>
+  const cards = [...document.querySelectorAll<HTMLButtonElement>("[data-team-card]")];
+  const profile = document.querySelector<HTMLDialogElement>("#team-profile");
+  const profilePhoto = document.querySelector<HTMLImageElement>("#team-profile-photo");
+  const profileName = document.querySelector<HTMLElement>("#team-profile-name");
+  const profileRole = document.querySelector<HTMLElement>("#team-profile-role");
+  const profileLinkedIn = document.querySelector<HTMLAnchorElement>("#team-profile-linkedin");
+  const closeButton = document.querySelector<HTMLButtonElement>("[data-team-close]");
+  let activeCard: HTMLButtonElement | null = null;
+
+  if (profile && profilePhoto && profileName && profileRole && profileLinkedIn && closeButton) {
+    const closeProfile = () => {
+      if (!activeCard) return;
+      profile.close();
+    };
+
+    cards.forEach((card) => {
+      card.addEventListener("click", () => {
+        activeCard = card;
+        const name = card.dataset.name ?? "";
+        const role = card.dataset.role ?? "";
+        const photo = card.dataset.photo ?? "";
+        const linkedin = card.dataset.linkedin ?? "";
+
+        profileName.textContent = name;
+        profileRole.textContent = `Encargado de ${role}`;
+        profilePhoto.src = photo;
+        profilePhoto.alt = `Fotografía de ${name}`;
+        profileLinkedIn.href = linkedin;
+        profileLinkedIn.classList.toggle("hidden", !linkedin);
+        profileLinkedIn.classList.toggle("inline-flex", Boolean(linkedin));
+
+        profile.showModal();
+        document.body.style.overflow = "hidden";
+        closeButton.focus({ preventScroll: true });
+      });
+    });
+
+    closeButton.addEventListener("click", closeProfile);
+    profile.addEventListener("click", (event) => {
+      if (event.target === profile) closeProfile();
+    });
+    profile.addEventListener("close", () => {
+      document.body.style.overflow = "";
+      activeCard?.focus({ preventScroll: true });
+      activeCard = null;
+    });
+  }
+</script>
+
+<style>
+  #team-profile[open] {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    padding: 2rem;
+    box-sizing: border-box;
+    place-items: center;
+    animation: profile-backdrop-in 220ms ease-out both;
+  }
+
+  #team-profile::backdrop {
+    background: rgb(0 0 4 / 72%);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .team-profile-content {
+    width: min(100%, 36rem);
+    min-height: 100%;
+    margin-inline: auto;
+    animation: profile-content-in 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .team-card-photo {
+    -webkit-mask-image: radial-gradient(ellipse 90% 96% at 50% 42%, #000 72%, transparent 100%);
+    mask-image: radial-gradient(ellipse 90% 96% at 50% 42%, #000 72%, transparent 100%);
+    transform: scale(1);
+    transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .team-card:hover .team-card-photo,
+  .team-card:focus-visible .team-card-photo {
+    transform: scale(1.08);
+  }
+
+  .team-card-photo-frame {
+    contain: paint;
+    clip-path: inset(0);
+  }
+
+  .team-profile-photo {
+    max-height: 72vh;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    #team-profile[open],
+    .team-profile-content {
+      animation-duration: 1ms;
+    }
+  }
+
+  @keyframes profile-backdrop-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes profile-content-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px) scale(0.76);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+  }
+</style>
