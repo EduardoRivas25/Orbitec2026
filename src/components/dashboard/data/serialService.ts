@@ -31,6 +31,10 @@ export interface KnownPortInfo {
   isArduino: boolean;
 }
 
+// Único TEAM_ID aceptado por la estación terrena. Cualquier trama con otro ID
+// (o sin ID) se ignora por completo: no se imprime, no se guarda ni se cuenta.
+export const TEAM_ID = '72523-17';
+
 export interface RejectedTelemetryFrame {
   raw: string;
   receivedAt: string;
@@ -469,6 +473,13 @@ class SerialService {
   }
 
   private handleIncomingLine(rawLine: string) {
+    // Filtro de equipo: si la línea tiene forma de trama CSV y su primer campo
+    // no es exactamente nuestro TEAM_ID, se descarta sin dejar rastro.
+    const frameFields = rawLine.replace(/^\$(CANSAT|ORBITEC),?/i, '').trim().split(',');
+    if (frameFields.length >= 10 && frameFields[0].trim() !== TEAM_ID) {
+      return;
+    }
+
     this.status.packetsReceived++;
 
     // Verificar y separar la trama ASCII CSV reglamentaria del CanSat.
@@ -532,8 +543,8 @@ class SerialService {
       if (!line.includes(',')) return null;
       const clean = line.replace(/^\$(CANSAT|ORBITEC),?/i, '').trim();
       const parts = clean.split(',').map(value => value.trim());
-      // TEAM_ID puede ser de cuatro o cinco dígitos (el simulador Patsari usa 72523).
-      if (parts.length < 21 || !/^\d{1,10}$/.test(parts[0]) || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
+      // Solo se acepta la trama cuyo TEAM_ID es exactamente el de nuestro equipo.
+      if (parts.length < 21 || parts[0] !== TEAM_ID || !/^\d{2}:\d{2}:\d{2}$/.test(parts[1])) return null;
 
       const n = (index: number, fallback = 0) => {
         if (parts[index] === undefined || parts[index] === '') return fallback;
@@ -701,7 +712,7 @@ class SerialService {
       const lng = -102.074700 - 0.000001 * jitter;
       const simulatedGas = 15400 + 5 * phase;
       const packet = [
-        '0001', `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '4.00',
+        TEAM_ID, `${hh}:${mm}:${ss}`, simIndex, altitude.toFixed(1), temp.toFixed(1), '4.00',
         ax.toFixed(2), ay.toFixed(2), az.toFixed(2), state,
         lat.toFixed(6), lng.toFixed(6), pressure.toFixed(2),
         (55 + 0.1 * jitter).toFixed(1), simulatedGas.toFixed(0),
